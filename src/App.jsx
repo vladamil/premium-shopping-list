@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLists } from './context/ListContext';
 
 function App() {
    // 1. Core View State: 'dashboard', 'form', or 'shopping'
@@ -6,6 +7,8 @@ function App() {
 
    // 2. Tracks which list is open (null means creating a new list)
    const [activeListId, setActiveListId] = useState(null);
+
+   const { lists } = useLists();
 
    // Helper functions
    const navigateToDashboard = () => {
@@ -44,32 +47,68 @@ function App() {
                   This will list all your shopping lists.
                </p>
 
-               <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
-                  <button
-                     onClick={navigateToCreateForm}
-                     style={{
-                        background: 'var(--accent)',
-                        color: '#fff',
-                        padding: '0.75rem 1.5rem',
-                        borderRadius: 'var(--radius-sm)',
-                        cursor: 'pointer',
-                     }}
-                  >
-                     ➕ Create New List
-                  </button>
-                  <button
-                     onClick={() => navigateToShopping('mock-id-123')}
-                     style={{
-                        background: 'var(--accent-success)',
-                        color: '#fff',
-                        padding: '0.75rem 1.5rem',
-                        borderRadius: 'var(--radius-sm)',
-                        cursor: 'pointer',
-                     }}
-                  >
-                     🛒 Test Shopping Mode (Mock)
-                  </button>
+               {/* 3. Dynamically map over our real context data array */}
+               <div
+                  style={{
+                     display: 'flex',
+                     flexDirection: 'column',
+                     gap: '0.75rem',
+                     margin: '1.5rem 0',
+                  }}
+               >
+                  {lists.map((list) => (
+                     <div
+                        key={list.id}
+                        style={{
+                           border: '1px solid var(--border-light)',
+                           padding: '1rem',
+                           borderRadius: 'var(--radius-sm)',
+                           display: 'flex',
+                           justifyContent: 'space-between',
+                           alignItems: 'center',
+                        }}
+                     >
+                        <div>
+                           <strong>{list.title}</strong>
+                           <div
+                              style={{
+                                 fontSize: '0.85rem',
+                                 color: 'var(--text-muted)',
+                              }}
+                           >
+                              {list.items.length} items
+                           </div>
+                        </div>
+                        <button
+                           onClick={() => navigateToShopping(list.id)}
+                           style={{
+                              background: 'var(--accent-success)',
+                              color: '#fff',
+                              padding: '0.5rem 1rem',
+                              borderRadius: 'var(--radius-sm)',
+                              cursor: 'pointer',
+                           }}
+                        >
+                           Go Shopping 🛒
+                        </button>
+                     </div>
+                  ))}
                </div>
+
+               <button
+                  onClick={navigateToCreateForm}
+                  style={{
+                     background: 'var(--accent)',
+                     color: '#fff',
+                     padding: '0.75rem 1.5rem',
+                     borderRadius: 'var(--radius-sm)',
+                     cursor: 'pointer',
+                     width: '100%',
+                     marginTop: '1rem',
+                  }}
+               >
+                  ➕ Create New List
+               </button>
             </div>
          )}
 
