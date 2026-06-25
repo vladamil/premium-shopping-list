@@ -1,0 +1,132 @@
+.container {
+   max-width: 480px;
+   margin: 0 auto;
+   padding: 1.5rem 1rem;
+   display: flex;
+   flex-direction: column;
+   min-height: 100dvh;
+}
+
+.header {
+   margin-bottom: 1.75rem;
+}
+
+.header h1 {
+   font-size: 1.75rem;
+   font-weight: 800;
+   color: var(--text-main);
+   margin-bottom: 0.25rem;
+}
+
+.header p {
+   color: var(--text-muted);
+   font-size: 0.925rem;
+}
+
+.listGrid {
+   display: flex;
+   flex-direction: column;
+   gap: 0.75rem;
+   margin-bottom: auto; /* Pushes the create button to the bottom of the screen */
+}
+
+.card {
+   background-color: var(--bg-surface);
+   padding: 1rem 1.25rem; /* Compact, premium padding */
+   border-radius: var(--radius-md);
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   border: 1px solid var(--border-light);
+   transition:
+      transform var(--transition-fast),
+      background-color var(--transition-fast);
+   cursor: pointer;
+
+   /* Subtle native-like shadow */
+   box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.02),
+      0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+/* Premium Mobile Tap Effect */
+.card:active {
+   transform: scale(0.98);
+   background-color: var(--checked-bg);
+}
+
+.cardInfo strong {
+   font-size: 1.05rem;
+   font-weight: 600;
+   color: var(--text-main);
+   display: block;
+   margin-bottom: 0.15rem;
+}
+
+.itemCount {
+   font-size: 0.825rem;
+   color: var(--text-muted);
+   font-weight: 500;
+}
+
+.shopButton {
+   background-color: #1a1d20;
+   color: #fff;
+   padding: 0.5rem 1rem;
+   border-radius: 20px;
+   font-weight: 600;
+   font-size: 0.85rem;
+   cursor: pointer;
+}
+
+/* --- Empty State Styles --- */
+.emptyState {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   text-align: center;
+   margin: auto 0; /* Centers it perfectly vertically in the empty space */
+   padding: 2rem 1rem;
+}
+
+.emptySvg {
+   width: 80px;
+   height: 80px;
+   color: #ccd6e0;
+   margin-bottom: 1.25rem;
+}
+
+.emptyState h3 {
+   font-size: 1.2rem;
+   font-weight: 700;
+   color: var(--text-main);
+   margin-bottom: 0.5rem;
+}
+
+.emptyState p {
+   font-size: 0.9rem;
+   color: var(--text-muted);
+   max-width: 260px;
+   line-height: 1.4;
+}
+
+/* --- Sticky Bottom Create Button --- */
+.createButton {
+   background-color: var(--accent);
+   color: white;
+   width: 100%;
+   padding: 1rem;
+   border-radius: var(--radius-lg);
+   font-weight: 600;
+   font-size: 1rem;
+   text-align: center;
+   cursor: pointer;
+   margin-top: 1.5rem;
+   box-shadow: 0 4px 12px rgba(10, 132, 255, 0.15); /* Soft accent glow */
+   transition: transform var(--transition-fast);
+}
+
+.createButton:active {
+   transform: scale(0.98);
+}
