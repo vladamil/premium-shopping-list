@@ -14,21 +14,21 @@ export function ListProvider({ children }) {
             {
                id: 'i1',
                name: 'Milk',
-               price: 1.2,
+               price: 100.2,
                quantity: 2,
                isChecked: true,
             },
             {
                id: 'i2',
                name: 'Eggs',
-               price: 2.5,
+               price: 237.5,
                quantity: 1,
                isChecked: false,
             },
             {
                id: 'i3',
                name: 'Bread',
-               price: 1.8,
+               price: 1800.8,
                quantity: 1,
                isChecked: false,
             },
@@ -37,19 +37,19 @@ export function ListProvider({ children }) {
       {
          id: 'list-2',
          title: 'Weekend BBQ Party',
-         createdAt: '2026-06-25',
+         createdAt: '2026-5-25',
          items: [
             {
                id: 'i4',
                name: 'Charcoal',
-               price: 5.0,
+               price: 255.0,
                quantity: 1,
                isChecked: false,
             },
             {
                id: 'i5',
                name: 'Burgers',
-               price: 12.5,
+               price: 127.5,
                quantity: 2,
                isChecked: false,
             },

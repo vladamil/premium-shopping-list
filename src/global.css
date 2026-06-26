@@ -1,25 +1,26 @@
 :root {
-   /* Color Palette - Soft Nordic Utility */
-   --bg-main: #f8f9fa;
-   --bg-surface: #ffffff;
-
-   --text-main: #1a1d20;
-   --text-muted: #6c757d;
-
-   --accent: #0a84ff;
-   --accent-success: #10b981;
+   /* Color Palette - Premium High-Contrast Light Scheme */
+   --bg-main: #f4f6f8;
+   --bg-surface: #121417;
    --border-light: #e2e8f0;
 
-   /* Interactivity States */
-   --checked-opacity: 0.45;
-   --checked-bg: #f1f5f9;
+   /* Text Contrast System */
+   --text-main: #121417;
+   --text-muted: #64748b;
+   --text-on-dark: #ffffff;
+   --text-muted-on-dark: #94a3b8;
 
-   /* Layout & Sizing Tokens */
+   /* Semantic Accents */
+   --accent: #0a84ff;
+   --accent-success: #30d158;
+   --checked-bg: #1c1e22;
+
+   /* System Physics */
    --radius-sm: 8px;
-   --radius-md: 12px;
-   --radius-lg: 16px;
-
-   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+   --radius-md: 14px;
+   --radius-lg: 18px;
+   --transition-fast: 0.15s ease;
+   --max-width: 480px;
 }
 
 * {

@@ -1,5 +1,5 @@
 .container {
-   max-width: 480px;
+   max-width: var(--max-width);
    margin: 0 auto;
    padding: 1.5rem 1rem;
    display: flex;
@@ -8,110 +8,148 @@
 }
 
 .header {
-   margin-bottom: 1.75rem;
+   margin-bottom: 2rem;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: 0.5rem;
 }
 
-.header h1 {
-   font-size: 1.75rem;
-   font-weight: 800;
-   color: var(--text-main);
-   margin-bottom: 0.25rem;
+.brandBadge {
+   display: flex;
+   align-items: center;
+   gap: 0.5rem;
+   background-color: var(--text-main);
+   color: var(--bg-main);
+   padding: 0.5rem 0.75rem;
+   border-radius: 20px;
+}
+
+.logoIcon {
+   width: 14px;
+   height: 14px;
+   stroke: currentColor;
+}
+
+.brandName {
+   font-size: 0.75rem;
+   font-weight: 700;
+   text-transform: uppercase;
+   letter-spacing: 0.08em;
 }
 
 .header p {
    color: var(--text-muted);
-   font-size: 0.925rem;
+   font-size: 0.9rem;
+   font-weight: 400;
+   line-height: 1.4;
+   text-align: center;
 }
 
+/* --- Upgraded 3-Row Layout with Action --- */
 .listGrid {
    display: flex;
    flex-direction: column;
    gap: 0.75rem;
-   margin-bottom: auto; /* Pushes the create button to the bottom of the screen */
+   margin-bottom: auto;
 }
 
 .card {
    background-color: var(--bg-surface);
-   padding: 1rem 1.25rem; /* Compact, premium padding */
+   padding: 1rem 1.25rem;
    border-radius: var(--radius-md);
    display: flex;
    justify-content: space-between;
    align-items: center;
    border: 1px solid var(--border-light);
-   transition:
-      transform var(--transition-fast),
-      background-color var(--transition-fast);
    cursor: pointer;
-
-   /* Subtle native-like shadow */
-   box-shadow:
-      0 1px 3px rgba(0, 0, 0, 0.02),
-      0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
-/* Premium Mobile Tap Effect */
-.card:active {
-   transform: scale(0.98);
-   background-color: var(--checked-bg);
+.cardContent {
+   display: flex;
+   flex-direction: column;
+   gap: 0.2rem; /* Balanced vertical row spacing */
 }
 
-.cardInfo strong {
-   font-size: 1.05rem;
-   font-weight: 600;
-   color: var(--text-main);
-   display: block;
-   margin-bottom: 0.15rem;
+.cardTitle {
+   font-size: 1.15rem;
+   font-weight: 500;
+   color: var(--text-on-dark);
+   letter-spacing: -0.02em;
 }
 
-.itemCount {
-   font-size: 0.825rem;
-   color: var(--text-muted);
+.cardMetaRow {
+   display: flex;
+   align-items: center;
+   gap: 0.5rem;
+   font-size: 0.85rem;
+   color: var(--text-muted-on-dark);
    font-weight: 500;
 }
 
-.shopButton {
-   background-color: #1a1d20;
-   color: #fff;
-   padding: 0.5rem 1rem;
-   border-radius: 20px;
-   font-weight: 600;
-   font-size: 0.85rem;
-   cursor: pointer;
+.metaDivider {
+   color: var(--bg-main);
 }
 
-/* --- Empty State Styles --- */
+.priceRow {
+   font-size: 0.9rem;
+   font-weight: 500;
+   color: var(--accent-success);
+}
+
+/* Right-side action arrow */
+
+.chevronAction {
+   color: var(--text-muted-on-dark);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   padding-left: 0.5rem;
+}
+
+.chevronAction svg {
+   width: 20px;
+   height: 20px;
+   stroke: currentColor;
+   transition: transform var(--transition-fast);
+}
+
+.card:hover .chevronAction svg {
+   transform: translateX(3px); /* Subtle indicator on interaction */
+}
+
+/* --- Empty State & Button --- */
 .emptyState {
    display: flex;
    flex-direction: column;
    align-items: center;
    justify-content: center;
    text-align: center;
-   margin: auto 0; /* Centers it perfectly vertically in the empty space */
+   margin: auto 0;
    padding: 2rem 1rem;
 }
 
 .emptySvg {
-   width: 80px;
-   height: 80px;
+   width: 64px;
+   height: 64px;
    color: #ccd6e0;
-   margin-bottom: 1.25rem;
+   margin-bottom: 1rem;
 }
 
 .emptyState h3 {
-   font-size: 1.2rem;
+   font-size: 1.15rem;
    font-weight: 700;
    color: var(--text-main);
-   margin-bottom: 0.5rem;
+   margin-bottom: 0.25rem;
 }
 
 .emptyState p {
    font-size: 0.9rem;
    color: var(--text-muted);
-   max-width: 260px;
+   max-width: 240px;
    line-height: 1.4;
 }
 
-/* --- Sticky Bottom Create Button --- */
 .createButton {
    background-color: var(--accent);
    color: white;
@@ -123,7 +161,7 @@
    text-align: center;
    cursor: pointer;
    margin-top: 1.5rem;
-   box-shadow: 0 4px 12px rgba(10, 132, 255, 0.15); /* Soft accent glow */
+   box-shadow: 0 4px 12px rgba(10, 132, 255, 0.15);
    transition: transform var(--transition-fast);
 }
 
