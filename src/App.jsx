@@ -43,7 +43,7 @@ function App() {
             />
          )}
 
-         {currentView === 'form' && <ListForm />}
+         {currentView === 'form' && <ListForm onBack={navigateToDashboard} />}
 
          {currentView === 'shopping' && (
             <div

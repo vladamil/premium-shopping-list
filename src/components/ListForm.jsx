@@ -1,17 +1,62 @@
-/* src/components/ListForm.jsx - Layout Foundations Only */
+import { useState } from 'react';
 import styles from './ListForm.module.css';
 
-export default function ListForm({ onBack }) {
-   // Temporary hardcoded mockup list to inspect the 2-row layout look and feel
-   const mockItems = [
-      {
-         id: '1',
-         name: 'Čokolada 200g Milka noisette',
-         quantity: 2,
-         price: 240.0,
-      },
-      { id: '2', name: 'Plazma keks mlevena 300g', quantity: 1, price: 310.0 },
-   ];
+export default function ListForm({ onBack, onSave, activeListId }) {
+   const [title, setTitle] = useState('');
+
+   const [newItemName, setNewItemName] = useState('');
+   const [newItemPrice, setNewItemPrice] = useState('');
+
+   const [items, setItems] = useState([]);
+
+   // Live dynamic math tracking total cost
+   const currentRunningTotal = items
+      .reduce((sum, item) => sum + item.price * item.quantity, 0)
+      .toFixed(2);
+
+   // Appends a new item into the list
+   const handleAddItem = (e) => {
+      if (e) e.preventDefault();
+      if (!newItemName.trim()) return;
+
+      const parsedPrice = parseFloat(newItemPrice) || 0.0;
+
+      const committedItem = {
+         id: crypto.randomUUID(),
+         name: newItemName.trim(),
+         quantity: 1, // Freshly created items default to 1 count
+         price: parsedPrice,
+      };
+
+      setItems([...items, committedItem]);
+
+      // Reset input fields
+      setNewItemName('');
+      setNewItemPrice('');
+   };
+
+   // Updates a specific value inline (name or qty)
+   const updateLedgerItem = (id, field, value) => {
+      setItems(
+         items.map((item) => {
+            if (item.id === id) {
+               return { ...item, [field]: value };
+            }
+            return item;
+         }),
+      );
+   };
+
+   // Save list data (title + items list)
+   const handleSubmitForm = (e) => {
+      e.preventDefault();
+      if (!title.trim()) return;
+
+      onSave({
+         title: title.trim(),
+         items: items,
+      });
+   };
 
    return (
       <div className={styles.container}>
@@ -25,7 +70,8 @@ export default function ListForm({ onBack }) {
                   type="text"
                   className={styles.titleInput}
                   placeholder="Name your list..."
-                  defaultValue=""
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
                   required
                />
             </div>
@@ -37,6 +83,10 @@ export default function ListForm({ onBack }) {
                type="text"
                className={styles.creatorInputFull}
                placeholder="Item name (e.g., Čokolada 200g Milka)"
+               value={newItemName}
+               onChange={(e) => {
+                  setNewItemName(e.target.value);
+               }}
             />
             <div className={styles.creatorSubRow}>
                <input
@@ -44,23 +94,32 @@ export default function ListForm({ onBack }) {
                   className={styles.inputField}
                   placeholder="Price"
                   step="0.01"
+                  value={newItemPrice}
+                  onChange={(e) => setNewItemPrice(e.target.value)}
                />
-               <button className={styles.addButton} type="button">
+               <button
+                  className={styles.addButton}
+                  type="button"
+                  onClick={handleAddItem}
+               >
                   Add
                </button>
             </div>
          </div>
 
-         {/* RENDERED ITEMS LIST ROWS */}
+         {/* RENDER LIST ITEMS ROWS */}
          <div className={styles.ledgerList}>
-            {mockItems.map((item) => (
+            {items.map((item) => (
                <div key={item.id} className={styles.ledgerRow}>
                   {/* Row 1: Full Width Item Name */}
                   <div className={styles.ledgerRowTop}>
                      <input
                         type="text"
                         className={styles.inlineNameInput}
-                        defaultValue={item.name}
+                        value={item.name}
+                        onChange={(e) =>
+                           updateLedgerItem(item.id, 'name', e.target.value)
+                        }
                      />
                   </div>
 
@@ -69,13 +128,33 @@ export default function ListForm({ onBack }) {
                      <div className={styles.controlsLeft}>
                         {/* Stepper Shell */}
                         <div className={styles.stepper}>
-                           <button type="button" className={styles.stepBtn}>
+                           <button
+                              type="button"
+                              className={styles.stepBtn}
+                              onClick={() =>
+                                 updateLedgerItem(
+                                    item.id,
+                                    'quantity',
+                                    Math.max(1, item.quantity - 1),
+                                 )
+                              }
+                           >
                               −
                            </button>
                            <span className={styles.stepCount}>
                               {item.quantity}
                            </span>
-                           <button type="button" className={styles.stepBtn}>
+                           <button
+                              type="button"
+                              className={styles.stepBtn}
+                              onClick={() =>
+                                 updateLedgerItem(
+                                    item.id,
+                                    'quantity',
+                                    item.quantity + 1,
+                                 )
+                              }
+                           >
                               ＋
                            </button>
                         </div>
@@ -86,8 +165,14 @@ export default function ListForm({ onBack }) {
                         </div>
                      </div>
 
-                     {/* Red Delete Button */}
-                     <button type="button" className={styles.deleteBtn}>
+                     {/* Delete Button */}
+                     <button
+                        type="button"
+                        className={styles.deleteBtn}
+                        onClick={() =>
+                           setItems(items.filter((i) => i.id !== item.id))
+                        }
+                     >
                         <svg
                            viewBox="0 0 24 24"
                            fill="none"
@@ -109,9 +194,15 @@ export default function ListForm({ onBack }) {
          <div className={styles.footerArea}>
             <div className={styles.runningTotalRow}>
                <span className={styles.runningTotalLabel}>Current Total:</span>
-               <span className={styles.runningTotalAmount}>790.00</span>
+               <span className={styles.runningTotalAmount}>
+                  {currentRunningTotal}
+               </span>
             </div>
-            <button className={styles.saveButton} type="button">
+            <button
+               className={styles.saveButton}
+               type="button"
+               onClick={handleSubmitForm}
+            >
                Save Entire List
             </button>
          </div>
