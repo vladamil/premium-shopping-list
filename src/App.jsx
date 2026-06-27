@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useLists } from './context/ListContext';
 import Dashboard from './components/Dashboard';
+import ListForm from './components/ListForm';
 
 function App() {
    // 1. Core View State: 'dashboard', 'form', or 'shopping'
@@ -42,34 +43,7 @@ function App() {
             />
          )}
 
-         {currentView === 'form' && (
-            <div
-               style={{
-                  background: 'var(--bg-surface)',
-                  padding: '2rem',
-                  borderRadius: 'var(--radius-md)',
-               }}
-            >
-               <h2>✍️ List Form View</h2>
-               <p style={{ color: 'var(--text-muted)', margin: '1rem 0' }}>
-                  {activeListId
-                     ? `Editing List ID: ${activeListId}`
-                     : 'Creating a brand new list...'}
-               </p>
-
-               <button
-                  onClick={navigateToDashboard}
-                  style={{
-                     color: 'var(--accent)',
-                     textDecoration: 'underline',
-                     cursor: 'pointer',
-                     marginTop: '2rem',
-                  }}
-               >
-                  ← Back to Dashboard
-               </button>
-            </div>
-         )}
+         {currentView === 'form' && <ListForm />}
 
          {currentView === 'shopping' && (
             <div
