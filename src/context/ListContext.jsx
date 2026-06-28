@@ -1,75 +1,75 @@
-import { createContext, useState, useContext } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
-const ListContext = createContext();
+const ListContext = createContext(null);
 
-// Create the Provider Component
 export function ListProvider({ children }) {
-   // Central state initialized with our mock data
-   const [lists, setLists] = useState([
-      {
-         id: 'list-1',
-         title: 'Lidl Weekly Shopping',
-         createdAt: '2026-06-24',
-         items: [
-            {
-               id: 'i1',
-               name: 'Milk',
-               price: 100.2,
-               quantity: 2,
-               isChecked: true,
-            },
-            {
-               id: 'i2',
-               name: 'Eggs',
-               price: 237.5,
-               quantity: 1,
-               isChecked: false,
-            },
-            {
-               id: 'i3',
-               name: 'Bread',
-               price: 1800.8,
-               quantity: 1,
-               isChecked: false,
-            },
-         ],
-      },
-      {
-         id: 'list-2',
-         title: 'Weekend BBQ Party',
-         createdAt: '2026-5-25',
-         items: [
-            {
-               id: 'i4',
-               name: 'Charcoal',
-               price: 255.0,
-               quantity: 1,
-               isChecked: false,
-            },
-            {
-               id: 'i5',
-               name: 'Burgers',
-               price: 127.5,
-               quantity: 2,
-               isChecked: false,
-            },
-         ],
-      },
-   ]);
+   // Initialize state directly from LocalStorage on mount
+   const [lists, setLists] = useState(() => {
+      const saved = localStorage.getItem('grocery_lists');
+      return saved ? JSON.parse(saved) : [];
+   });
 
-   const value = {
-      lists,
-      setLists,
+   const [activeListId, setActiveListId] = useState(null);
+
+   // Sync state changes to LocalStorage automatically
+   useEffect(() => {
+      localStorage.setItem('grocery_lists', JSON.stringify(lists));
+   }, [lists]);
+
+   // Centralized Save Handler (Handles both Create and Edit operations)
+   const saveList = (formData) => {
+      setLists((prevLists) => {
+         if (activeListId) {
+            // SCENARIO A: Update existing list
+            return prevLists.map((list) =>
+               list.id === activeListId
+                  ? { ...list, title: formData.title, items: formData.items }
+                  : list,
+            );
+         } else {
+            // SCENARIO B: Create a brand new list
+            const newList = {
+               id: crypto.randomUUID(),
+               title: formData.title,
+               items: formData.items,
+               createdAt: new Date().toISOString(),
+               isCompleted: false,
+            };
+            return [newList, ...prevLists];
+         }
+      });
+
+      // Reset list id
+      setActiveListId(null);
    };
 
-   return <ListContext.Provider value={value}>{children}</ListContext.Provider>;
+   // Delete list handler
+   const deleteList = (id) => {
+      setLists((prevLists) => prevLists.filter((list) => list.id !== id));
+      if (activeListId === id) setActiveListId(null);
+   };
+
+   return (
+      <ListContext.Provider
+         value={{
+            lists,
+            activeListId,
+            setActiveListId,
+            saveList,
+            deleteList,
+         }}
+      >
+         {children}
+      </ListContext.Provider>
+   );
 }
 
-// Create a clean Custom Hook for consuming the context
 export function useLists() {
    const context = useContext(ListContext);
    if (!context) {
-      throw new Error('useLists must be used within a ListProvider');
+      throw new Error(
+         'useLists must be utilized within a ListProvider wrapper',
+      );
    }
    return context;
 }

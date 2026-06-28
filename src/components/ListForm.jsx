@@ -1,13 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLists } from '../context/ListContext';
 import styles from './ListForm.module.css';
 
-export default function ListForm({ onBack, onSave, activeListId }) {
+export default function ListForm({ onBack }) {
+   // Pull data directly from Lists context
+   const { activeListId, saveList, lists } = useLists();
+
    const [title, setTitle] = useState('');
 
    const [newItemName, setNewItemName] = useState('');
    const [newItemPrice, setNewItemPrice] = useState('');
 
    const [items, setItems] = useState([]);
+
+   // EFFECT LAYER: If activeListId is present, pre-populate state for editing
+   useEffect(() => {
+      if (activeListId) {
+         const targetList = lists.find((l) => l.id === activeListId);
+         if (targetList) {
+            setTitle(targetList.title);
+            setItems(targetList.items); // Inject existing items array to edit ledger
+         }
+      }
+   }, [activeListId, lists]);
 
    // Live dynamic math tracking total cost
    const currentRunningTotal = items
@@ -26,6 +41,7 @@ export default function ListForm({ onBack, onSave, activeListId }) {
          name: newItemName.trim(),
          quantity: 1, // Freshly created items default to 1 count
          price: parsedPrice,
+         isBought: false,
       };
 
       setItems([...items, committedItem]);
@@ -47,15 +63,15 @@ export default function ListForm({ onBack, onSave, activeListId }) {
       );
    };
 
-   // Save list data (title + items list)
    const handleSubmitForm = (e) => {
       e.preventDefault();
       if (!title.trim()) return;
 
-      onSave({
-         title: title.trim(),
-         items: items,
-      });
+      // Send payload straight to context database layer
+      saveList({ title: title.trim(), items });
+
+      // Smooth navigation callback to push user back to dashboard
+      onBack();
    };
 
    return (

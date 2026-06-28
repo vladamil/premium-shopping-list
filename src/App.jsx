@@ -4,36 +4,27 @@ import Dashboard from './components/Dashboard';
 import ListForm from './components/ListForm';
 
 function App() {
-   // 1. Core View State: 'dashboard', 'form', or 'shopping'
+   // Core View State: 'dashboard', 'form', or 'shopping'
    const [currentView, setCurrentView] = useState('dashboard');
-
-   // 2. Tracks which list is open (null means creating a new list)
-   const [activeListId, setActiveListId] = useState(null);
-
-   const { lists } = useLists();
 
    // Helper functions
    const navigateToDashboard = () => {
-      setActiveListId(null);
       setCurrentView('dashboard');
    };
 
    const navigateToCreateForm = () => {
-      setActiveListId(null); // No ID means "New List"
       setCurrentView('form');
    };
 
-   const navigateToEditForm = (id) => {
-      setActiveListId(id);
+   const navigateToEditForm = () => {
       setCurrentView('form');
    };
 
-   const navigateToShopping = (id) => {
-      setActiveListId(id);
+   const navigateToShopping = () => {
       setCurrentView('shopping');
    };
 
-   // 3. Conditional Rendering State
+   // Conditional Rendering State
    return (
       <>
          {currentView === 'dashboard' && (
