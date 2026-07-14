@@ -7,20 +7,25 @@ function App() {
    // Core View State: 'dashboard', 'form', or 'shopping'
    const [currentView, setCurrentView] = useState('dashboard');
 
+   const { activeListId, setActiveListId } = useLists();
+
    // Helper functions
    const navigateToDashboard = () => {
       setCurrentView('dashboard');
    };
 
    const navigateToCreateForm = () => {
+      setActiveListId(null);
       setCurrentView('form');
    };
 
-   const navigateToEditForm = () => {
+   const navigateToEditForm = (listId) => {
+      setActiveListId(listId);
       setCurrentView('form');
    };
 
-   const navigateToShopping = () => {
+   const navigateToShopping = (listId) => {
+      setActiveListId(listId);
       setCurrentView('shopping');
    };
 

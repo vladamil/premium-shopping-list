@@ -3,7 +3,10 @@ import styles from './Dashboard.module.css';
 
 export default function Dashboard({ onCreateList, onSelectList }) {
    const { lists } = useLists();
-   const hasLists = lists.length > 0;
+
+   // FILTER: Only show active lists
+   const activeLists = lists.filter((list) => !list.isCompleted);
+   const hasActiveLists = activeLists.length > 0;
 
    const calculateTotal = (items) => {
       return items
@@ -42,30 +45,26 @@ export default function Dashboard({ onCreateList, onSelectList }) {
             </p>
          </header>
 
-         {hasLists ? (
+         {hasActiveLists ? (
             <div className={styles.listGrid}>
-               {lists.map((list) => (
+               {activeLists.map((list) => (
                   <div
                      key={list.id}
                      className={styles.card}
                      onClick={() => onSelectList(list.id)}
                   >
-                     {/* Left Column: 3-Row Content Stack */}
                      <div className={styles.cardContent}>
                         <h3 className={styles.cardTitle}>{list.title}</h3>
-
                         <div className={styles.cardMetaRow}>
                            <span>{formatDate(list.createdAt)}</span>
                            <span className={styles.metaDivider}>•</span>
                            <span>{list.items.length} items</span>
                         </div>
-
                         <div className={styles.priceRow}>
                            Total: {calculateTotal(list.items)} rsd
                         </div>
                      </div>
 
-                     {/* Right Column: Sleek Minimal Arrow Indicator */}
                      <div className={styles.chevronAction}>
                         <svg
                            viewBox="0 0 24 24"
