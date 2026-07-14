@@ -44,7 +44,7 @@ export default function ListForm({ onBack }) {
          isBought: false,
       };
 
-      setItems([...items, committedItem]);
+      setItems([committedItem, ...items]);
 
       // Reset input fields
       setNewItemName('');
