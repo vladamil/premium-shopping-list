@@ -2,10 +2,43 @@ import { useLists } from '../context/ListContext';
 import styles from './ShoppingView.module.css';
 
 export default function ShoppingView({ onBack, onEdit }) {
-   const { activeListId, lists } = useLists();
+   const { activeListId, lists, saveList } = useLists();
 
    // Find the list we are currently shopping for
    const currentList = lists.find((list) => list.id === activeListId);
+
+   // List Total Cost
+   const totalCost = currentList.items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0,
+   );
+
+   // In Cart Total (Only items marked as isBought)
+   const cartCost = currentList.items
+      .filter((item) => item.isBought)
+      .reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+   // Handle Completing & Archiving the Shopping Trip
+   const handleFinishShopping = () => {
+      // Make a window prompt
+      const isConfirmed = window.confirm(
+         'Are you sure you want to finish shopping? This will archive the list and remove it from your active dashboard.',
+      );
+
+      if (!isConfirmed) return;
+
+      // Flag the list as completed in the global array
+      currentList.isCompleted = true;
+
+      // Save the changes to LocalStorage via Context
+      saveList({
+         title: currentList.title,
+         items: currentList.items,
+      });
+
+      // Go back to the dashboard
+      onBack();
+   };
 
    // Fallback screen if a list is missing or deleted
    if (!currentList) {
@@ -59,7 +92,7 @@ export default function ShoppingView({ onBack, onEdit }) {
             <p className={styles.subtitle}>( Tap items to check them off )</p>
          </div>
 
-         {/* Temporary placeholder for Phase 2 & 3 */}
+         {/* ITEMS PLACEHOLDER */}
          <div
             style={{
                color: 'var(--text-muted)',
@@ -67,8 +100,27 @@ export default function ShoppingView({ onBack, onEdit }) {
                textAlign: 'center',
             }}
          >
-            Item List & Footer loading in next phases...
+            Item List in next phases...
          </div>
+         <footer className={styles.footer}>
+            <div className={styles.statsGrid}>
+               <div className={styles.statBox}>
+                  <span className={styles.statLabel}>In Cart</span>
+                  <span className={styles.statVal}>{cartCost.toFixed(2)}</span>
+               </div>
+               <div className={styles.statBox}>
+                  <span className={styles.statLabel}>Total Cost</span>
+                  <span className={styles.statVal}>{totalCost.toFixed(2)}</span>
+               </div>
+            </div>
+
+            <button
+               className={styles.finishButton}
+               onClick={handleFinishShopping}
+            >
+               Finish & Archive List
+            </button>
+         </footer>
       </div>
    );
 }
