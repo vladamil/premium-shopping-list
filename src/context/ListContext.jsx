@@ -17,7 +17,7 @@ export function ListProvider({ children }) {
    }, [lists]);
 
    // Centralized Save Handler (Handles both Create and Edit operations)
-   const saveList = (formData) => {
+   const saveList = (formData, shouldClearActiveId = true) => {
       setLists((prevLists) => {
          if (activeListId) {
             // SCENARIO A: Update existing list
@@ -40,7 +40,9 @@ export function ListProvider({ children }) {
       });
 
       // Reset list id
-      setActiveListId(null);
+      if (shouldClearActiveId) {
+         setActiveListId(null);
+      }
    };
 
    // Delete list handler

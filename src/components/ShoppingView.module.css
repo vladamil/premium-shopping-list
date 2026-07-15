@@ -122,6 +122,97 @@
    transform: scale(0.97);
 }
 
+/* --- LIST ITEMS STYLE --- */
+
+.checklist {
+   display: flex;
+   flex-direction: column;
+   gap: 0.75rem;
+}
+
+.row {
+   display: flex;
+   align-items: center;
+   background-color: var(--bg-surface);
+   border-radius: var(--radius-md);
+   padding: 0.75rem 1rem;
+   cursor: pointer;
+   user-select: none;
+   transition:
+      transform var(--transition-fast),
+      opacity var(--transition-fast);
+}
+
+.row:active {
+   transform: scale(0.98);
+}
+
+.checkboxWrapper {
+   margin-right: 1.15rem;
+   display: flex;
+   align-items: center;
+}
+
+.checkbox {
+   width: 1.2rem;
+   height: 1.2rem;
+   border: 2px solid var(--text-muted-on-dark);
+   border-radius: 6px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   transition: all var(--transition-fast);
+}
+
+.checked {
+   background-color: var(--accent-success);
+   border-color: var(--accent-success);
+}
+
+.checkbox svg {
+   stroke: var(--bg-surface);
+}
+
+.itemInfo {
+   display: flex;
+   flex-direction: column;
+   flex-grow: 1;
+}
+
+.itemName {
+   font-size: 1rem;
+   font-weight: 500;
+   color: var(--text-on-dark);
+   transition: color var(--transition-fast);
+}
+
+.itemMeta {
+   font-size: 0.8rem;
+   color: var(--text-muted-on-dark);
+   margin-top: 0.2rem;
+}
+
+.itemTotal {
+   font-size: 1.05rem;
+   font-weight: 700;
+   color: var(--text-on-dark);
+}
+
+/* Checked Items */
+.boughtRow {
+   background-color: var(--checked-bg);
+   opacity: 0.5;
+}
+
+.boughtRow .itemName {
+   text-decoration: line-through;
+   color: var(--text-muted-on-dark);
+}
+
+.boughtRow .itemTotal {
+   color: var(--text-muted-on-dark);
+}
+
 /* STICKY FOOTER */
 .footer {
    position: fixed;

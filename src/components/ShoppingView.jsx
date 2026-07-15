@@ -1,4 +1,5 @@
 import { useLists } from '../context/ListContext';
+import ShoppingItemRow from './ShoppingItemRow';
 import styles from './ShoppingView.module.css';
 
 export default function ShoppingView({ onBack, onEdit }) {
@@ -17,6 +18,25 @@ export default function ShoppingView({ onBack, onEdit }) {
    const cartCost = currentList.items
       .filter((item) => item.isBought)
       .reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+   // Toggle shopping item isBought
+   const handleToggleBought = (itemId) => {
+      const updatedItems = currentList.items.map((item) => {
+         if (item.id === itemId) {
+            return { ...item, isBought: !item.isBought };
+         }
+         return item;
+      });
+
+      // Pass false to saveList so it preserves activeListId in Context during shopping
+      saveList(
+         {
+            title: currentList.title,
+            items: updatedItems,
+         },
+         false,
+      );
+   };
 
    // Handle Completing & Archiving the Shopping Trip
    const handleFinishShopping = () => {
@@ -92,16 +112,17 @@ export default function ShoppingView({ onBack, onEdit }) {
             <p className={styles.subtitle}>( Tap items to check them off )</p>
          </div>
 
-         {/* ITEMS PLACEHOLDER */}
-         <div
-            style={{
-               color: 'var(--text-muted)',
-               padding: '2rem 0',
-               textAlign: 'center',
-            }}
-         >
-            Item List in next phases...
+         {/* Checklist Grid with bottom margin to protect items from footer overlap */}
+         <div className={styles.checklist}>
+            {currentList.items.map((item) => (
+               <ShoppingItemRow
+                  key={item.id}
+                  item={item}
+                  onToggle={handleToggleBought}
+               />
+            ))}
          </div>
+
          <footer className={styles.footer}>
             <div className={styles.statsGrid}>
                <div className={styles.statBox}>
