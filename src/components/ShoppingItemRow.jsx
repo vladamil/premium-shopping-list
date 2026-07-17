@@ -1,6 +1,9 @@
 import styles from './ShoppingView.module.css';
 
 export default function ShoppingItemRow({ item, onToggle }) {
+   // Check if quantity is greater than 1 to conditionally render it
+   const hasMultiple = item.quantity > 1;
+
    return (
       <div
          className={`${styles.row} ${item.isBought ? styles.boughtRow : ''}`}
@@ -24,7 +27,12 @@ export default function ShoppingItemRow({ item, onToggle }) {
          </div>
 
          <div className={styles.itemInfo}>
-            <span className={styles.itemName}>{item.name}</span>
+            <span className={styles.itemName}>
+               {item.name}
+               {hasMultiple && (
+                  <span className={styles.qtyBadge}>({item.quantity})</span>
+               )}
+            </span>
             <span className={styles.itemMeta}>
                {item.quantity} x {item.price.toFixed(2)}
             </span>

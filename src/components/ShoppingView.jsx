@@ -8,6 +8,11 @@ export default function ShoppingView({ onBack, onEdit }) {
    // Find the list we are currently shopping for
    const currentList = lists.find((list) => list.id === activeListId);
 
+   // Create a shallow copy of items and sort them: unbought items (false) come before bought items (true)
+   const sortedItems = [...currentList.items].sort(
+      (a, b) => a.isBought - b.isBought,
+   );
+
    // List Total Cost
    const totalCost = currentList.items.reduce(
       (sum, item) => sum + item.price * item.quantity,
@@ -114,7 +119,7 @@ export default function ShoppingView({ onBack, onEdit }) {
 
          {/* Checklist Grid with bottom margin to protect items from footer overlap */}
          <div className={styles.checklist}>
-            {currentList.items.map((item) => (
+            {sortedItems.map((item) => (
                <ShoppingItemRow
                   key={item.id}
                   item={item}

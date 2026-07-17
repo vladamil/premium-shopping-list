@@ -186,6 +186,13 @@
    transition: color var(--transition-fast);
 }
 
+.qtyBadge {
+   color: var(--accent);
+   font-weight: 500;
+   margin-left: 0.35rem;
+   font-size: 0.95rem;
+}
+
 .itemMeta {
    font-size: 0.8rem;
    color: var(--text-muted-on-dark);
@@ -206,6 +213,10 @@
 
 .boughtRow .itemName {
    text-decoration: line-through;
+   color: var(--text-muted-on-dark);
+}
+
+.boughtRow .qtyBadge {
    color: var(--text-muted-on-dark);
 }
 
