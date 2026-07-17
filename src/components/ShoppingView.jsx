@@ -52,11 +52,9 @@ export default function ShoppingView({ onBack, onEdit }) {
 
       if (!isConfirmed) return;
 
-      // Flag the list as completed in the global array
-      currentList.isCompleted = true;
-
       // Save the changes to LocalStorage via Context
       saveList({
+         isCompleted: true,
          title: currentList.title,
          items: currentList.items,
       });

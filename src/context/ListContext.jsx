@@ -20,10 +20,17 @@ export function ListProvider({ children }) {
    const saveList = (formData, shouldClearActiveId = true) => {
       setLists((prevLists) => {
          if (activeListId) {
-            // SCENARIO A: Update existing list
+            // SCENARIO A: Update existing list dynamically
             return prevLists.map((list) =>
                list.id === activeListId
-                  ? { ...list, title: formData.title, items: formData.items }
+                  ? {
+                       ...list,
+                       ...formData, // Dynamically updates title, items, isCompleted, etc.
+                       // Automatically lock in timestamp if this update is marking it complete!
+                       completedAt: formData.isCompleted
+                          ? new Date().toISOString()
+                          : list.completedAt,
+                    }
                   : list,
             );
          } else {
@@ -34,6 +41,7 @@ export function ListProvider({ children }) {
                items: formData.items,
                createdAt: new Date().toISOString(),
                isCompleted: false,
+               completedAt: null,
             };
             return [newList, ...prevLists];
          }
