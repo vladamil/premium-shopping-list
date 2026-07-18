@@ -1,0 +1,207 @@
+.container {
+   min-height: 100vh;
+   background-color: var(--bg-main);
+   max-width: var(--max-width);
+   margin: 0 auto;
+   padding: 1.5rem;
+}
+
+.header {
+   display: flex;
+   flex-direction: column;
+   gap: 0.5rem;
+   margin-bottom: 2rem;
+}
+
+.backButton {
+   background: none;
+   border: none;
+   font-family: inherit;
+   font-size: 0.95rem;
+   font-weight: 500;
+   color: var(--text-muted);
+   cursor: pointer;
+   align-self: flex-start;
+   padding: 0.25rem 0;
+}
+
+.title {
+   font-size: 1.5rem;
+   font-weight: 700;
+   color: var(--text-main);
+   margin: 0;
+   letter-spacing: -0.02em;
+}
+
+/* Archive List Engine */
+.archiveList {
+   display: flex;
+   flex-direction: column;
+   gap: 1rem;
+}
+
+.card {
+   background-color: var(--bg-surface);
+   border-radius: var(--radius-md);
+   border: 1px solid rgba(255, 255, 255, 0.03);
+   overflow: hidden;
+   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.cardMain {
+   padding: 1rem 1.25rem;
+   cursor: pointer;
+   user-select: none;
+}
+
+.cardHeader {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+}
+
+.dateBadge {
+   font-size: 0.75rem;
+   font-weight: 500;
+   text-transform: uppercase;
+   color: var(--accent);
+   letter-spacing: 0.05em;
+}
+
+.chevron {
+   font-size: 0.75rem;
+   color: var(--text-muted-on-dark);
+}
+
+.listTitle {
+   font-size: 1.2rem;
+   font-weight: 700;
+   color: var(--text-on-dark);
+   margin: 0 0 0.75rem 0;
+}
+
+.cardSummary {
+   display: flex;
+   justify-content: space-between;
+   font-size: 0.9rem;
+   color: var(--text-muted-on-dark);
+}
+
+.totalPrice {
+   font-weight: 700;
+   color: var(--text-on-dark);
+}
+
+/* Accordion Expandable Zone */
+.accordionContent {
+   background-color: rgba(0, 0, 0, 0.15);
+   border-top: 1px solid rgba(255, 255, 255, 0.05);
+   padding: 1.25rem;
+}
+
+.itemsHeader {
+   font-size: 0.8rem;
+   font-weight: 700;
+   text-transform: uppercase;
+   color: var(--text-muted-on-dark);
+   margin-bottom: 0.75rem;
+   letter-spacing: 0.05em;
+}
+
+.itemsList {
+   list-style: none;
+   padding: 0;
+   margin: 0 0 1.5rem 0;
+   display: flex;
+   flex-direction: column;
+   gap: 0.5rem;
+}
+
+.itemRow {
+   display: flex;
+   justify-content: space-between;
+   font-size: 0.95rem;
+   color: var(--text-muted-on-dark);
+}
+
+.itemName {
+   font-weight: 500;
+}
+
+.itemCost {
+   font-family: monospace;
+}
+
+/* Actions Utility Panel */
+.actionsBar {
+   display: flex;
+   gap: 0.75rem;
+}
+
+.deleteBtn {
+   flex: 1;
+   background-color: transparent;
+   color: #ff4d4d;
+   border: 1px solid rgba(255, 77, 77, 0.3);
+   padding: 0.5rem;
+   border-radius: var(--radius-sm);
+   font-family: inherit;
+   font-size: 0.85rem;
+   font-weight: 600;
+   cursor: pointer;
+   transition: background var(--transition-fast);
+}
+
+.deleteBtn:active {
+   background-color: rgba(255, 77, 77, 0.1);
+}
+
+.cloneBtn {
+   flex: 2;
+   background-color: var(--bg-main);
+   color: var(--text-main);
+   border: 1px solid var(--text-muted);
+   padding: 0.5rem;
+   border-radius: var(--radius-sm);
+   font-family: inherit;
+   font-size: 0.85rem;
+   font-weight: 600;
+   cursor: pointer;
+}
+
+.cloneBtn:active {
+   opacity: 0.8;
+}
+
+/* Empty State layout */
+
+.emptyState {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   text-align: center;
+   margin: auto 0;
+   padding: 5rem 1rem;
+}
+
+.emptySvg {
+   width: 64px;
+   height: 64px;
+   color: #ccd6e0;
+   margin-bottom: 1rem;
+}
+
+.emptyState h3 {
+   font-size: 1.15rem;
+   font-weight: 700;
+   color: var(--text-main);
+   margin-bottom: 0.25rem;
+}
+
+.emptyState p {
+   font-size: 0.9rem;
+   color: var(--text-muted);
+   max-width: 240px;
+   line-height: 1.4;
+}

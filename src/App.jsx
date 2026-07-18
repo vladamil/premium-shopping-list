@@ -3,6 +3,7 @@ import { useLists } from './context/ListContext';
 import Dashboard from './components/Dashboard';
 import ListForm from './components/ListForm';
 import ShoppingView from './components/ShoppingView';
+import Archive from './components/Archive';
 
 function App() {
    // Core View State: 'dashboard', 'form', or 'shopping'
@@ -30,25 +31,31 @@ function App() {
       setCurrentView('shopping');
    };
 
+   const navigateToArchive = () => {
+      setActiveListId(null);
+      setView('archive');
+   };
+
    // Conditional Rendering State
    return (
-      <>
-         {currentView === 'dashboard' && (
-            <Dashboard
-               onCreateList={navigateToCreateForm}
-               onSelectList={navigateToShopping}
-            />
-         )}
+      // <>
+      //    {currentView === 'dashboard' && (
+      //       <Dashboard
+      //          onCreateList={navigateToCreateForm}
+      //          onSelectList={navigateToShopping}
+      //       />
+      //    )}
 
-         {currentView === 'form' && <ListForm onBack={navigateToDashboard} />}
+      //    {currentView === 'form' && <ListForm onBack={navigateToDashboard} />}
 
-         {currentView === 'shopping' && (
-            <ShoppingView
-               onBack={navigateToDashboard}
-               onEdit={navigateToEditForm}
-            />
-         )}
-      </>
+      //    {currentView === 'shopping' && (
+      //       <ShoppingView
+      //          onBack={navigateToDashboard}
+      //          onEdit={navigateToEditForm}
+      //       />
+      //    )}
+      // </>
+      <Archive />
    );
 }
 
