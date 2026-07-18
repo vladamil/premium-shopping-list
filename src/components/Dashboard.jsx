@@ -2,7 +2,7 @@ import { useLists } from '../context/ListContext';
 import ListCard from './ListCard';
 import styles from './Dashboard.module.css';
 
-export default function Dashboard({ onCreateList, onSelectList }) {
+export default function Dashboard({ onCreateList, onSelectList, onArchive }) {
    const { lists } = useLists();
 
    // FILTER: Only show active lists
@@ -12,22 +12,30 @@ export default function Dashboard({ onCreateList, onSelectList }) {
    return (
       <div className={styles.container}>
          <header className={styles.header}>
-            <div className={styles.brandBadge}>
-               <svg
-                  className={styles.logoIcon}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-               >
-                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                  <path d="M3 6h18" />
-                  <path d="M16 10a4 4 0 0 1-8 0" />
-               </svg>
-               <span className={styles.brandName}>Shopping List App</span>
+            <div className={styles.headerTop}>
+               <div className={styles.brandBadge}>
+                  <svg
+                     className={styles.logoIcon}
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     strokeWidth="2.5"
+                     strokeLinecap="round"
+                     strokeLinejoin="round"
+                  >
+                     <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                     <path d="M3 6h18" />
+                     <path d="M16 10a4 4 0 0 1-8 0" />
+                  </svg>
+                  <span className={styles.brandName}>Shopping List App</span>
+               </div>
+
+               {/* Archive Button */}
+               <button className={styles.archiveNavButton} onClick={onArchive}>
+                  Archive →
+               </button>
             </div>
-            <p>
+
+            <p className={styles.tagline}>
                Intelligent, low-fatigue grocery planning designed for the aisle.
             </p>
          </header>

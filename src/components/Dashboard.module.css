@@ -15,6 +15,14 @@
    gap: 0.5rem;
 }
 
+.headerTop {
+   width: 100%;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 0.5rem;
+}
+
 .brandBadge {
    display: flex;
    align-items: center;
@@ -22,7 +30,7 @@
    background-color: var(--text-main);
    color: var(--bg-main);
    padding: 0.5rem 0.75rem;
-   border-radius: 20px;
+   border-radius: var(--radius-lg);
 }
 
 .logoIcon {
@@ -32,18 +40,30 @@
 }
 
 .brandName {
-   font-size: 0.75rem;
+   font-size: 0.8rem;
    font-weight: 700;
    text-transform: uppercase;
    letter-spacing: 0.08em;
 }
 
-.header p {
+/* Archive Navigation Button */
+.archiveNavButton {
+   background: none;
+   border: none;
+   font-family: inherit;
+   font-size: 0.95rem;
+   font-weight: 500;
+   color: var(--text-muted);
+   cursor: pointer;
+}
+
+.tagline {
    color: var(--text-muted);
    font-size: 0.9rem;
    font-weight: 400;
-   line-height: 1.4;
+   line-height: 1.2;
    text-align: center;
+   font-style: italic;
 }
 
 /* --- Upgraded 3-Row Layout with Action --- */
