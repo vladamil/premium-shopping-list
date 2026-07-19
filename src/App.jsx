@@ -73,7 +73,12 @@ function App() {
             />
          )}
 
-         {currentView === 'form' && <ListForm onBack={navigateToDashboard} />}
+         {currentView === 'form' && (
+            <ListForm
+               onBack={navigateToDashboard}
+               cloneTemplate={cloneTemplate}
+            />
+         )}
 
          {currentView === 'shopping' && (
             <ShoppingView

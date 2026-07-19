@@ -2,27 +2,27 @@ import { useState, useEffect } from 'react';
 import { useLists } from '../context/ListContext';
 import styles from './ListForm.module.css';
 
-export default function ListForm({ onBack }) {
+export default function ListForm({ onBack, cloneTemplate }) {
    // Pull data directly from Lists context
    const { activeListId, saveList, lists } = useLists();
-
-   const [title, setTitle] = useState('');
+   const currentList = lists.find((list) => list.id === activeListId);
 
    const [newItemName, setNewItemName] = useState('');
    const [newItemPrice, setNewItemPrice] = useState('');
 
-   const [items, setItems] = useState([]);
+   // Initialize Title State
+   const [title, setTitle] = useState(() => {
+      if (activeListId && currentList) return currentList.title; //  Editing
+      if (cloneTemplate) return cloneTemplate.title; //  Cloning template
+      return ''; //  Fresh new list
+   });
 
-   // EFFECT LAYER: If activeListId is present, pre-populate state for editing
-   useEffect(() => {
-      if (activeListId) {
-         const targetList = lists.find((l) => l.id === activeListId);
-         if (targetList) {
-            setTitle(targetList.title);
-            setItems(targetList.items); // Inject existing items array to edit ledger
-         }
-      }
-   }, [activeListId, lists]);
+   // Initialize Items State
+   const [items, setItems] = useState(() => {
+      if (activeListId && currentList) return currentList.items; // Editing
+      if (cloneTemplate) return cloneTemplate.items; // Cloning template
+      return []; // Fresh new list
+   });
 
    // Live dynamic math tracking total cost
    const currentRunningTotal = items
@@ -176,9 +176,20 @@ export default function ListForm({ onBack }) {
                         </div>
 
                         {/* Price Display Field */}
-                        <div className={styles.priceWrapper}>
-                           {(item.price * item.quantity).toFixed(2)}
-                        </div>
+                        <input
+                           type="number"
+                           min="0"
+                           className={styles.inlinePriceInput}
+                           value={item.price.toFixed(2)}
+                           placeholder="0.00"
+                           onChange={(e) =>
+                              updateLedgerItem(
+                                 item.id,
+                                 'price',
+                                 Number(e.target.value),
+                              )
+                           }
+                        />
                      </div>
 
                      {/* Delete Button */}
