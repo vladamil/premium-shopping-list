@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLists } from '../context/ListContext';
+import Button from './ui/Button';
+import NavButton from './ui/NavButton';
 import styles from './ListForm.module.css';
 
 export default function ListForm({ onBack, cloneTemplate }) {
@@ -78,9 +80,7 @@ export default function ListForm({ onBack, cloneTemplate }) {
       <div className={styles.container}>
          {/* Header Container */}
          <header className={styles.header}>
-            <button className={styles.backButton} onClick={onBack}>
-               ← Back
-            </button>
+            <NavButton onClick={onBack}>← Back</NavButton>
             <div className={styles.titleInputWrapper}>
                <input
                   type="text"
@@ -225,13 +225,9 @@ export default function ListForm({ onBack, cloneTemplate }) {
                   {currentRunningTotal}
                </span>
             </div>
-            <button
-               className={styles.saveButton}
-               type="button"
-               onClick={handleSubmitForm}
-            >
+            <Button type="button" onClick={handleSubmitForm}>
                Save Entire List
-            </button>
+            </Button>
          </div>
       </div>
    );

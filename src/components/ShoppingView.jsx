@@ -1,5 +1,7 @@
 import { useLists } from '../context/ListContext';
 import ShoppingItemRow from './ShoppingItemRow';
+import Button from './ui/Button';
+import NavButton from './ui/NavButton';
 import styles from './ShoppingView.module.css';
 
 export default function ShoppingView({ onBack, onEdit }) {
@@ -94,13 +96,7 @@ export default function ShoppingView({ onBack, onEdit }) {
    return (
       <div className={styles.container}>
          <header className={styles.header}>
-            <button
-               type="button"
-               className={styles.backButton}
-               onClick={onBack}
-            >
-               ← Dashboard
-            </button>
+            <NavButton onClick={onBack}>← Dashboard</NavButton>
             <button
                type="button"
                className={styles.editButton}
@@ -138,12 +134,9 @@ export default function ShoppingView({ onBack, onEdit }) {
                </div>
             </div>
 
-            <button
-               className={styles.finishButton}
-               onClick={handleFinishShopping}
-            >
+            <Button onClick={handleFinishShopping}>
                Finish & Archive List
-            </button>
+            </Button>
          </footer>
       </div>
    );

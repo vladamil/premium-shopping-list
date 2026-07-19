@@ -1,0 +1,13 @@
+.btn {
+   background: none;
+   border: none;
+   font-family: inherit;
+   font-size: 0.95rem;
+   font-weight: 600;
+   color: var(--text-muted);
+   cursor: pointer;
+}
+
+.btn:active {
+   transform: scale(0.98);
+}

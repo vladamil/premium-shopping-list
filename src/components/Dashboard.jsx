@@ -1,5 +1,7 @@
 import { useLists } from '../context/ListContext';
 import ListCard from './ListCard';
+import Button from './ui/Button';
+import NavButton from './ui/NavButton';
 import styles from './Dashboard.module.css';
 
 export default function Dashboard({ onCreateList, onSelectList, onArchive }) {
@@ -30,9 +32,7 @@ export default function Dashboard({ onCreateList, onSelectList, onArchive }) {
                </div>
 
                {/* Archive Button */}
-               <button className={styles.archiveNavButton} onClick={onArchive}>
-                  Archive →
-               </button>
+               <NavButton onClick={onArchive}>Archive →</NavButton>
             </div>
 
             <p className={styles.tagline}>
@@ -73,9 +73,7 @@ export default function Dashboard({ onCreateList, onSelectList, onArchive }) {
             </div>
          )}
 
-         <button className={styles.createButton} onClick={onCreateList}>
-            Create New List
-         </button>
+         <Button onClick={onCreateList}>Create New List</Button>
       </div>
    );
 }

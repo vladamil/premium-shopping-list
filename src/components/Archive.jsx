@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useLists } from '../context/ListContext';
+import NavButton from './ui/NavButton';
 import styles from './Archive.module.css';
 
 export default function Archive({ onBack, onCloneClick }) {
@@ -35,13 +36,9 @@ export default function Archive({ onBack, onCloneClick }) {
    return (
       <div className={styles.container}>
          <header className={styles.header}>
-            <button
-               type="button"
-               className={styles.backButton}
-               onClick={onBack}
-            >
+            <NavButton onClick={onBack} className={styles.backButton}>
                ← Dashboard
-            </button>
+            </NavButton>
             <h1 className={styles.title}>Shopping History</h1>
          </header>
 

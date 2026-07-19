@@ -14,23 +14,15 @@
 }
 
 .backButton {
-   background: none;
-   border: none;
-   font-family: inherit;
-   font-size: 0.95rem;
-   font-weight: 500;
-   color: var(--text-muted);
-   cursor: pointer;
    align-self: flex-start;
-   padding: 0.25rem 0;
 }
 
 .title {
-   font-size: 1.5rem;
-   font-weight: 700;
+   font-size: 1.2rem;
+   font-weight: 600;
    color: var(--text-main);
-   margin: 0;
-   letter-spacing: -0.02em;
+   margin: 0.5rem;
+   text-align: center;
 }
 
 /* Archive List Engine */

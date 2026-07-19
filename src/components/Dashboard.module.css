@@ -46,17 +46,6 @@
    letter-spacing: 0.08em;
 }
 
-/* Archive Navigation Button */
-.archiveNavButton {
-   background: none;
-   border: none;
-   font-family: inherit;
-   font-size: 0.95rem;
-   font-weight: 500;
-   color: var(--text-muted);
-   cursor: pointer;
-}
-
 .tagline {
    color: var(--text-muted);
    font-size: 0.9rem;
@@ -104,23 +93,4 @@
    color: var(--text-muted);
    max-width: 240px;
    line-height: 1.4;
-}
-
-.createButton {
-   background-color: var(--accent);
-   color: white;
-   width: 100%;
-   padding: 1rem;
-   border-radius: var(--radius-lg);
-   font-weight: 600;
-   font-size: 1rem;
-   text-align: center;
-   cursor: pointer;
-   margin-top: 1.5rem;
-   box-shadow: 0 4px 12px rgba(10, 132, 255, 0.15);
-   transition: transform var(--transition-fast);
-}
-
-.createButton:active {
-   transform: scale(0.98);
 }
