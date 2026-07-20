@@ -12,6 +12,8 @@ export default function ListForm({ onBack, cloneTemplate }) {
    const [newItemName, setNewItemName] = useState('');
    const [newItemPrice, setNewItemPrice] = useState('');
 
+   const [error, setError] = useState('');
+
    // Initialize Title State
    const [title, setTitle] = useState(() => {
       if (activeListId && currentList) return currentList.title; //  Editing
@@ -31,16 +33,36 @@ export default function ListForm({ onBack, cloneTemplate }) {
       .reduce((sum, item) => sum + item.price * item.quantity, 0)
       .toFixed(2);
 
-   // Appends a new item into the list
+   // APPEND A NEW ITEM TO THE LIST
    const handleAddItem = (e) => {
       if (e) e.preventDefault();
-      if (!newItemName.trim()) return;
+      setError(''); // Clear past errors
+
+      const cleanName = newItemName.trim();
+
+      // ❌ Guard: Empty check
+      if (!cleanName) {
+         setError('Item name cannot be empty.');
+         return;
+      }
+
+      // ❌ Guard: Item character limit (keeps layouts clean)
+      if (cleanName.length > 45 || cleanName.length < 2) {
+         setError('Item name must be between 2 and 45 characters.');
+         return;
+      }
 
       const parsedPrice = parseFloat(newItemPrice) || 0.0;
 
+      // ❌ Guard: Limit individual item price to a realistic maximum
+      if (parsedPrice < 0 || parsedPrice > 100000) {
+         setError('Please enter a realistic price (up to 100.000 per item).');
+         return;
+      }
+
       const committedItem = {
          id: crypto.randomUUID(),
-         name: newItemName.trim(),
+         name: cleanName,
          quantity: 1, // Freshly created items default to 1 count
          price: parsedPrice,
          isBought: false,
@@ -53,8 +75,9 @@ export default function ListForm({ onBack, cloneTemplate }) {
       setNewItemPrice('');
    };
 
-   // Updates a specific value inline (name or qty)
+   // UPDATE A SPECIFIC VALUE INLINE (name, price or qty)
    const updateLedgerItem = (id, field, value) => {
+      setError('');
       setItems(
          items.map((item) => {
             if (item.id === id) {
@@ -65,12 +88,45 @@ export default function ListForm({ onBack, cloneTemplate }) {
       );
    };
 
+   // SUBMIT LIST
    const handleSubmitForm = (e) => {
       e.preventDefault();
-      if (!title.trim()) return;
+      setError('');
+
+      const cleanTitle = title.trim();
+      // ❌ Guard: Prevent completely blank or space-only titles
+      if (!cleanTitle) {
+         setError('Please provide a title for this list.');
+         return;
+      }
+
+      // ❌ Guard: Limit list title length for dashboard scannability
+      if (cleanTitle.length > 30) {
+         setError('List title is too long (maximum 30 characters).');
+         return;
+      }
+
+      // ❌ Guard: Logic check—prevent saving an entirely empty dashboard ledger
+      if (items.length === 0) {
+         setError('Your shopping list needs at least one item before saving!');
+         return;
+      }
+
+      // Check updated items validity before submit
+      for (const item of items) {
+         if (item.name.trim().length > 35 || item.name.trim().length < 2) {
+            setError('Item name must be between 2 and 45 characters');
+            return;
+         }
+
+         if (+item.price < 0 || +item.price > 100000) {
+            setError('Please enter a valid price between 0 and 100.000.');
+            return;
+         }
+      }
 
       // Send payload straight to context database layer
-      saveList({ title: title.trim(), items });
+      saveList({ title: cleanTitle, items });
 
       // Smooth navigation callback to push user back to dashboard
       onBack();
@@ -92,6 +148,8 @@ export default function ListForm({ onBack, cloneTemplate }) {
                />
             </div>
          </header>
+         {/* Display our custom error message if one exists */}
+         {error && <div className={styles.error}>⚠️ {error}</div>}
 
          {/* ITEM CREATION CARD CONTAINER */}
          <div className={styles.creatorCard}>
@@ -131,6 +189,7 @@ export default function ListForm({ onBack, cloneTemplate }) {
                   <div className={styles.ledgerRowTop}>
                      <input
                         type="text"
+                        maxLength="45"
                         className={styles.inlineNameInput}
                         value={item.name}
                         onChange={(e) =>
@@ -179,6 +238,8 @@ export default function ListForm({ onBack, cloneTemplate }) {
                         <input
                            type="number"
                            min="0"
+                           max="100000"
+                           step="0.5"
                            className={styles.inlinePriceInput}
                            value={item.price.toFixed(2)}
                            placeholder="0.00"
