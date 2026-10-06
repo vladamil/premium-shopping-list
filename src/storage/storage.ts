@@ -1,4 +1,5 @@
 import type { AppData } from '../domain/schemas';
+import { migrateV1, V1_STORAGE_KEY } from './migrateV1';
 import { createEmptyAppData, parseAppData } from './parseAppData';
 
 export const STORAGE_KEY = 'cartographer:data';
@@ -19,8 +20,16 @@ export function loadAppData(storage?: KeyValueStorage): LoadResult {
     const store = storage ?? localStorage;
     const text = store.getItem(STORAGE_KEY);
 
-    // First launch: nothing saved yet.
     if (text === null) {
+      // No v2 data yet. Did the user have v1? Then convert it once and save it as v2.
+      const v1Text = store.getItem(V1_STORAGE_KEY);
+      if (v1Text !== null) {
+        const migrated = migrateV1(v1Text);
+        saveAppData(migrated.data, store);
+        return { data: migrated.data, skippedLists: migrated.skippedLists };
+      }
+
+      // First launch: nothing saved at all.
       return { data: createEmptyAppData(), skippedLists: 0 };
     }
 
