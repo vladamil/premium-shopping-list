@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createEmptyAppData } from '../storage/parseAppData';
 import type { AppData, Item, ShoppingList } from '../domain/schemas';
-import { createList } from './actions';
+import { createList, shopAgain } from './actions';
 import { appReducer } from './reducer';
 
 /** A fixed date, so test results never depend on the clock. */
@@ -335,5 +335,150 @@ describe('toggleItem', () => {
     });
 
     expect(result.lists[0]?.items[0]?.isBought).toBe(false);
+  });
+});
+
+// ----- SHOPPING TRIP TESTS -----
+// -------------------------------
+
+describe('finishList', () => {
+  it('marks the list as completed, with the finish time', () => {
+    const list = makeList();
+    const state = makeState([list]);
+
+    const result = appReducer(state, {
+      type: 'finishList',
+      payload: { listId: list.id, now: NOW },
+    });
+
+    expect(result.lists[0]?.status).toBe('completed');
+    expect(result.lists[0]).toHaveProperty('completedAt', NOW);
+  });
+
+  it('keeps unticked items unticked (they show as "skipped" in History)', () => {
+    const milk = makeItem({ name: 'Milk', isBought: true });
+    const eggs = makeItem({ name: 'Eggs', isBought: false });
+    const list = makeList({ items: [milk, eggs] });
+    const state = makeState([list]);
+
+    const result = appReducer(state, {
+      type: 'finishList',
+      payload: { listId: list.id, now: NOW },
+    });
+
+    expect(result.lists[0]?.items[1]?.isBought).toBe(false);
+    expect(result.lists[0]?.status).toBe('completed');
+    expect(result.lists[0]).toHaveProperty('completedAt', NOW);
+  });
+});
+
+describe('restoreList', () => {
+  it('makes the list active again', () => {
+    const list = makeList({ status: 'completed' });
+    const state = makeState([list]);
+
+    const result = appReducer(state, {
+      type: 'restoreList',
+      payload: { listId: list.id, now: NOW },
+    });
+
+    expect(result.lists[0]?.status).toBe('active');
+  });
+
+  it('removes completedAt', () => {
+    const list = makeList({ status: 'completed', completedAt: NOW });
+    const state = makeState([list]);
+
+    const result = appReducer(state, {
+      type: 'restoreList',
+      payload: { listId: list.id, now: NOW },
+    });
+
+    expect(result.lists[0]?.status).toBe('active');
+    expect(result.lists[0]).not.toHaveProperty('completedAt');
+  });
+
+  it('keeps the ticks', () => {
+    const milk = makeItem({ name: 'Milk', isBought: true });
+    const eggs = makeItem({ name: 'Eggs', isBought: false });
+    const list = makeList({ items: [milk, eggs], status: 'completed' });
+    const state = makeState([list]);
+
+    const result = appReducer(state, {
+      type: 'restoreList',
+      payload: { listId: list.id, now: NOW },
+    });
+
+    expect(result.lists[0]?.status).toBe('active');
+    expect(result.lists[0]?.items[0]?.isBought).toBe(true);
+    expect(result.lists[0]?.items[1]?.isBought).toBe(false);
+  });
+});
+
+describe('shopAgain', () => {
+  it('the shopAgain helper copies the list with new ids and nothing ticked', () => {
+    const milk = makeItem({ name: 'Milk', isBought: true });
+    const oldList = makeList({ items: [milk], budget: 500_000 });
+
+    const action = shopAgain(oldList);
+    const result = appReducer(makeState([oldList]), action);
+
+    const newList = result.lists[0];
+    expect(newList?.id).not.toBe(oldList.id);
+    expect(newList?.items[0]?.id).not.toBe(milk.id);
+    expect(newList?.items[0]?.isBought).toBe(false);
+  });
+
+  it('puts the new list on top and keeps the old one', () => {
+    const milk = makeItem({ name: 'Milk', isBought: true });
+    const oldList = makeList({ items: [milk], budget: 500_000 });
+
+    const action = shopAgain(oldList);
+    const result = appReducer(makeState([oldList]), action);
+
+    expect(result.lists).toHaveLength(2);
+    expect(result.lists[0]?.id).not.toBe(oldList.id); // the new copy is on top
+    expect(result.lists[1]).toBe(oldList); // the old one is still there, second
+  });
+
+  it('keeps the title, item names, prices and budget', () => {
+    const milk = makeItem({ name: 'Milk', unitPrice: 22_500 });
+    const oldList = makeList({ items: [milk], budget: 500_000, title: 'Lidl' });
+
+    const action = shopAgain(oldList);
+    const result = appReducer(makeState([oldList]), action);
+
+    const newList = result.lists[0];
+
+    expect(newList?.title).toBe('Lidl');
+    expect(newList?.budget).toBe(500_000);
+    expect(newList?.items[0]?.name).toBe('Milk');
+    expect(newList?.items[0]?.unitPrice).toBe(22_500);
+  });
+});
+
+describe('updateSettings', () => {
+  it('changes the theme', () => {
+    const state = makeState([]);
+
+    const result = appReducer(state, {
+      type: 'updateSettings',
+      payload: { changes: { theme: 'dark' } },
+    });
+
+    expect(result.settings.theme).toBe('dark');
+  });
+
+  it('leaves the other settings unchanged', () => {
+    const state = makeState([]);
+
+    const result = appReducer(state, {
+      type: 'updateSettings',
+      payload: { changes: { theme: 'dark' } },
+    });
+
+    expect(result.settings.theme).toBe('dark');
+    expect(result.settings.currency).toBe('RSD');
+    expect(result.settings.keepScreenAwake).toBe(true);
   });
 });

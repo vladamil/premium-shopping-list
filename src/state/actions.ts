@@ -1,4 +1,4 @@
-import type { Item, Money, ShoppingList } from '../domain/schemas';
+import type { Item, Money, Settings, ShoppingList } from '../domain/schemas';
 
 /** What the user types for a new item. The id and isBought are added for them. */
 export type NewItem = Pick<Item, 'name' | 'quantity' | 'unitPrice'>;
@@ -32,7 +32,11 @@ export type AppAction =
   | {
       type: 'toggleItem';
       payload: { listId: string; itemId: string; now: string };
-    };
+    }
+  | { type: 'finishList'; payload: { listId: string; now: string } }
+  | { type: 'restoreList'; payload: { listId: string; now: string } }
+  | { type: 'shopAgain'; payload: { list: ShoppingList } }
+  | { type: 'updateSettings'; payload: { changes: Partial<Settings> } };
 
 // ---------------------------------------------------------------------------
 // Helpers that build the actions (Action creators). They create ids and read the clock,
@@ -113,4 +117,45 @@ export function toggleItem(listId: string, itemId: string): AppAction {
     type: 'toggleItem',
     payload: { listId, itemId, now: new Date().toISOString() },
   };
+}
+
+export function finishList(listId: string): AppAction {
+  return {
+    type: 'finishList',
+    payload: { listId, now: new Date().toISOString() },
+  };
+}
+
+export function restoreList(listId: string): AppAction {
+  return {
+    type: 'restoreList',
+    payload: { listId, now: new Date().toISOString() },
+  };
+}
+
+/** A NEW list copied from an old one: new ids, nothing ticked, same title, items, prices and budget. */
+export function shopAgain(oldList: ShoppingList): AppAction {
+  const now = new Date().toISOString();
+  return {
+    type: 'shopAgain',
+    payload: {
+      list: {
+        id: crypto.randomUUID(),
+        title: oldList.title,
+        items: oldList.items.map((item) => ({
+          ...item,
+          id: crypto.randomUUID(),
+          isBought: false,
+        })),
+        budget: oldList.budget,
+        status: 'active',
+        createdAt: now,
+        updatedAt: now,
+      },
+    },
+  };
+}
+
+export function updateSettings(changes: Partial<Settings>): AppAction {
+  return { type: 'updateSettings', payload: { changes } };
 }

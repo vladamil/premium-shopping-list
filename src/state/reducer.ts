@@ -108,5 +108,58 @@ export function appReducer(state: AppData, action: AppAction): AppData {
         ),
       };
     }
+
+    // ----- Trip -----
+
+    case 'finishList': {
+      const { listId, now } = action.payload;
+      return {
+        ...state,
+        lists: state.lists.map((list) =>
+          list.id === listId
+            ? {
+                ...list,
+                // Items stay exactly as they are: unticked ones = "skipped".
+                status: 'completed',
+                completedAt: now,
+                updatedAt: now,
+              }
+            : list,
+        ),
+      };
+    }
+
+    case 'restoreList': {
+      const { listId, now } = action.payload;
+      return {
+        ...state,
+        lists: state.lists.map((list) =>
+          list.id === listId
+            ? {
+                // Written out field by field, so completedAt is left out.
+                id: list.id,
+                title: list.title,
+                items: list.items,
+                budget: list.budget,
+                createdAt: list.createdAt,
+                status: 'active',
+                updatedAt: now,
+              }
+            : list,
+        ),
+      };
+    }
+
+    case 'shopAgain':
+      // The action already contains the new copied list. New lists go on top.
+      return { ...state, lists: [action.payload.list, ...state.lists] };
+
+    // ----- Settings -----
+
+    case 'updateSettings':
+      return {
+        ...state,
+        settings: { ...state.settings, ...action.payload.changes },
+      };
   }
 }
