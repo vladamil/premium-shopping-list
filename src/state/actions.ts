@@ -14,7 +14,25 @@ export type AppAction =
         now: string;
       };
     }
-  | { type: 'deleteList'; payload: { listId: string } };
+  | { type: 'deleteList'; payload: { listId: string } }
+  | { type: 'addItem'; payload: { listId: string; item: Item; now: string } }
+  | {
+      type: 'updateItem';
+      payload: {
+        listId: string;
+        itemId: string;
+        changes: Partial<NewItem>;
+        now: string;
+      };
+    }
+  | {
+      type: 'removeItem';
+      payload: { listId: string; itemId: string; now: string };
+    }
+  | {
+      type: 'toggleItem';
+      payload: { listId: string; itemId: string; now: string };
+    };
 
 // ---------------------------------------------------------------------------
 // Helpers that build the actions (Action creators). They create ids and read the clock,
@@ -59,4 +77,40 @@ export function updateList(
 
 export function deleteList(listId: string): AppAction {
   return { type: 'deleteList', payload: { listId } };
+}
+
+export function addItem(listId: string, newItem: NewItem): AppAction {
+  return {
+    type: 'addItem',
+    payload: {
+      listId,
+      item: { ...newItem, id: crypto.randomUUID(), isBought: false },
+      now: new Date().toISOString(),
+    },
+  };
+}
+
+export function updateItem(
+  listId: string,
+  itemId: string,
+  changes: Partial<NewItem>,
+): AppAction {
+  return {
+    type: 'updateItem',
+    payload: { listId, itemId, changes, now: new Date().toISOString() },
+  };
+}
+
+export function removeItem(listId: string, itemId: string): AppAction {
+  return {
+    type: 'removeItem',
+    payload: { listId, itemId, now: new Date().toISOString() },
+  };
+}
+
+export function toggleItem(listId: string, itemId: string): AppAction {
+  return {
+    type: 'toggleItem',
+    payload: { listId, itemId, now: new Date().toISOString() },
+  };
 }

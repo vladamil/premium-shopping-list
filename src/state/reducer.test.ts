@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createEmptyAppData } from '../storage/parseAppData';
-import type { AppData, ShoppingList } from '../domain/schemas';
+import type { AppData, Item, ShoppingList } from '../domain/schemas';
 import { createList } from './actions';
 import { appReducer } from './reducer';
 
@@ -34,6 +34,21 @@ function makeList(overrides: Partial<ShoppingList> = {}): ShoppingList {
 function makeState(lists: ShoppingList[]): AppData {
   return { ...createEmptyAppData(), lists };
 }
+
+/** Builds a fresh, valid item. Pass only what the test cares about. */
+function makeItem(overrides: Partial<Item> = {}): Item {
+  return {
+    id: `item-${nextId++}`,
+    name: 'Bread',
+    quantity: 1,
+    unitPrice: 22_000,
+    isBought: false,
+    ...overrides,
+  };
+}
+
+// -----LISTS TESTS-----
+// ---------------------
 
 describe('createList', () => {
   it('adds the new list on top', () => {
@@ -162,5 +177,163 @@ describe('never changes the old data', () => {
     appReducer(state, { type: 'deleteList', payload: { listId: list.id } });
 
     expect(state).toEqual(before);
+  });
+});
+
+// ----- ITEMS TESTS -----
+// -----------------------
+
+describe('addItem', () => {
+  it('adds the new item on top of the list', () => {
+    const milk = makeItem({ name: 'Milk' });
+    const list = makeList({ items: [milk] });
+    const state = makeState([list]);
+    const eggs = makeItem({ name: 'Eggs' });
+
+    const result = appReducer(state, {
+      type: 'addItem',
+      payload: { listId: list.id, item: eggs, now: NOW },
+    });
+
+    expect(result.lists[0]?.items).toEqual([eggs, milk]);
+  });
+
+  // Your turn:
+  it('sets the list updatedAt to the time of the change', () => {
+    const milk = makeItem({ name: 'Milk' });
+    const eggs = makeItem({ name: 'Eggs' });
+    const list = makeList({ items: [milk, eggs] });
+    const state = makeState([list]);
+    const beer = makeItem({ name: 'Beer' });
+
+    const result = appReducer(state, {
+      type: 'addItem',
+      payload: { listId: list.id, item: beer, now: NOW },
+    });
+
+    expect(result.lists[0]?.items).toEqual([beer, milk, eggs]);
+    expect(result.lists[0]?.updatedAt).toEqual(NOW);
+  });
+});
+
+describe('updateItem', () => {
+  it('changes the item name', () => {
+    const milk = makeItem({ name: 'Milk' });
+    const eggs = makeItem({ name: 'Eggs' });
+    const list = makeList({ items: [milk, eggs] });
+    const state = makeState([list]);
+
+    const result = appReducer(state, {
+      type: 'updateItem',
+      payload: {
+        listId: list.id,
+        itemId: milk.id,
+        changes: { name: 'choco-milk' },
+        now: NOW,
+      },
+    });
+
+    expect(result.lists[0]?.items[0]?.name).toEqual('choco-milk');
+    expect(result.lists[0]?.updatedAt).toEqual(NOW);
+  });
+
+  it('changes quantity and price', () => {
+    const milk = makeItem({ name: 'Milk' });
+    const eggs = makeItem({ name: 'Eggs' });
+    const list = makeList({ items: [milk, eggs] });
+    const state = makeState([list]);
+
+    const result = appReducer(state, {
+      type: 'updateItem',
+      payload: {
+        listId: list.id,
+        itemId: milk.id,
+        changes: { quantity: 10, unitPrice: 14_000 },
+        now: NOW,
+      },
+    });
+
+    expect(result.lists[0]?.items[0]?.quantity).toEqual(10);
+    expect(result.lists[0]?.items[0]?.unitPrice).toEqual(14_000);
+    expect(result.lists[0]?.updatedAt).toEqual(NOW);
+  });
+
+  it('leaves the other item unchanged', () => {
+    const milk = makeItem({ name: 'Milk' });
+    const eggs = makeItem({ name: 'Eggs' });
+    const list = makeList({ items: [milk, eggs] });
+    const state = makeState([list]);
+
+    const result = appReducer(state, {
+      type: 'updateItem',
+      payload: {
+        listId: list.id,
+        itemId: milk.id,
+        changes: { quantity: 10, unitPrice: 14_000 },
+        now: NOW,
+      },
+    });
+
+    expect(result.lists[0]?.items[1]).toEqual(eggs);
+    expect(result.lists[0]?.updatedAt).toEqual(NOW);
+  });
+});
+
+describe('removeItem', () => {
+  it('does nothing when it is the last item (a list can never be empty)', () => {
+    const milk = makeItem({ name: 'Milk' });
+    const list = makeList({ items: [milk] });
+    const state = makeState([list]);
+
+    const result = appReducer(state, {
+      type: 'removeItem',
+      payload: { listId: list.id, itemId: milk.id, now: NOW },
+    });
+
+    expect(result.lists[0]).toEqual(list);
+  });
+
+  it('removes the item when the list has more than one', () => {
+    const milk = makeItem({ name: 'Milk' });
+    const eggs = makeItem({ name: 'Eggs' });
+    const list = makeList({ items: [milk, eggs] });
+    const state = makeState([list]);
+
+    const result = appReducer(state, {
+      type: 'removeItem',
+      payload: { listId: list.id, itemId: milk.id, now: NOW },
+    });
+
+    expect(result.lists[0]?.items).toHaveLength(1);
+    expect(result.lists[0]?.items[0]?.name).toEqual('Eggs');
+    expect(result.lists[0]?.updatedAt).toEqual(NOW);
+  });
+});
+
+describe('toggleItem', () => {
+  it('ticks an unticked item', () => {
+    const milk = makeItem({ name: 'Milk', isBought: false });
+    const list = makeList({ items: [milk] });
+    const state = makeState([list]);
+
+    const result = appReducer(state, {
+      type: 'toggleItem',
+      payload: { listId: list.id, itemId: milk.id, now: NOW },
+    });
+
+    expect(result.lists[0]?.items[0]?.isBought).toBe(true);
+  });
+
+  it('unticks a ticked item', () => {
+    const milk = makeItem({ name: 'Milk', isBought: true });
+    const list = makeList({ items: [milk] });
+    const state = makeState([list]);
+
+    const result = appReducer(state, {
+      type: 'toggleItem',
+      payload: { listId: list.id, itemId: milk.id, now: NOW },
+    });
+
+    expect(result.lists[0]?.items[0]?.isBought).toBe(false);
   });
 });
