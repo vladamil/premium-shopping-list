@@ -1,0 +1,82 @@
+/*
+  Design tokens: every colour, radius and font the app uses, in one place.
+  Components only ever use these variables (e.g. var(--color-surface)),
+  never raw hex values. Dark mode = the same names with different values.
+*/
+
+/* Light theme (the default) */
+:root {
+  color-scheme: light;
+
+  --color-bg: #edf1ea;
+  --color-surface: #ffffff;
+  --color-bar: #ffffff;
+  --color-text: #12261f;
+  --color-text-on-accent: #ffffff;
+  --color-text-muted: #4f6158;
+  --color-border: #dce3da;
+  --color-line: #c3cec5;
+  --color-stop-hollow: #9fb0a6;
+  --color-contour: #c9d3c9;
+  --color-primary: #c44a12;
+  --color-accent: #e2571c;
+  --color-chip: #eef1ed;
+  --color-undo: #ffb48a;
+  --color-scrim: rgba(18, 38, 31, 0.45);
+
+  --color-inverse: #12261f;
+  --color-text-on-inverse: #ffffff;
+
+  --color-warning-bg: #fbe3d6;
+  --color-warning-text: #a63d0e;
+  --color-warning-strong: #8a320b;
+  --color-ok-bg: #ddebdf;
+  --color-ok-text: #1e5a43;
+
+  /* Inside the inverse (dark) trip card. Same in both themes. */
+  --color-inverse-track: #3a5249;
+  --color-inverse-chip-text: #d7e4dc;
+  --color-inverse-route: #ff8a4c;
+
+  /* Fonts. The real fonts are loaded later; until then the fallbacks are used. */
+  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-body: 'Figtree', system-ui, sans-serif;
+
+  /* Corner radii */
+  --radius-card: 20px;
+  --radius-sheet: 28px;
+  --radius-pill: 999px;
+
+  /* Smallest comfortable size for anything you tap */
+  --tap-size: 44px;
+}
+
+/* Dark theme: only the colours change */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-bg: #0e1714;
+  --color-surface: #16221d;
+  --color-bar: #121d19;
+  --color-text: #e8efea;
+  --color-text-on-accent: #0e1714;
+  --color-text-muted: #9db0a6;
+  --color-border: #26362f;
+  --color-line: #2e4038;
+  --color-stop-hollow: #5e766a;
+  --color-contour: #22332b;
+  --color-primary: #ff8a4c;
+  --color-accent: #ff8a4c;
+  --color-chip: #1d2b25;
+  --color-undo: #b9450a;
+  --color-scrim: rgba(0, 0, 0, 0.62);
+
+  --color-inverse: #1d2b25;
+  --color-text-on-inverse: #e8efea;
+
+  --color-warning-bg: #3d2216;
+  --color-warning-text: #ffad80;
+  --color-warning-strong: #ffc2a0;
+  --color-ok-bg: #1e3a2e;
+  --color-ok-text: #9fe0be;
+}
