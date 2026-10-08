@@ -38,7 +38,8 @@
   --color-inverse-chip-text: #d7e4dc;
   --color-inverse-route: #ff8a4c;
 
-  /* Fonts. The real fonts are loaded later; until then the fallbacks are used. */
+  /* Fonts are loaded in index.html (Google Fonts). The fallbacks are used
+     while they download, or if they can't load (e.g. offline). */
   --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
   --font-body: 'Figtree', system-ui, sans-serif;
 
