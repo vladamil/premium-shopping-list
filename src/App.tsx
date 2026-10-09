@@ -6,9 +6,15 @@ import { NewListPage } from './pages/NewListPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { ShoppingPage } from './pages/ShoppingPage';
+import { useAppContext } from './state/AppStateContext';
+import { useApplyTheme } from './theme/useApplyTheme';
 
 // Which page to show for which URL.
 function App() {
+  // Use saved theme settings and apply them in our App
+  const { state } = useAppContext();
+  useApplyTheme(state.settings.theme);
+
   return (
     <Routes>
       {/* Pages with the tab bar at the bottom */}
