@@ -1,0 +1,4 @@
+/* Leave room at the bottom so the fixed tab bar never covers the page */
+.content {
+  padding-bottom: var(--tab-bar-height);
+}
