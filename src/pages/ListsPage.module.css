@@ -1,0 +1,78 @@
+/* overflow: hidden cuts off the part of the contour lines outside the page */
+.page {
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 88px; /* room for the floating "New list" button */
+}
+
+/* Logo + app name. position: relative = drawn on top of the contour lines */
+.brand {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px 0;
+}
+
+.logo {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--color-inverse);
+  color: var(--color-inverse-route);
+}
+
+.brandName {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.heading {
+  position: relative;
+  padding: 22px 20px 18px;
+}
+
+.title {
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.subtitle {
+  margin-top: 6px;
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
+
+/* Floats above the tab bar, bottom right */
+.newListButton {
+  position: fixed;
+  right: 16px;
+  bottom: calc(var(--tab-bar-height) + 16px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 52px;
+  padding: 0 22px 0 18px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-primary);
+  color: var(--color-text-on-accent);
+  box-shadow: var(--shadow-floating);
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
