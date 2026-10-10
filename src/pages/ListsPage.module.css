@@ -53,7 +53,10 @@
 /* Floats above the tab bar, bottom right */
 .newListButton {
   position: fixed;
-  right: 16px;
+  /* 16px from the right edge of the app column:
+     (100% - column width) / 2 = the empty space beside the column on a wide screen.
+     On a phone that number is negative, so max() picks 16px instead. */
+  right: max(16px, calc((100% - var(--app-max-width)) / 2 + 16px));
   bottom: calc(var(--tab-bar-height) + 16px);
   display: flex;
   align-items: center;

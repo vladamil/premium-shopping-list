@@ -1,9 +1,12 @@
-/* Stuck to the bottom of the screen, three equal columns */
+/* Stuck to the bottom of the screen, three equal columns.
+   max-width + margin auto keep it as wide as the app column, centred. */
 .bar {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
+  max-width: var(--app-max-width);
+  margin: 0 auto;
   height: var(--tab-bar-height);
   padding-bottom: 10px;
   display: grid;

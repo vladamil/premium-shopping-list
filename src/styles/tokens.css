@@ -54,6 +54,9 @@
 
   /* Bottom tab bar. Pages with the bar leave this much space at the bottom. */
   --tab-bar-height: 76px;
+
+  /* On wide screens (tablet, desktop) the app sits in a centred column this wide */
+  --app-max-width: 600px;
 }
 
 /* Dark theme: only the colours change */

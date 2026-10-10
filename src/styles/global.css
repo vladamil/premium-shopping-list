@@ -20,6 +20,13 @@ body {
   line-height: 1.5;
 }
 
+/* The whole app (the <div id="root"> in index.html) is one centred column.
+   On a phone the screen is narrower than the column, so nothing changes. */
+#root {
+  max-width: var(--app-max-width);
+  margin: 0 auto;
+}
+
 h1,
 h2,
 h3 {
