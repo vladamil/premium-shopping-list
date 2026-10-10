@@ -1,12 +1,15 @@
 import { Link } from 'react-router';
 import { ContourLines } from '../components/ContourLines';
 import { EmptyLists } from '../components/EmptyLists';
+import { plannedTotal, progress } from '../domain/calculations';
+import { formatMoney } from '../domain/money';
 import { useAppContext } from '../state/AppStateContext';
 import styles from './ListsPage.module.css';
 
 // The home page: your active shopping lists.
 export function ListsPage() {
   const { state } = useAppContext();
+  const currency = state.settings.currency;
 
   // Finished lists belong in History, so this page shows only active ones.
   const activeLists = state.lists.filter((list) => list.status === 'active');
@@ -44,6 +47,47 @@ export function ListsPage() {
 
       {/* Only one of these two is shown, depending on hasLists */}
       {!hasLists && <EmptyLists />}
+
+      {hasLists && (
+        <ul className={styles.cards}>
+          {/* One card per list. key = a unique, stable name tag for React. */}
+          {activeLists.map((list) => {
+            const listProgress = progress(list.items);
+            const planned = formatMoney(plannedTotal(list.items), currency);
+
+            let itemsText = `${listProgress.total} items`;
+            if (listProgress.total === 1) {
+              itemsText = '1 item';
+            }
+
+            return (
+              <li key={list.id}>
+                <Link to={`/lists/${list.id}`} className={styles.card}>
+                  <span className={styles.cardTop}>
+                    <span className={styles.cardTitle}>{list.title}</span>
+                    <svg
+                      className={styles.chevron}
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path d="M9 18l6-6-6-6" />
+                    </svg>
+                  </span>
+                  <span className={styles.cardMeta}>
+                    {itemsText} · {listProgress.bought} in cart
+                  </span>
+                  <span className={styles.planned}>
+                    {planned}{' '}
+                    <span className={styles.plannedLabel}>planned</span>
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      )}
 
       {hasLists && (
         <Link to="/new" className={styles.newListButton}>

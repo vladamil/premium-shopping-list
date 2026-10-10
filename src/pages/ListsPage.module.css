@@ -50,6 +50,70 @@
   color: var(--color-text-muted);
 }
 
+.cards {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0 16px;
+  list-style: none;
+}
+
+/* One list = one big link */
+.card {
+  display: block;
+  padding: 16px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  color: inherit;
+  text-decoration: none;
+}
+
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.cardTitle {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.chevron {
+  flex: none;
+  fill: none;
+  stroke: var(--color-text-muted);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cardMeta {
+  display: block;
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.planned {
+  display: block;
+  margin-top: 14px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.plannedLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
 /* Floats above the tab bar, bottom right */
 .newListButton {
   position: fixed;
