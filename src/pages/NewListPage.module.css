@@ -1,0 +1,120 @@
+.page {
+  padding-bottom: 32px;
+}
+
+/* ✕ on the left, title in the middle, empty space on the right */
+.header {
+  display: flex;
+  align-items: center;
+  padding: 8px 8px 0;
+}
+
+.cancel {
+  width: var(--tap-size);
+  height: var(--tap-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+}
+
+.headerSpacer {
+  width: var(--tap-size);
+}
+
+.title {
+  flex: 1;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* The form fields, one under the other */
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 14px 20px 0;
+}
+
+.label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.optional {
+  font-weight: 500;
+}
+
+.hint {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+/* Big list name field, in the display font */
+.nameInput {
+  width: 100%;
+  height: 54px;
+  padding: 0 16px;
+  background-color: var(--color-surface);
+  border: 1.5px solid var(--color-line);
+  border-radius: 16px;
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.nameInput::placeholder {
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+/* Money field: the currency code and the input share one box */
+.moneyField {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 52px;
+  padding: 0 16px;
+  background-color: var(--color-surface);
+  border: 1.5px solid var(--color-line);
+  border-radius: 16px;
+}
+
+/* The focus ring goes around the whole box instead of only the input inside it */
+.moneyField:focus-within {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.moneyInput:focus-visible {
+  outline: none;
+}
+
+.currency {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.moneyInput {
+  flex: 1;
+  min-width: 0;
+  height: 46px;
+  border: 0;
+  background: none;
+  font-size: 17px;
+  font-weight: 600;
+}
