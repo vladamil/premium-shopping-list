@@ -1,8 +1,8 @@
 import { Link } from 'react-router';
 import { ContourLines } from '../components/ContourLines';
 import { EmptyLists } from '../components/EmptyLists';
-import { plannedTotal, progress } from '../domain/calculations';
-import { formatMoney } from '../domain/money';
+import { ListCard } from '../components/ListCard';
+import { budgetStatus } from '../domain/calculations';
 import { useAppContext } from '../state/AppStateContext';
 import styles from './ListsPage.module.css';
 
@@ -15,9 +15,17 @@ export function ListsPage() {
   const activeLists = state.lists.filter((list) => list.status === 'active');
   const hasLists = activeLists.length > 0;
 
+  const overBudgetLists = activeLists.filter(
+    (list) => budgetStatus(list.items, list.budget) === 'over',
+  );
+
+  // "No active lists yet" · "3 active" · "3 active · 1 over budget"
   let subtitle = 'No active lists yet';
   if (hasLists) {
     subtitle = `${activeLists.length} active`;
+  }
+  if (overBudgetLists.length > 0) {
+    subtitle = `${subtitle} · ${overBudgetLists.length} over budget`;
   }
 
   return (
@@ -51,41 +59,11 @@ export function ListsPage() {
       {hasLists && (
         <ul className={styles.cards}>
           {/* One card per list. key = a unique, stable name tag for React. */}
-          {activeLists.map((list) => {
-            const listProgress = progress(list.items);
-            const planned = formatMoney(plannedTotal(list.items), currency);
-
-            let itemsText = `${listProgress.total} items`;
-            if (listProgress.total === 1) {
-              itemsText = '1 item';
-            }
-
-            return (
-              <li key={list.id}>
-                <Link to={`/lists/${list.id}`} className={styles.card}>
-                  <span className={styles.cardTop}>
-                    <span className={styles.cardTitle}>{list.title}</span>
-                    <svg
-                      className={styles.chevron}
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path d="M9 18l6-6-6-6" />
-                    </svg>
-                  </span>
-                  <span className={styles.cardMeta}>
-                    {itemsText} · {listProgress.bought} in cart
-                  </span>
-                  <span className={styles.planned}>
-                    {planned}{' '}
-                    <span className={styles.plannedLabel}>planned</span>
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
+          {activeLists.map((list) => (
+            <li key={list.id}>
+              <ListCard list={list} currency={currency} />
+            </li>
+          ))}
         </ul>
       )}
 
