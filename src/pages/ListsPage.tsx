@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router';
 import { ContourLines } from '../components/ContourLines';
 import { EmptyLists } from '../components/EmptyLists';
@@ -10,6 +11,11 @@ import styles from './ListsPage.module.css';
 export function ListsPage() {
   const { state } = useAppContext();
   const currency = state.settings.currency;
+
+  // Read the clock once, when the page opens, for "Created today" on the cards.
+  // For comparison of createdAt with now
+  // (The function inside useState runs only the first time; React keeps the result.)
+  const [now] = useState(() => new Date());
 
   // Finished lists belong in History, so this page shows only active ones.
   const activeLists = state.lists.filter((list) => list.status === 'active');
@@ -61,7 +67,7 @@ export function ListsPage() {
           {/* One card per list. key = a unique, stable name tag for React. */}
           {activeLists.map((list) => (
             <li key={list.id}>
-              <ListCard list={list} currency={currency} />
+              <ListCard list={list} currency={currency} now={now} />
             </li>
           ))}
         </ul>

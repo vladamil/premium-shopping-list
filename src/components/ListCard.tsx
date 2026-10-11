@@ -1,5 +1,6 @@
 import { Link } from 'react-router';
 import { budgetStatus, plannedTotal, progress } from '../domain/calculations';
+import { formatListDate } from '../domain/dates';
 import { formatMoney } from '../domain/money';
 import type { Currency, ShoppingList } from '../domain/schemas';
 import { ShopProgress } from './ShopProgress';
@@ -8,13 +9,17 @@ import styles from './ListCard.module.css';
 type ListCardProps = {
   list: ShoppingList;
   currency: Currency;
+  /** The current time, read once by the page (so this component stays "pure"). */
+  now: Date;
 };
 
 // One active list on the Lists page. The whole card is a link to that list.
-export function ListCard({ list, currency }: ListCardProps) {
+export function ListCard({ list, currency, now }: ListCardProps) {
   const listProgress = progress(list.items);
   const planned = plannedTotal(list.items);
   const status = budgetStatus(list.items, list.budget);
+
+  const dateText = formatListDate(list.createdAt, now);
 
   let itemsText = `${listProgress.total} items`;
   if (listProgress.total === 1) {
@@ -51,7 +56,7 @@ export function ListCard({ list, currency }: ListCardProps) {
         </svg>
       </span>
       <span className={styles.meta}>
-        {itemsText} · {listProgress.bought} in cart
+        {dateText} · {itemsText} · {listProgress.bought} in cart
       </span>
 
       <span className={styles.progress}>
