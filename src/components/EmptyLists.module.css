@@ -1,0 +1,108 @@
+/* position: relative so it is drawn on top of the contour lines */
+.empty {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 34px 28px 0;
+}
+
+/* The white card around the drawing */
+.illustration {
+  width: 260px;
+  height: 172px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sheet);
+}
+
+.route {
+  fill: none;
+  stroke: var(--color-line);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 2 9;
+}
+
+.start {
+  fill: var(--color-text);
+}
+
+.stop {
+  fill: var(--color-surface);
+  stroke: var(--color-stop-hollow);
+  stroke-width: 3;
+}
+
+.pin {
+  fill: var(--color-accent);
+}
+
+.pinHole {
+  fill: var(--color-surface);
+}
+
+.title {
+  margin-top: 26px;
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.text {
+  max-width: 290px;
+  margin-top: 8px;
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
+
+.createButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 52px;
+  margin-top: 22px;
+  padding: 0 26px 0 22px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-primary);
+  color: var(--color-text-on-accent);
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+/* Small card with a hint about how items work */
+.tip {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  /* align-items: center; */
+  gap: 10px;
+  margin: 32px 16px 0;
+  padding: 12px 14px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+.tipIcon {
+  flex: none;
+  margin-top: 1px;
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+}

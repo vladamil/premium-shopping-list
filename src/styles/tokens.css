@@ -23,6 +23,7 @@
   --color-chip: #eef1ed;
   --color-undo: #ffb48a;
   --color-scrim: rgba(18, 38, 31, 0.45);
+  --shadow-floating: 0 8px 20px rgba(196, 74, 18, 0.3);
 
   --color-inverse: #12261f;
   --color-text-on-inverse: #ffffff;
@@ -53,6 +54,9 @@
 
   /* Bottom tab bar. Pages with the bar leave this much space at the bottom. */
   --tab-bar-height: 76px;
+
+  /* On wide screens (tablet, desktop) the app sits in a centred column this wide */
+  --app-max-width: 600px;
 }
 
 /* Dark theme: only the colours change */
@@ -74,6 +78,7 @@
   --color-chip: #1d2b25;
   --color-undo: #b9450a;
   --color-scrim: rgba(0, 0, 0, 0.62);
+  --shadow-floating: 0 8px 24px rgba(0, 0, 0, 0.4);
 
   --color-inverse: #1d2b25;
   --color-text-on-inverse: #e8efea;

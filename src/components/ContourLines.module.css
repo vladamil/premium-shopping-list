@@ -1,0 +1,9 @@
+/* Sits in the top-right corner, partly outside the page (the page clips it) */
+.lines {
+  position: absolute;
+  top: -50px;
+  right: -90px;
+  fill: none;
+  stroke: var(--color-contour);
+  stroke-width: 1.2;
+}
