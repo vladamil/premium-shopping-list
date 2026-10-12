@@ -17,6 +17,7 @@ function toMinorUnits(text: string): Money {
 /**
  * Validates what the user typed in a price or budget field.
  * "" → null (no price) · "120,50" → 12050 · "-5", "abc", "12.345" → error
+ * Use it like any schema: moneyInputSchema.safeParse(text)
  */
 export const moneyInputSchema = z
   .string()
@@ -27,10 +28,6 @@ export const moneyInputSchema = z
   )
   .transform((text) => (text === '' ? null : toMinorUnits(text)))
   .pipe(moneySchema.nullable());
-
-export function parseMoney(text: string) {
-  return moneyInputSchema.safeParse(text);
-}
 
 /**
  * Formats minor units for display, always with 2 decimals:
