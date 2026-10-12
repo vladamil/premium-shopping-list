@@ -1,8 +1,13 @@
 import { useState, type SubmitEvent } from 'react';
 import { Link } from 'react-router';
 import { itemTotal } from '../domain/calculations';
-import { formatMoney, parseMoney } from '../domain/money';
-import { LIMITS, type Item } from '../domain/schemas';
+import { formatMoney, moneyInputSchema } from '../domain/money';
+import {
+  firstErrorMessage,
+  itemNameSchema,
+  LIMITS,
+  type Item,
+} from '../domain/schemas';
 import { clamp } from '../lib/clamp';
 import { useAppContext } from '../state/AppStateContext';
 import styles from './NewListPage.module.css';
@@ -23,32 +28,61 @@ export function NewListPage() {
   const [quantity, setQuantity] = useState(1);
   const [priceText, setPriceText] = useState('');
 
+  // Error messages for the add-item row (null = no problem).
+  const [itemNameError, setItemNameError] = useState<string | null>(null);
+  const [priceError, setPriceError] = useState<string | null>(null);
+
   // Runs on Enter in the add-item row, or when [+] is tapped.
   function handleAddItem(event: SubmitEvent<HTMLFormElement>) {
     // A form's default submit reloads the page — that would wipe the draft.
     event.preventDefault();
 
-    // For now, an empty name or a wrong price just does nothing.
-    // (The next commit shows a message instead.)
-    const name = itemName.trim();
-    const price = parseMoney(priceText);
-    if (name === '' || !price.success) {
+    // Check both fields with the same rules the saved data uses.
+    // safeParse → { success: true, data } or { success: false, error }
+    const nameResult = itemNameSchema.safeParse(itemName);
+    const priceResult = moneyInputSchema.safeParse(priceText);
+
+    // Show a message under each field that has a problem (or clear it).
+    if (nameResult.success) {
+      setItemNameError(null);
+    } else {
+      setItemNameError(firstErrorMessage(nameResult.error));
+    }
+    if (priceResult.success) {
+      setPriceError(null);
+    } else {
+      setPriceError(firstErrorMessage(priceResult.error));
+    }
+
+    if (!nameResult.success || !priceResult.success) {
       return;
     }
 
     const newItem: Item = {
       id: crypto.randomUUID(),
-      name,
+      name: nameResult.data, // cleaned by Zod: "  Milk   2% " → "Milk 2%"
       quantity,
-      unitPrice: price.data,
+      unitPrice: priceResult.data,
       isBought: false,
     };
+
     setItems([newItem, ...items]);
 
     // Empty the row, ready for the next item.
     setItemName('');
     setQuantity(1);
     setPriceText('');
+  }
+
+  // Typing in a field with an error = you're fixing it, so hide its message.
+  function handleItemNameChange(text: string) {
+    setItemName(text);
+    setItemNameError(null);
+  }
+
+  function handlePriceChange(text: string) {
+    setPriceText(text);
+    setPriceError(null);
   }
 
   function decreaseQuantity() {
@@ -119,7 +153,9 @@ export function NewListPage() {
                 placeholder="Add an item…"
                 maxLength={LIMITS.itemNameMaxLength}
                 value={itemName}
-                onChange={(event) => setItemName(event.target.value)}
+                onChange={(event) => handleItemNameChange(event.target.value)}
+                aria-invalid={itemNameError !== null}
+                aria-describedby="item-name-error"
               />
               <button
                 type="submit"
@@ -197,10 +233,24 @@ export function NewListPage() {
                   className={styles.priceInput}
                   placeholder="Price (optional)"
                   value={priceText}
-                  onChange={(event) => setPriceText(event.target.value)}
+                  onChange={(event) => handlePriceChange(event.target.value)}
+                  aria-invalid={priceError !== null}
+                  aria-describedby="item-price-error"
                 />
               </div>
             </div>
+
+            {/* The messages. role="alert" = screen readers read them out at once. */}
+            {itemNameError !== null && (
+              <p id="item-name-error" className={styles.error} role="alert">
+                {itemNameError}
+              </p>
+            )}
+            {priceError !== null && (
+              <p id="item-price-error" className={styles.error} role="alert">
+                {priceError}
+              </p>
+            )}
           </form>
 
           <p className={styles.smallHint}>

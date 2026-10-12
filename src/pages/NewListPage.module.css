@@ -258,6 +258,24 @@
   font-weight: 600;
 }
 
+/* A field with a problem gets an orange border.
+   aria-invalid="true" is set by the page when there is an error. */
+.itemInput[aria-invalid='true'] {
+  border-color: var(--color-warning-text);
+}
+
+/* :has() = "the price box that HAS an invalid input inside it" */
+.priceField:has([aria-invalid='true']) {
+  border-color: var(--color-warning-text);
+}
+
+.error {
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-warning-text);
+}
+
 .smallHint {
   margin-top: 6px;
   font-size: 12.5px;
