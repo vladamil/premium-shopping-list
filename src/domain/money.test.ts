@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatMoney, moneyInputSchema } from './money';
+import { budgetInputSchema, formatMoney, moneyInputSchema } from './money';
 
 /**
  * Intl puts an invisible "non-breaking space" (character code 160) between
@@ -87,6 +87,28 @@ describe('moneyInputSchema', () => {
     const result = moneyInputSchema.safeParse('1000000.01');
 
     expect(result.success).toBe(false);
+  });
+});
+
+describe('budgetInputSchema', () => {
+  it('rejects a budget of 0', () => {
+    const result = budgetInputSchema.safeParse('0');
+
+    expect(result.success).toBe(false);
+  });
+
+  it('treats an empty field as "no budget" (null)', () => {
+    const result = budgetInputSchema.safeParse('');
+
+    expect(result.success).toBe(true);
+    expect(result.data).toBe(null);
+  });
+
+  it('accepts "5000" as 500000 (cents!)', () => {
+    const result = budgetInputSchema.safeParse('5000');
+
+    expect(result.success).toBe(true);
+    expect(result.data).toBe(500000);
   });
 });
 

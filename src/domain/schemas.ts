@@ -75,20 +75,27 @@ export const itemSchema = z.object({
   isBought: z.boolean(),
 });
 
+/** A list's name. Exported on its own so forms can check just the name. */
+export const listTitleSchema = z
+  .string()
+  .overwrite(cleanText)
+  .min(1, 'List name is required')
+  .max(
+    LIMITS.titleMaxLength,
+    `List name can be at most ${LIMITS.titleMaxLength} characters`,
+  );
+
+/** null = no budget set. A budget of 0 makes no sense, so it must be positive. */
+export const budgetSchema = moneySchema
+  .positive('Budget must be more than 0')
+  .nullable();
+
 /** Fields shared by active and completed lists. */
 const listFields = {
   id: idSchema,
-  title: z
-    .string()
-    .overwrite(cleanText)
-    .min(1, 'List name is required')
-    .max(
-      LIMITS.titleMaxLength,
-      `List name can be at most ${LIMITS.titleMaxLength} characters`,
-    ),
+  title: listTitleSchema,
   items: z.array(itemSchema).min(1, 'A list needs at least one item'),
-  /** null = no budget set. A budget of 0 makes no sense, so it must be positive. */
-  budget: moneySchema.positive('Budget must be more than 0').nullable(),
+  budget: budgetSchema,
   createdAt: isoDateSchema,
   updatedAt: isoDateSchema,
 };

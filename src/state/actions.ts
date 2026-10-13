@@ -3,9 +3,18 @@ import type { Item, Money, Settings, ShoppingList } from '../domain/schemas';
 /** What the user types for a new item. The id and isBought are added for them. */
 export type NewItem = Pick<Item, 'name' | 'quantity' | 'unitPrice'>;
 
+/**
+ * The "create a list" action, named on its own so createList() can say it returns
+ * exactly this — then the New list page can read the new list's id from it.
+ */
+export type CreateListAction = {
+  type: 'createList';
+  payload: { list: ShoppingList };
+};
+
 /** Every change the app can make: a name (`type`) and its details (`payload`). */
 export type AppAction =
-  | { type: 'createList'; payload: { list: ShoppingList } }
+  | CreateListAction
   | {
       type: 'updateList';
       payload: {
@@ -47,7 +56,7 @@ export function createList(
   title: string,
   newItems: NewItem[],
   budget: Money | null,
-): AppAction {
+): CreateListAction {
   const now = new Date().toISOString();
   return {
     type: 'createList',

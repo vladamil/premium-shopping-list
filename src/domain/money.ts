@@ -1,5 +1,10 @@
 import { z } from 'zod';
-import { moneySchema, type Currency, type Money } from './schemas';
+import {
+  budgetSchema,
+  moneySchema,
+  type Currency,
+  type Money,
+} from './schemas';
 
 /** Digits, optionally followed by "." or "," and 1–2 decimals: 120 · 120.5 · 120,50 */
 const MONEY_TEXT_PATTERN = /^\d+([.,]\d{1,2})?$/;
@@ -28,6 +33,13 @@ export const moneyInputSchema = z
   )
   .transform((text) => (text === '' ? null : toMinorUnits(text)))
   .pipe(moneySchema.nullable());
+
+/**
+ * Validates what the user typed in the budget field: first all the money rules
+ * above, then (.pipe) the budget rule "more than 0".
+ * "" → null (no budget) · "5000" → 500000 · "0" → error
+ */
+export const budgetInputSchema = moneyInputSchema.pipe(budgetSchema);
 
 /**
  * Formats minor units for display, always with 2 decimals:

@@ -1,26 +1,40 @@
 import { useState, type SubmitEvent } from 'react';
-import { Link } from 'react-router';
-import { itemTotal } from '../domain/calculations';
-import { formatMoney, moneyInputSchema } from '../domain/money';
+import { Link, useNavigate } from 'react-router';
+import { itemTotal, plannedTotal } from '../domain/calculations';
+import {
+  budgetInputSchema,
+  formatMoney,
+  moneyInputSchema,
+} from '../domain/money';
 import {
   firstErrorMessage,
   itemNameSchema,
   LIMITS,
+  listTitleSchema,
   type Item,
 } from '../domain/schemas';
 import { clamp } from '../lib/clamp';
+import { createList } from '../state/actions';
 import { useAppContext } from '../state/AppStateContext';
 import styles from './NewListPage.module.css';
 
 // Make a new list: a name, items and an optional budget.
 export function NewListPage() {
-  const { state } = useAppContext();
+  const { state, dispatch } = useAppContext();
   const currency = state.settings.currency;
 
+  // A function that moves to another page from our own code (after saving).
+  const navigate = useNavigate();
+
   // What the user has typed so far. React holds it; each input only shows it.
-  // Nothing is saved until "Create list" (coming in a later commit).
+  // Nothing is saved until "Create list".
   const [title, setTitle] = useState('');
   const [budgetText, setBudgetText] = useState('');
+
+  // Error messages for the whole list, shown after "Create list" (null = no problem).
+  const [titleError, setTitleError] = useState<string | null>(null);
+  const [itemsError, setItemsError] = useState<string | null>(null);
+  const [budgetError, setBudgetError] = useState<string | null>(null);
 
   // The items added so far (newest on top), and the add-item row.
   const [items, setItems] = useState<Item[]>([]);
@@ -32,6 +46,7 @@ export function NewListPage() {
   const [itemNameError, setItemNameError] = useState<string | null>(null);
   const [priceError, setPriceError] = useState<string | null>(null);
 
+  // ADD ITEM FUNCTION -------------------------------------------
   // Runs on Enter in the add-item row, or when [+] is tapped.
   function handleAddItem(event: SubmitEvent<HTMLFormElement>) {
     // A form's default submit reloads the page — that would wipe the draft.
@@ -67,12 +82,14 @@ export function NewListPage() {
     };
 
     setItems([newItem, ...items]);
+    setItemsError(null); // there is at least one item now
 
     // Empty the row, ready for the next item.
     setItemName('');
     setQuantity(1);
     setPriceText('');
   }
+  // -----------------------------------------------------------------------------
 
   // Typing in a field with an error = you're fixing it, so hide its message.
   function handleItemNameChange(text: string) {
@@ -96,6 +113,62 @@ export function NewListPage() {
   function removeItem(itemId: string) {
     setItems(items.filter((item) => item.id !== itemId));
   }
+
+  function handleTitleChange(text: string) {
+    setTitle(text);
+    setTitleError(null);
+  }
+
+  function handleBudgetChange(text: string) {
+    setBudgetText(text);
+    setBudgetError(null);
+  }
+
+  // CREATE LIST FUNCTION ---------------------------------------------------
+  // Runs when "Create list" is tapped.
+  function handleCreateList() {
+    // Check everything, the same way as the add-item row.
+    const titleResult = listTitleSchema.safeParse(title);
+    const budgetResult = budgetInputSchema.safeParse(budgetText);
+    const hasItems = items.length > 0;
+
+    if (titleResult.success) {
+      setTitleError(null);
+    } else {
+      setTitleError(firstErrorMessage(titleResult.error));
+    }
+    if (hasItems) {
+      setItemsError(null);
+    } else {
+      setItemsError('Add at least one item');
+    }
+    if (budgetResult.success) {
+      setBudgetError(null);
+    } else {
+      setBudgetError(firstErrorMessage(budgetResult.error));
+    }
+
+    if (!titleResult.success || !hasItems || !budgetResult.success) {
+      return;
+    }
+
+    // Save it: createList builds the new list (with its id), dispatch puts it
+    // into the app state (and so into localStorage).
+    const action = createList(titleResult.data, items, budgetResult.data); // action creator for 'createList'
+    dispatch(action);
+
+    // Open the new list. replace: true swaps this page out of the browser
+    // history, so Back from the new list goes to Lists, not to an empty form.
+    navigate(`/lists/${action.payload.list.id}`, { replace: true });
+  }
+  // ------------------------------------------------------------------------------------------
+
+  // For the bottom bar: "1 item" / "3 items" and the planned total.
+  let itemCountText = `${items.length} items`;
+  if (items.length === 1) {
+    itemCountText = '1 item';
+  }
+  const planned = formatMoney(plannedTotal(items), currency);
 
   return (
     <main className={styles.page}>
@@ -128,8 +201,15 @@ export function NewListPage() {
             placeholder="e.g. Weekly groceries"
             maxLength={LIMITS.titleMaxLength}
             value={title}
-            onChange={(event) => setTitle(event.target.value)}
+            onChange={(event) => handleTitleChange(event.target.value)}
+            aria-invalid={titleError !== null}
+            aria-describedby="list-name-error"
           />
+          {titleError !== null && (
+            <p id="list-name-error" className={styles.error} role="alert">
+              {titleError}
+            </p>
+          )}
         </div>
 
         <section aria-labelledby="items-heading">
@@ -257,6 +337,12 @@ export function NewListPage() {
             Only the name is required. Press Enter to add.
           </p>
 
+          {itemsError !== null && (
+            <p className={styles.error} role="alert">
+              {itemsError}
+            </p>
+          )}
+
           {items.length > 0 && (
             <ul className={styles.draftList}>
               {items.map((item) => {
@@ -322,15 +408,45 @@ export function NewListPage() {
               type="text"
               inputMode="decimal"
               className={styles.moneyInput}
-              aria-describedby="list-budget-hint"
               value={budgetText}
-              onChange={(event) => setBudgetText(event.target.value)}
+              onChange={(event) => handleBudgetChange(event.target.value)}
+              aria-invalid={budgetError !== null}
+              aria-describedby="list-budget-error list-budget-hint"
             />
           </div>
+          {budgetError !== null && (
+            <p id="list-budget-error" className={styles.error} role="alert">
+              {budgetError}
+            </p>
+          )}
           <p id="list-budget-hint" className={styles.hint}>
             You will see a warning if the planned total gets close.
           </p>
         </div>
+      </div>
+
+      {/* Stuck to the bottom: the running totals and the main button */}
+      <div className={styles.bottomBar}>
+        <div className={styles.summary}>
+          <span className={styles.summaryCount}>{itemCountText}</span>
+          <span className={styles.summaryPlanned}>{planned} planned</span>
+        </div>
+        <button
+          type="button"
+          className={styles.createButton}
+          onClick={handleCreateList}
+        >
+          Create list
+          <svg
+            className={styles.icon}
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
+        </button>
       </div>
     </main>
   );
