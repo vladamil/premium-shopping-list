@@ -1,5 +1,28 @@
 import { describe, expect, it } from 'vitest';
-import { itemSchema, shoppingListSchema } from './schemas';
+import { z } from 'zod';
+import {
+  firstErrorMessage,
+  itemNameSchema,
+  itemSchema,
+  shoppingListSchema,
+} from './schemas';
+
+describe('firstErrorMessage', () => {
+  it("returns the first problem's message", () => {
+    const result = itemNameSchema.safeParse('   ');
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(firstErrorMessage(result.error)).toBe('Item name is required');
+    }
+  });
+
+  it('uses a general message when the error lists no problems', () => {
+    const emptyError = new z.ZodError([]);
+
+    expect(firstErrorMessage(emptyError)).toBe('Please check this field');
+  });
+});
 
 const validItem = {
   id: 'item-1',

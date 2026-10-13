@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatMoney, parseMoney } from './money';
+import { budgetInputSchema, formatMoney, moneyInputSchema } from './money';
 
 /**
  * Intl puts an invisible "non-breaking space" (character code 160) between
@@ -7,86 +7,108 @@ import { formatMoney, parseMoney } from './money';
  */
 const NBSP = String.fromCharCode(160);
 
-describe('parseMoney', () => {
+describe('moneyInputSchema', () => {
   it('accepts a comma as the decimal separator', () => {
-    const result = parseMoney('120,50');
+    const result = moneyInputSchema.safeParse('120,50');
 
     expect(result.success).toBe(true);
     expect(result.data).toBe(12050);
   });
 
   it('treats an empty field as "no price" (null)', () => {
-    const result = parseMoney('');
+    const result = moneyInputSchema.safeParse('');
 
     expect(result.success).toBe(true);
     expect(result.data).toBe(null);
   });
 
   it('converts a whole number: "120" → 12000', () => {
-    const result = parseMoney('120');
+    const result = moneyInputSchema.safeParse('120');
 
     expect(result.success).toBe(true);
     expect(result.data).toBe(12000);
   });
 
   it('accepts one decimal: "120.5" → 12050', () => {
-    const result = parseMoney('120.5');
+    const result = moneyInputSchema.safeParse('120.5');
 
     expect(result.success).toBe(true);
     expect(result.data).toBe(12050);
   });
 
   it('avoids the float trap: "19.99" → 1999', () => {
-    const result = parseMoney('19.99');
+    const result = moneyInputSchema.safeParse('19.99');
 
     expect(result.success).toBe(true);
     expect(result.data).toBe(1999);
   });
 
   it('ignores spaces around the number: "  45  " → 4500', () => {
-    const result = parseMoney(' 45 ');
+    const result = moneyInputSchema.safeParse(' 45 ');
 
     expect(result.success).toBe(true);
     expect(result.data).toBe(4500);
   });
 
   it('rejects more than 2 decimals: "1,290" and "12.345"', () => {
-    const withComma = parseMoney('1,290');
-    const withDot = parseMoney('12.345');
+    const withComma = moneyInputSchema.safeParse('1,290');
+    const withDot = moneyInputSchema.safeParse('12.345');
 
     expect(withComma.success).toBe(false);
     expect(withDot.success).toBe(false);
   });
 
   it('rejects a negative number: "-5"', () => {
-    const result = parseMoney('-5');
+    const result = moneyInputSchema.safeParse('-5');
 
     expect(result.success).toBe(false);
   });
 
   it('rejects letters: "abc"', () => {
-    const result = parseMoney('abc');
+    const result = moneyInputSchema.safeParse('abc');
 
     expect(result.success).toBe(false);
   });
 
   it('rejects two separators: "1.2.3"', () => {
-    const result = parseMoney('1.2.3');
+    const result = moneyInputSchema.safeParse('1.2.3');
 
     expect(result.success).toBe(false);
   });
 
   it('accepts exactly the maximum: "1000000" → 100000000', () => {
-    const result = parseMoney('1000000');
+    const result = moneyInputSchema.safeParse('1000000');
 
     expect(result.success).toBe(true);
     expect(result.data).toBe(100000000);
   });
 
   it('rejects more than the maximum: "1000000.01"', () => {
-    const result = parseMoney('1000000.01');
+    const result = moneyInputSchema.safeParse('1000000.01');
 
     expect(result.success).toBe(false);
+  });
+});
+
+describe('budgetInputSchema', () => {
+  it('rejects a budget of 0', () => {
+    const result = budgetInputSchema.safeParse('0');
+
+    expect(result.success).toBe(false);
+  });
+
+  it('treats an empty field as "no budget" (null)', () => {
+    const result = budgetInputSchema.safeParse('');
+
+    expect(result.success).toBe(true);
+    expect(result.data).toBe(null);
+  });
+
+  it('accepts "5000" as 500000 (cents!)', () => {
+    const result = budgetInputSchema.safeParse('5000');
+
+    expect(result.success).toBe(true);
+    expect(result.data).toBe(500000);
   });
 });
 

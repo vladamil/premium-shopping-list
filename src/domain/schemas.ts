@@ -39,20 +39,32 @@ const cleanText = (text: string) => text.trim().replace(/\s+/g, ' ');
 const idSchema = z.string().min(1);
 const isoDateSchema = z.iso.datetime();
 
+/** An item's name. Exported on its own so forms can check just the name. */
+export const itemNameSchema = z
+  .string()
+  .overwrite(cleanText)
+  .min(1, 'Item name is required')
+  .max(
+    LIMITS.itemNameMaxLength,
+    `Item name can be at most ${LIMITS.itemNameMaxLength} characters`,
+  );
+
+/** The message of the first problem Zod found, to show under a form field. */
+export function firstErrorMessage(error: z.ZodError): string {
+  const firstIssue = error.issues[0];
+  if (firstIssue === undefined) {
+    return 'Please check this field';
+  }
+  return firstIssue.message;
+}
+
 // ---------------------------------------------------------------------------
 // Entities
 // ---------------------------------------------------------------------------
 
 export const itemSchema = z.object({
   id: idSchema,
-  name: z
-    .string()
-    .overwrite(cleanText)
-    .min(1, 'Item name is required')
-    .max(
-      LIMITS.itemNameMaxLength,
-      `Item name can be at most ${LIMITS.itemNameMaxLength} characters`,
-    ),
+  name: itemNameSchema,
   quantity: z
     .number()
     .int('Quantity must be a whole number')
@@ -63,20 +75,27 @@ export const itemSchema = z.object({
   isBought: z.boolean(),
 });
 
+/** A list's name. Exported on its own so forms can check just the name. */
+export const listTitleSchema = z
+  .string()
+  .overwrite(cleanText)
+  .min(1, 'List name is required')
+  .max(
+    LIMITS.titleMaxLength,
+    `List name can be at most ${LIMITS.titleMaxLength} characters`,
+  );
+
+/** null = no budget set. A budget of 0 makes no sense, so it must be positive. */
+export const budgetSchema = moneySchema
+  .positive('Budget must be more than 0')
+  .nullable();
+
 /** Fields shared by active and completed lists. */
 const listFields = {
   id: idSchema,
-  title: z
-    .string()
-    .overwrite(cleanText)
-    .min(1, 'List name is required')
-    .max(
-      LIMITS.titleMaxLength,
-      `List name can be at most ${LIMITS.titleMaxLength} characters`,
-    ),
+  title: listTitleSchema,
   items: z.array(itemSchema).min(1, 'A list needs at least one item'),
-  /** null = no budget set. A budget of 0 makes no sense, so it must be positive. */
-  budget: moneySchema.positive('Budget must be more than 0').nullable(),
+  budget: budgetSchema,
   createdAt: isoDateSchema,
   updatedAt: isoDateSchema,
 };
