@@ -1,0 +1,80 @@
+.page {
+  padding-bottom: 32px;
+}
+
+/* ← on the left (Finish and ⋯ come later, on the right) */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 8px 0;
+}
+
+.back {
+  width: var(--tap-size);
+  height: var(--tap-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+}
+
+.icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.heading {
+  padding: 6px 20px 14px;
+}
+
+.title {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  margin-top: 4px;
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+/* ---------- List not found ---------- */
+
+.notFound {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 64px 28px;
+  text-align: center;
+}
+
+.notFoundTitle {
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.notFoundText {
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
+
+.notFoundLink {
+  display: inline-flex;
+  align-items: center;
+  height: 52px;
+  margin-top: 14px;
+  padding: 0 24px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-primary);
+  color: var(--color-text-on-accent);
+  font-weight: 700;
+  text-decoration: none;
+}
