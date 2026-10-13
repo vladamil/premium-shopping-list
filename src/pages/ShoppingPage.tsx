@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router';
+import { TripSummary } from '../components/TripSummary';
 import { formatListDate } from '../domain/dates';
 import { useAppContext } from '../state/AppStateContext';
 import styles from './ShoppingPage.module.css';
@@ -7,6 +8,7 @@ import styles from './ShoppingPage.module.css';
 // One list while you shop: /lists/:id
 export function ShoppingPage() {
   const { state } = useAppContext();
+  const currency = state.settings.currency;
 
   // The ":id" part of the URL /lists/:id
   const { id } = useParams();
@@ -63,6 +65,12 @@ export function ShoppingPage() {
           {formatListDate(list.createdAt, now)} · {itemsText}
         </p>
       </div>
+
+      <TripSummary
+        items={list.items}
+        budget={list.budget}
+        currency={currency}
+      />
     </main>
   );
 }
