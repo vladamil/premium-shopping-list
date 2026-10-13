@@ -1,13 +1,17 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { TripSummary } from '../components/TripSummary';
+import { itemTotal, unpricedCount } from '../domain/calculations';
 import { formatListDate } from '../domain/dates';
+import { formatMoney } from '../domain/money';
+import type { Item } from '../domain/schemas';
+import { toggleItem } from '../state/actions';
 import { useAppContext } from '../state/AppStateContext';
 import styles from './ShoppingPage.module.css';
 
 // One list while you shop: /lists/:id
 export function ShoppingPage() {
-  const { state } = useAppContext();
+  const { state, dispatch } = useAppContext();
   const currency = state.settings.currency;
 
   // The ":id" part of the URL /lists/:id
@@ -22,6 +26,7 @@ export function ShoppingPage() {
   // or undefined if there is none (deleted list, old link, typo in the URL).
   const list = state.lists.find((oneList) => oneList.id === id);
 
+  // RENDER NOT FOUND LIST ------------------------------------
   if (list === undefined) {
     return (
       <main className={styles.notFound}>
@@ -35,6 +40,7 @@ export function ShoppingPage() {
       </main>
     );
   }
+  // --------------------------------------------------------------
 
   // From here on, TypeScript knows `list` is a real list (not undefined).
 
@@ -42,6 +48,80 @@ export function ShoppingPage() {
   if (list.items.length === 1) {
     itemsText = '1 item';
   }
+
+  // What to show first: items still to buy, then the ones already in the cart.
+  // These are two NEW arrays — the stored order of the list never changes.
+  const toBuy = list.items.filter((item) => !item.isBought);
+  const inCart = list.items.filter((item) => item.isBought);
+  const withoutPrice = unpricedCount(toBuy);
+
+  // Tapping an item ticks it (or unticks it): saved straight away.
+  const listId = list.id;
+  function handleToggle(itemId: string) {
+    dispatch(toggleItem(listId, itemId));
+  }
+
+  // RENDER SINGLE ITEM JSX ----------------------------------------------------
+  // One item row. A plain function that returns JSX, used for both groups below.
+  function renderItem(item: Item) {
+    const total = itemTotal(item);
+
+    // "RSD 220.00" · "2 × RSD 159.00" · "No price yet" · "2 × no price yet"
+    let detail = '';
+    if (item.unitPrice === null) {
+      detail = 'No price yet';
+      if (item.quantity > 1) {
+        detail = `${item.quantity} × no price yet`;
+      }
+    } else {
+      const price = formatMoney(item.unitPrice, currency);
+      detail = price;
+      if (item.quantity > 1) {
+        detail = `${item.quantity} × ${price}`;
+      }
+    }
+
+    return (
+      <li key={item.id}>
+        {/* The whole row is one button: tap anywhere to tick.
+            aria-pressed tells screen readers if it's ticked. */}
+        <button
+          type="button"
+          className={styles.item}
+          aria-pressed={item.isBought}
+          onClick={() => handleToggle(item.id)}
+        >
+          <span className={styles.stop}>
+            {item.isBought ? (
+              <span className={styles.stopDone}>
+                <svg
+                  className={styles.check}
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path d="M20 6L9 17l-5-5" />
+                </svg>
+              </span>
+            ) : (
+              <span className={styles.stopEmpty} />
+            )}
+          </span>
+          <span className={styles.itemText}>
+            <span className={styles.itemName}>{item.name}</span>
+            <span className={styles.itemDetail}>{detail}</span>
+          </span>
+          {total !== null && (
+            <span className={styles.itemTotal}>
+              {formatMoney(total, currency)}
+            </span>
+          )}
+        </button>
+      </li>
+    );
+  }
+  // --------------------------------------------------------------------------
 
   return (
     <main className={styles.page}>
@@ -71,6 +151,21 @@ export function ShoppingPage() {
         budget={list.budget}
         currency={currency}
       />
+
+      <div className={styles.itemsHeader}>
+        <span>Next stops · {toBuy.length}</span>
+        {withoutPrice > 0 && <span>+{withoutPrice} without price</span>}
+      </div>
+
+      {toBuy.length === 0 && (
+        <p className={styles.allDone}>Everything is in your cart.</p>
+      )}
+
+      {/* The grey line down the left joins the stops, like a route */}
+      <ul className={styles.items}>
+        {toBuy.map((item) => renderItem(item))}
+        {inCart.map((item) => renderItem(item))}
+      </ul>
     </main>
   );
 }

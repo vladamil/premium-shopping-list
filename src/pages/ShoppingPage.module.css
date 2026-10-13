@@ -78,3 +78,130 @@
   font-weight: 700;
   text-decoration: none;
 }
+
+/* ---------- Items ---------- */
+
+/* "Next stops · 7" on the left, "+1 without price" on the right */
+.itemsHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px 4px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.allDone {
+  padding: 8px 20px;
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
+
+.items {
+  position: relative;
+  margin: 0;
+  padding: 0 16px 0 8px;
+  list-style: none;
+}
+
+/* The grey "route" line behind the stops (::before = an extra box made by CSS) */
+.items::before {
+  content: '';
+  position: absolute;
+  left: 29px;
+  top: 10px;
+  bottom: 30px;
+  width: 2px;
+  background-color: var(--color-line);
+}
+
+/* One item = one big button */
+.item {
+  position: relative;
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+}
+
+/* The stop on the route: a 44px tap area with the circle in the middle */
+.stop {
+  flex: none;
+  width: var(--tap-size);
+  height: var(--tap-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Still to buy: an empty ring (filled with the page colour, so it hides the line) */
+.stopEmpty {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2.5px solid var(--color-text);
+  background-color: var(--color-bg);
+}
+
+/* In the cart: a filled orange circle with a ✓ */
+.stopDone {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+  color: var(--color-text-on-accent);
+}
+
+.check {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.itemText {
+  flex: 1;
+  min-width: 0;
+}
+
+.itemName {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.itemDetail {
+  display: block;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.itemTotal {
+  flex: none;
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Ticked items look "done": greyed and crossed out */
+.item[aria-pressed='true'] .itemName {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+
+.item[aria-pressed='true'] .itemTotal {
+  color: var(--color-text-muted);
+}
