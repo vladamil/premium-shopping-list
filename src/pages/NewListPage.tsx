@@ -1,20 +1,15 @@
-import { useState, type SubmitEvent } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
+import { AddItemForm } from '../components/AddItemForm';
 import { itemTotal, plannedTotal } from '../domain/calculations';
-import {
-  budgetInputSchema,
-  formatMoney,
-  moneyInputSchema,
-} from '../domain/money';
+import { budgetInputSchema, formatMoney } from '../domain/money';
 import {
   firstErrorMessage,
-  itemNameSchema,
   LIMITS,
   listTitleSchema,
   type Item,
 } from '../domain/schemas';
-import { clamp } from '../lib/clamp';
-import { createList } from '../state/actions';
+import { createList, type NewItem } from '../state/actions';
 import { useAppContext } from '../state/AppStateContext';
 import styles from './NewListPage.module.css';
 
@@ -36,84 +31,28 @@ export function NewListPage() {
   const [itemsError, setItemsError] = useState<string | null>(null);
   const [budgetError, setBudgetError] = useState<string | null>(null);
 
-  // The items added so far (newest on top), and the add-item row.
+  // The items added so far (newest on top). Only a draft until "Create list".
   const [items, setItems] = useState<Item[]>([]);
-  const [itemName, setItemName] = useState('');
-  const [quantity, setQuantity] = useState(1);
-  const [priceText, setPriceText] = useState('');
-
-  // Error messages for the add-item row (null = no problem).
-  const [itemNameError, setItemNameError] = useState<string | null>(null);
-  const [priceError, setPriceError] = useState<string | null>(null);
 
   // ADD ITEM FUNCTION -------------------------------------------
-  // Runs on Enter in the add-item row, or when [+] is tapped.
-  function handleAddItem(event: SubmitEvent<HTMLFormElement>) {
-    // A form's default submit reloads the page — that would wipe the draft.
-    event.preventDefault();
-
-    // Check both fields with the same rules the saved data uses.
-    // safeParse → { success: true, data } or { success: false, error }
-    const nameResult = itemNameSchema.safeParse(itemName);
-    const priceResult = moneyInputSchema.safeParse(priceText);
-
-    // Show a message under each field that has a problem (or clear it).
-    if (nameResult.success) {
-      setItemNameError(null);
-    } else {
-      setItemNameError(firstErrorMessage(nameResult.error));
-    }
-    if (priceResult.success) {
-      setPriceError(null);
-    } else {
-      setPriceError(firstErrorMessage(priceResult.error));
-    }
-
-    if (!nameResult.success || !priceResult.success) {
-      return;
-    }
-
-    const newItem: Item = {
-      id: crypto.randomUUID(),
-      name: nameResult.data, // cleaned by Zod: "  Milk   2% " → "Milk 2%"
-      quantity,
-      unitPrice: priceResult.data,
+  // AddItemForm calls this with each new item (it has already checked it).
+  // Here, "add" means: put it in the draft — nothing is saved yet.
+  function handleAddItem(newItem: NewItem) {
+    const draftItem: Item = {
+      ...newItem,
+      id: crypto.randomUUID(), // needed for the key and the ✕ button
       isBought: false,
     };
-
-    setItems([newItem, ...items]);
+    setItems([draftItem, ...items]);
     setItemsError(null); // there is at least one item now
-
-    // Empty the row, ready for the next item.
-    setItemName('');
-    setQuantity(1);
-    setPriceText('');
   }
   // -----------------------------------------------------------------------------
-
-  // Typing in a field with an error = you're fixing it, so hide its message.
-  function handleItemNameChange(text: string) {
-    setItemName(text);
-    setItemNameError(null);
-  }
-
-  function handlePriceChange(text: string) {
-    setPriceText(text);
-    setPriceError(null);
-  }
-
-  function decreaseQuantity() {
-    setQuantity(clamp(quantity - 1, LIMITS.quantityMin, LIMITS.quantityMax));
-  }
-
-  function increaseQuantity() {
-    setQuantity(clamp(quantity + 1, LIMITS.quantityMin, LIMITS.quantityMax));
-  }
 
   function removeItem(itemId: string) {
     setItems(items.filter((item) => item.id !== itemId));
   }
 
+  // Typing in a field with an error = you're fixing it, so hide its message.
   function handleTitleChange(text: string) {
     setTitle(text);
     setTitleError(null);
@@ -220,118 +159,9 @@ export function NewListPage() {
             <span className={styles.itemsRule}>At least one item</span>
           </div>
 
-          {/* Its own form, so Enter in any of these fields adds the item */}
-          <form onSubmit={handleAddItem} aria-label="Add item">
-            <div className={styles.addRow}>
-              <label htmlFor="item-name" className="visually-hidden">
-                Item name
-              </label>
-              <input
-                id="item-name"
-                type="text"
-                className={styles.itemInput}
-                placeholder="Add an item…"
-                maxLength={LIMITS.itemNameMaxLength}
-                value={itemName}
-                onChange={(event) => handleItemNameChange(event.target.value)}
-                aria-invalid={itemNameError !== null}
-                aria-describedby="item-name-error"
-              />
-              <button
-                type="submit"
-                className={styles.addButton}
-                aria-label="Add item"
-              >
-                <svg
-                  className={styles.icon}
-                  width="22"
-                  height="22"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path d="M12 5v14M5 12h14" />
-                </svg>
-              </button>
-            </div>
-
-            <div className={styles.detailsRow}>
-              <div
-                role="group"
-                aria-label="Quantity"
-                className={styles.stepper}
-              >
-                {/* type="button": these must NOT submit the form */}
-                <button
-                  type="button"
-                  className={styles.stepButton}
-                  aria-label="Decrease quantity"
-                  disabled={quantity <= LIMITS.quantityMin}
-                  onClick={decreaseQuantity}
-                >
-                  <svg
-                    className={styles.icon}
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path d="M5 12h14" />
-                  </svg>
-                </button>
-                {/* aria-live: screen readers announce the new number */}
-                <span className={styles.stepValue} aria-live="polite">
-                  {quantity}
-                </span>
-                <button
-                  type="button"
-                  className={styles.stepButton}
-                  aria-label="Increase quantity"
-                  disabled={quantity >= LIMITS.quantityMax}
-                  onClick={increaseQuantity}
-                >
-                  <svg
-                    className={styles.icon}
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path d="M12 5v14M5 12h14" />
-                  </svg>
-                </button>
-              </div>
-
-              <div className={styles.priceField}>
-                <span className={styles.priceCurrency}>{currency}</span>
-                <label htmlFor="item-price" className="visually-hidden">
-                  Price (optional)
-                </label>
-                <input
-                  id="item-price"
-                  type="text"
-                  inputMode="decimal"
-                  className={styles.priceInput}
-                  placeholder="Price (optional)"
-                  value={priceText}
-                  onChange={(event) => handlePriceChange(event.target.value)}
-                  aria-invalid={priceError !== null}
-                  aria-describedby="item-price-error"
-                />
-              </div>
-            </div>
-
-            {/* The messages. role="alert" = screen readers read them out at once. */}
-            {itemNameError !== null && (
-              <p id="item-name-error" className={styles.error} role="alert">
-                {itemNameError}
-              </p>
-            )}
-            {priceError !== null && (
-              <p id="item-price-error" className={styles.error} role="alert">
-                {priceError}
-              </p>
-            )}
-          </form>
+          {/* The shared add-item row. We give it a function (onAdd);
+              it calls that function with every new item. */}
+          <AddItemForm currency={currency} onAdd={handleAddItem} />
 
           <p className={styles.smallHint}>
             Only the name is required. Press Enter to add.

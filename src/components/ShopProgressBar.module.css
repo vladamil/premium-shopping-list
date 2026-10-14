@@ -42,3 +42,23 @@
   border-color: var(--color-accent);
   background-color: var(--color-accent);
 }
+
+/* ---------- On the dark trip summary card ---------- */
+
+.progress[data-on-dark='true'] .track {
+  background-color: var(--color-inverse-track);
+}
+
+.progress[data-on-dark='true'] .fill {
+  background-color: var(--color-inverse-route);
+}
+
+.progress[data-on-dark='true'] .dot {
+  border-color: var(--color-inverse-stop);
+  background-color: var(--color-inverse);
+}
+
+.progress[data-on-dark='true'] .dotDone {
+  border-color: var(--color-inverse-route);
+  background-color: var(--color-inverse-route);
+}

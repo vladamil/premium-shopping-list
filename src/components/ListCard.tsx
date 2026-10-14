@@ -3,7 +3,7 @@ import { budgetStatus, plannedTotal, progress } from '../domain/calculations';
 import { formatListDate } from '../domain/dates';
 import { formatMoney } from '../domain/money';
 import type { Currency, ShoppingList } from '../domain/schemas';
-import { ShopProgress } from './ShopProgress';
+import { ShopProgressBar } from './ShopProgressBar';
 import styles from './ListCard.module.css';
 
 type ListCardProps = {
@@ -60,7 +60,10 @@ export function ListCard({ list, currency, now }: ListCardProps) {
       </span>
 
       <span className={styles.progress}>
-        <ShopProgress bought={listProgress.bought} total={listProgress.total} />
+        <ShopProgressBar
+          bought={listProgress.bought}
+          total={listProgress.total}
+        />
       </span>
 
       <span className={styles.bottom}>

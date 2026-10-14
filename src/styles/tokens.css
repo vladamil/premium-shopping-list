@@ -27,6 +27,8 @@
 
   --color-inverse: #12261f;
   --color-text-on-inverse: #ffffff;
+  --color-inverse-muted: #b9c8c0;
+  --color-inverse-border: #12261f; /* = the card itself, so no visible border in light */
 
   --color-warning-bg: #fbe3d6;
   --color-warning-text: #a63d0e;
@@ -38,6 +40,7 @@
   --color-inverse-track: #3a5249;
   --color-inverse-chip-text: #d7e4dc;
   --color-inverse-route: #ff8a4c;
+  --color-inverse-stop: #6f8a7e;
 
   /* Fonts are loaded in index.html (Google Fonts). The fallbacks are used
      while they download, or if they can't load (e.g. offline). */
@@ -82,6 +85,8 @@
 
   --color-inverse: #1d2b25;
   --color-text-on-inverse: #e8efea;
+  --color-inverse-muted: #9db0a6;
+  --color-inverse-border: #2e4038;
 
   --color-warning-bg: #3d2216;
   --color-warning-text: #ffad80;
