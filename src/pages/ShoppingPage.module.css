@@ -1,5 +1,5 @@
 .page {
-  padding-bottom: 32px;
+  padding-bottom: 170px; /* room for the fixed add-item bar */
 }
 
 /* ← on the left (Finish and ⋯ come later, on the right) */
@@ -254,4 +254,19 @@
 /* Open: the arrow points up */
 .cartToggle[aria-expanded='true'] .chevron {
   transform: rotate(180deg);
+}
+
+/* ---------- Add-item bar ---------- */
+
+/* Fixed to the bottom, and as wide as the app column (see global.css #root) */
+.addBar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-width: var(--app-max-width);
+  margin: 0 auto;
+  padding: 10px 16px 16px;
+  background-color: var(--color-bar);
+  border-top: 1px solid var(--color-border);
 }

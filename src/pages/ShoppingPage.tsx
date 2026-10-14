@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router';
+import { AddItemForm } from '../components/AddItemForm';
 import { TripSummary } from '../components/TripSummary';
 import { inCartTotal, itemTotal, unpricedCount } from '../domain/calculations';
 import { formatListDate } from '../domain/dates';
 import { formatMoney } from '../domain/money';
 import type { Item } from '../domain/schemas';
-import { toggleItem } from '../state/actions';
+import { addItem, toggleItem, type NewItem } from '../state/actions';
 import { useAppContext } from '../state/AppStateContext';
 import styles from './ShoppingPage.module.css';
 
@@ -63,6 +64,12 @@ export function ShoppingPage() {
   const listId = list.id;
   function handleToggle(itemId: string) {
     dispatch(toggleItem(listId, itemId));
+  }
+
+  // AddItemForm calls this with each new item (it has already checked it).
+  // Here, "add" means: save it to the list straight away (it goes on top).
+  function handleAddItem(newItem: NewItem) {
+    dispatch(addItem(listId, newItem));
   }
 
   // RENDER SINGLE ITEM JSX ----------------------------------------------------
@@ -217,6 +224,11 @@ export function ShoppingPage() {
             )}
           </>
         )}
+      </div>
+
+      {/* Stuck to the bottom: the same add-item row as on New list */}
+      <div className={styles.addBar}>
+        <AddItemForm currency={currency} onAdd={handleAddItem} />
       </div>
     </main>
   );
