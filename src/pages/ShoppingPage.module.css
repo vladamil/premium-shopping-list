@@ -98,22 +98,29 @@
   color: var(--color-text-muted);
 }
 
-.items {
+/* Everything on the route: the items to buy, the "In cart" row, the ticked items */
+.route {
   position: relative;
-  margin: 0;
   padding: 0 16px 0 8px;
-  list-style: none;
 }
 
-/* The grey "route" line behind the stops (::before = an extra box made by CSS) */
-.items::before {
+/* The grey "route" line behind the stops (::before = an extra box made by CSS).
+   It runs from the centre of the first stop to the centre of the last one
+   (rows are 48px tall, so a centre is 24px from the top / bottom). */
+.route::before {
   content: '';
   position: absolute;
   left: 29px;
-  top: 10px;
-  bottom: 30px;
+  top: 24px;
+  bottom: 24px;
   width: 2px;
   background-color: var(--color-line);
+}
+
+.items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 /* One item = one big button */
@@ -204,4 +211,47 @@
 
 .item[aria-pressed='true'] .itemTotal {
   color: var(--color-text-muted);
+}
+
+/* ---------- "In cart" group ---------- */
+
+/* The row that opens / closes the ticked items. Same layout as an item row. */
+.cartToggle {
+  position: relative;
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+}
+
+.cartLabel {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.cartTotal {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.chevron {
+  flex: none;
+  fill: none;
+  stroke: var(--color-text-muted);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Open: the arrow points up */
+.cartToggle[aria-expanded='true'] .chevron {
+  transform: rotate(180deg);
 }
