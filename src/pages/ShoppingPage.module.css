@@ -293,24 +293,3 @@
   font-size: 14px;
   font-weight: 700;
 }
-
-/* ---------- Sheets ---------- */
-
-.sheetTitle {
-  font-size: 23px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
-
-/* The quiet "Keep shopping" / "Close" button at the bottom of a sheet */
-.sheetSecondaryButton {
-  width: 100%;
-  height: 52px;
-  margin-top: 16px;
-  border: 1.5px solid var(--color-line);
-  border-radius: var(--radius-pill);
-  background: none;
-  color: inherit;
-  font-size: 16px;
-  font-weight: 700;
-}

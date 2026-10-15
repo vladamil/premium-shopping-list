@@ -1,13 +1,18 @@
 import { useState } from 'react';
-import { Link, useParams } from 'react-router';
+import { Link, useNavigate, useParams } from 'react-router';
 import { AddItemForm } from '../components/AddItemForm';
-import { BottomSheet } from '../components/BottomSheet';
+import { FinishTripSheet } from '../components/FinishTripSheet';
 import { TripSummary } from '../components/TripSummary';
 import { inCartTotal, itemTotal, unpricedCount } from '../domain/calculations';
 import { formatListDate } from '../domain/dates';
 import { formatMoney } from '../domain/money';
 import type { Item } from '../domain/schemas';
-import { addItem, toggleItem, type NewItem } from '../state/actions';
+import {
+  addItem,
+  finishList,
+  toggleItem,
+  type NewItem,
+} from '../state/actions';
 import { useAppContext } from '../state/AppStateContext';
 import styles from './ShoppingPage.module.css';
 
@@ -18,6 +23,9 @@ export function ShoppingPage() {
 
   // The ":id" part of the URL /lists/:id
   const { id } = useParams();
+
+  // A function that moves to another page from our own code (after finishing).
+  const navigate = useNavigate();
 
   // Read the clock once, for "Created today". (Same as on the Lists page.)
   // All hooks must come BEFORE any early `return` below — React needs every
@@ -74,6 +82,14 @@ export function ShoppingPage() {
   // Here, "add" means: save it to the list straight away (it goes on top).
   function handleAddItem(newItem: NewItem) {
     dispatch(addItem(listId, newItem));
+  }
+
+  // "Finish and save to History": the list becomes 'completed' (the unticked
+  // items stay on it as "skipped"), then we go to History. replace: true =
+  // Back from History goes to Lists, not to the list you just finished.
+  function handleFinish() {
+    dispatch(finishList(listId));
+    navigate('/history', { replace: true });
   }
 
   // RENDER SINGLE ITEM JSX ----------------------------------------------------
@@ -252,23 +268,15 @@ export function ShoppingPage() {
         <AddItemForm currency={currency} onAdd={handleAddItem} />
       </div>
 
-      {/* FINISH TRIP SHEET (the real content comes in the next commit) */}
-      <BottomSheet
+      {/* FINISH SHOP TRIP SHEET */}
+      <FinishTripSheet
         isOpen={isFinishOpen}
         onClose={() => setIsFinishOpen(false)}
-        titleId="finish-title"
-      >
-        <h2 id="finish-title" className={styles.sheetTitle}>
-          Finish this trip?
-        </h2>
-        <button
-          type="button"
-          className={styles.sheetSecondaryButton}
-          onClick={() => setIsFinishOpen(false)}
-        >
-          Keep shopping
-        </button>
-      </BottomSheet>
+        onFinish={handleFinish}
+        list={list}
+        currency={currency}
+        now={now}
+      />
     </main>
   );
 }

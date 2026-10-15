@@ -5,28 +5,29 @@ import {
   type ReactNode,
   type SyntheticEvent,
 } from 'react';
-import styles from './BottomSheet.module.css';
+import styles from './BottomSheetLayout.module.css';
 
-type BottomSheetProps = {
+type BottomSheetLayoutProps = {
   /** Is the sheet open? The parent page decides (UI state). */
   isOpen: boolean;
   /** Called when the user closes the sheet (Esc, a tap on the dark area, or a button). */
   onClose: () => void;
   /** The id of the sheet's heading, so screen readers can say what the sheet is. */
   titleId: string;
-  /** What goes inside the sheet: <BottomSheet>…this…</BottomSheet> */
+  /** What goes inside the sheet: <BottomSheetLayout>…this…</BottomSheetLayout> */
   children: ReactNode;
 };
 
-// A panel that slides up from the bottom, over a dark scrim.
+// The shared FRAME for every bottom sheet (FinishTripSheet, EditItemSheet…):
+// a panel that slides up from the bottom, over a dark scrim.
 // Built on the browser's own <dialog> element, which gives us for free:
 // Esc to close, keyboard focus kept inside, and the page behind made unclickable.
-export function BottomSheet({
+export function BottomSheetLayout({
   isOpen,
   onClose,
   titleId,
   children,
-}: BottomSheetProps) {
+}: BottomSheetLayoutProps) {
   // A "handle" on the real <dialog> element. React fills in .current after
   // drawing the page; until then it is null.
   const dialogRef = useRef<HTMLDialogElement>(null);
