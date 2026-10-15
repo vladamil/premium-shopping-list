@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { AddItemForm } from '../components/AddItemForm';
+import { BottomSheet } from '../components/BottomSheet';
 import { TripSummary } from '../components/TripSummary';
 import { inCartTotal, itemTotal, unpricedCount } from '../domain/calculations';
 import { formatListDate } from '../domain/dates';
@@ -26,6 +27,9 @@ export function ShoppingPage() {
   // Is the "In cart" group open? UI state: only this screen needs it, and it is
   // never saved (leave the page and it starts closed again).
   const [isCartOpen, setIsCartOpen] = useState(false);
+
+  // Is the "Finish this trip?" sheet open? Also UI state.
+  const [isFinishOpen, setIsFinishOpen] = useState(false);
 
   // Find the list with this id. find() gives back the first match,
   // or undefined if there is none (deleted list, old link, typo in the URL).
@@ -148,6 +152,23 @@ export function ShoppingPage() {
             <path d="M15 18l-6-6 6-6" />
           </svg>
         </Link>
+        <span className={styles.headerSpacer} />
+        <button
+          type="button"
+          className={styles.finishButton}
+          onClick={() => setIsFinishOpen(true)}
+        >
+          <svg
+            className={styles.icon}
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path d="M4 22V4M4 4h13l-2 4 2 4H4" />
+          </svg>
+          Finish
+        </button>
       </header>
 
       <div className={styles.heading}>
@@ -230,6 +251,24 @@ export function ShoppingPage() {
       <div className={styles.addBar}>
         <AddItemForm currency={currency} onAdd={handleAddItem} />
       </div>
+
+      {/* FINISH TRIP SHEET (the real content comes in the next commit) */}
+      <BottomSheet
+        isOpen={isFinishOpen}
+        onClose={() => setIsFinishOpen(false)}
+        titleId="finish-title"
+      >
+        <h2 id="finish-title" className={styles.sheetTitle}>
+          Finish this trip?
+        </h2>
+        <button
+          type="button"
+          className={styles.sheetSecondaryButton}
+          onClick={() => setIsFinishOpen(false)}
+        >
+          Keep shopping
+        </button>
+      </BottomSheet>
     </main>
   );
 }

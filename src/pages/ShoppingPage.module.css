@@ -270,3 +270,47 @@
   background-color: var(--color-bar);
   border-top: 1px solid var(--color-border);
 }
+
+/* ---------- Header: Finish button ---------- */
+
+/* Pushes Finish to the right side of the header */
+.headerSpacer {
+  flex: 1;
+}
+
+/* Outlined pill with a flag icon */
+.finishButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 16px;
+  margin-right: 8px;
+  border: 1.5px solid var(--color-text);
+  border-radius: var(--radius-pill);
+  background: none;
+  color: inherit;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* ---------- Sheets ---------- */
+
+.sheetTitle {
+  font-size: 23px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* The quiet "Keep shopping" / "Close" button at the bottom of a sheet */
+.sheetSecondaryButton {
+  width: 100%;
+  height: 52px;
+  margin-top: 16px;
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  background: none;
+  color: inherit;
+  font-size: 16px;
+  font-weight: 700;
+}
