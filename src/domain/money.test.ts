@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { budgetInputSchema, formatMoney, moneyInputSchema } from './money';
+import {
+  budgetInputSchema,
+  formatMoney,
+  moneyInputSchema,
+  moneyToInputText,
+} from './money';
 
 /**
  * Intl puts an invisible "non-breaking space" (character code 160) between
@@ -109,6 +114,16 @@ describe('budgetInputSchema', () => {
 
     expect(result.success).toBe(true);
     expect(result.data).toBe(500000);
+  });
+});
+
+describe('moneyToInputText', () => {
+  it('turns cents into text with 2 decimals: 15900 → "159.00"', () => {
+    expect(moneyToInputText(15900)).toBe('159.00');
+  });
+
+  it('gives an empty text when there is no price (null)', () => {
+    expect(moneyToInputText(null)).toBe('');
   });
 });
 

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { AddItemForm } from '../components/AddItemForm';
+import { EditItemSheet } from '../components/EditItemSheet';
 import { FinishTripSheet } from '../components/FinishTripSheet';
 import { TripSummary } from '../components/TripSummary';
 import { inCartTotal, itemTotal, unpricedCount } from '../domain/calculations';
@@ -10,7 +11,9 @@ import type { Item } from '../domain/schemas';
 import {
   addItem,
   finishList,
+  removeItem,
   toggleItem,
+  updateItem,
   type NewItem,
 } from '../state/actions';
 import { useAppContext } from '../state/AppStateContext';
@@ -38,6 +41,10 @@ export function ShoppingPage() {
 
   // Is the "Finish this trip?" sheet open? Also UI state.
   const [isFinishOpen, setIsFinishOpen] = useState(false);
+
+  // Which item is being edited right now (null = none, so the sheet is closed).
+  // We keep only the id; the item itself is looked up in the list below.
+  const [editingItemId, setEditingItemId] = useState<string | null>(null);
 
   // Find the list with this id. find() gives back the first match,
   // or undefined if there is none (deleted list, old link, typo in the URL).
@@ -92,6 +99,25 @@ export function ShoppingPage() {
     navigate('/history', { replace: true });
   }
 
+  // EDIT ITEM ------------------------------------------------------------------
+  // The item being edited (undefined when none, or if it was just deleted).
+  const editingItem = list.items.find((item) => item.id === editingItemId);
+
+  function handleUpdateItem(changes: NewItem) {
+    if (editingItemId !== null) {
+      dispatch(updateItem(listId, editingItemId, changes));
+    }
+    setEditingItemId(null);
+  }
+
+  function handleDeleteItem() {
+    if (editingItemId !== null) {
+      dispatch(removeItem(listId, editingItemId));
+    }
+    setEditingItemId(null);
+  }
+  // ---------------------------------------------------------------------------
+
   // RENDER SINGLE ITEM JSX ----------------------------------------------------
   // One item row. A plain function that returns JSX, used for both groups below.
   function renderItem(item: Item) {
@@ -113,9 +139,9 @@ export function ShoppingPage() {
     }
 
     return (
-      <li key={item.id}>
-        {/* The whole row is one button: tap anywhere to tick.
-            aria-pressed tells screen readers if it's ticked. */}
+      <li key={item.id} className={styles.itemRow}>
+        {/* Two buttons side by side: the big one ticks, the ✎ one edits.
+            aria-pressed tells screen readers if the item is ticked. */}
         <button
           type="button"
           className={styles.item}
@@ -148,6 +174,23 @@ export function ShoppingPage() {
               {formatMoney(total, currency)}
             </span>
           )}
+        </button>
+        <button
+          type="button"
+          className={styles.editButton}
+          aria-label={`Edit ${item.name}`}
+          onClick={() => setEditingItemId(item.id)}
+        >
+          <svg
+            className={styles.icon}
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path d="M12 20h9" />
+            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" />
+          </svg>
         </button>
       </li>
     );
@@ -276,6 +319,16 @@ export function ShoppingPage() {
         list={list}
         currency={currency}
         now={now}
+      />
+
+      {/* EDIT ITEM SHEET (open while an item is being edited) */}
+      <EditItemSheet
+        item={editingItem}
+        currency={currency}
+        canDelete={list.items.length > 1}
+        onClose={() => setEditingItemId(null)}
+        onUpdate={handleUpdateItem}
+        onDelete={handleDeleteItem}
       />
     </main>
   );

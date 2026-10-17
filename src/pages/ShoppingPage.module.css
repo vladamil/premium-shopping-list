@@ -123,9 +123,17 @@
   list-style: none;
 }
 
-/* One item = one big button */
+/* One row = the tick button (takes all the space) + the small edit button */
+.itemRow {
+  display: flex;
+  align-items: center;
+}
+
+/* The tick button: the whole row except the edit button */
 .item {
   position: relative;
+  flex: 1;
+  min-width: 0;
   width: 100%;
   min-height: 48px;
   display: flex;
@@ -292,4 +300,19 @@
   color: inherit;
   font-size: 14px;
   font-weight: 700;
+}
+
+/* ✎ at the end of each row (44px tap area) */
+.editButton {
+  flex: none;
+  width: var(--tap-size);
+  height: var(--tap-size);
+  margin-right: -10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text-muted);
 }
