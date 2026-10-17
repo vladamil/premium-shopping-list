@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState, type PointerEvent } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { AddItemForm } from '../components/AddItemForm';
 import { EditItemSheet } from '../components/EditItemSheet';
@@ -18,6 +18,9 @@ import {
 } from '../state/actions';
 import { useAppContext } from '../state/AppStateContext';
 import styles from './ShoppingPage.module.css';
+
+/** How long a finger has to stay on a row to open the Edit sheet. */
+const LONG_PRESS_MS = 500;
 
 // One list while you shop: /lists/:id
 export function ShoppingPage() {
@@ -45,6 +48,14 @@ export function ShoppingPage() {
   // Which item is being edited right now (null = none, so the sheet is closed).
   // We keep only the id; the item itself is looked up in the list below.
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
+
+  // Long-press bookkeeping. useRef, not useState: these must keep their value
+  // between renders and change INSTANTLY, but changing them shouldn't redraw
+  // anything (nobody sees them).
+  // - the id of the running timer (null = no timer running)
+  // - did the last press turn into a long press? (then its click must NOT tick)
+  const pressTimerRef = useRef<number | null>(null);
+  const wasLongPressRef = useRef(false);
 
   // Find the list with this id. find() gives back the first match,
   // or undefined if there is none (deleted list, old link, typo in the URL).
@@ -84,6 +95,46 @@ export function ShoppingPage() {
   function handleToggle(itemId: string) {
     dispatch(toggleItem(listId, itemId));
   }
+
+  // LONG-PRESS -----------------------------------------------------------------
+  // Finger (or main mouse button) down on a row: start a timer. If it is still
+  // down after LONG_PRESS_MS, open the Edit sheet for that item.
+  function handlePressStart(
+    event: PointerEvent<HTMLButtonElement>,
+    itemId: string,
+  ) {
+    // Only the MAIN button starts a long press: a finger, a pen, or the left
+    // mouse button (button 0). The right mouse button is 2 — ignore it,
+    // otherwise holding it opens the sheet AND the browser's menu.
+    if (event.button !== 0) {
+      return;
+    }
+    wasLongPressRef.current = false;
+    pressTimerRef.current = window.setTimeout(() => {
+      wasLongPressRef.current = true;
+      setEditingItemId(itemId);
+    }, LONG_PRESS_MS);
+  }
+
+  // Finger lifted, moved off the row, or the page scrolled: stop the timer
+  // (if it hasn't fired yet, this was just a normal tap).
+  function handlePressEnd() {
+    if (pressTimerRef.current !== null) {
+      window.clearTimeout(pressTimerRef.current);
+      pressTimerRef.current = null;
+    }
+  }
+
+  // The browser sends a click after every press — also after a long one.
+  // A normal tap ticks the item; the click after a long press is ignored.
+  function handleItemClick(itemId: string) {
+    if (wasLongPressRef.current) {
+      wasLongPressRef.current = false;
+      return;
+    }
+    handleToggle(itemId);
+  }
+  // ---------------------------------------------------------------------------
 
   // AddItemForm calls this with each new item (it has already checked it).
   // Here, "add" means: save it to the list straight away (it goes on top).
@@ -146,7 +197,13 @@ export function ShoppingPage() {
           type="button"
           className={styles.item}
           aria-pressed={item.isBought}
-          onClick={() => handleToggle(item.id)}
+          onClick={() => handleItemClick(item.id)}
+          onPointerDown={(event) => handlePressStart(event, item.id)}
+          onPointerUp={handlePressEnd}
+          onPointerLeave={handlePressEnd}
+          onPointerCancel={handlePressEnd}
+          // A long press on a phone normally opens the browser's own menu.
+          onContextMenu={(event) => event.preventDefault()}
         >
           <span className={styles.stop}>
             {item.isBought ? (

@@ -129,8 +129,12 @@
   align-items: center;
 }
 
-/* The tick button: the whole row except the edit button */
+/* The tick button: the whole row except the edit button.
+   user-select + touch-callout: a long press must not select the text
+   or pop up the phone's "copy / share" bubble. */
 .item {
+  user-select: none;
+  -webkit-touch-callout: none;
   position: relative;
   flex: 1;
   min-width: 0;
