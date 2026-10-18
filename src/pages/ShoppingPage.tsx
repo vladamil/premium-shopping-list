@@ -174,12 +174,13 @@ export function ShoppingPage() {
   function renderItem(item: Item) {
     const total = itemTotal(item);
 
-    // "RSD 220.00" · "2 × RSD 159.00" · "No price yet" · "2 × no price yet"
+    // The small line under the name:
+    // "RSD 220.00" · "2 × RSD 159.00" · no price: "Quantity 2" (or nothing for 1),
+    // because the orange "No price" tag on the right already says the rest.
     let detail = '';
     if (item.unitPrice === null) {
-      detail = 'No price yet';
       if (item.quantity > 1) {
-        detail = `${item.quantity} × no price yet`;
+        detail = `Quantity ${item.quantity}`;
       }
     } else {
       const price = formatMoney(item.unitPrice, currency);
@@ -224,12 +225,18 @@ export function ShoppingPage() {
           </span>
           <span className={styles.itemText}>
             <span className={styles.itemName}>{item.name}</span>
-            <span className={styles.itemDetail}>{detail}</span>
+            {detail !== '' && (
+              <span className={styles.itemDetail}>{detail}</span>
+            )}
           </span>
+          {/* On the right: the item's total, or an orange "No price" tag */}
           {total !== null && (
             <span className={styles.itemTotal}>
               {formatMoney(total, currency)}
             </span>
+          )}
+          {total === null && (
+            <span className={styles.noPriceTag}>No price</span>
           )}
         </button>
         <button
