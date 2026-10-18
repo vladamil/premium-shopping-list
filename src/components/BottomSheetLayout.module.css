@@ -1,0 +1,37 @@
+/* The browser puts a <dialog> in the middle of the screen by default.
+   These rules move it to the bottom, as wide as the app column. */
+.sheet {
+  position: fixed;
+  inset: auto 0 0 0; /* top: auto, right: 0, bottom: 0, left: 0 */
+  width: 100%;
+  max-width: var(--app-max-width);
+  max-height: 90dvh;
+  margin: 0 auto;
+  padding: 0;
+  overflow-y: auto;
+  border: 0;
+  border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.18);
+}
+
+/* ::backdrop = the dark layer the browser puts behind an open modal dialog */
+.sheet::backdrop {
+  background-color: var(--color-scrim);
+}
+
+/* All the padding is on this inner box, so a click on the dialog itself
+   can only mean a click outside the panel (see handleClick). */
+.content {
+  padding: 10px 20px 24px;
+}
+
+/* The little grey bar at the top that says "this slides up" */
+.handle {
+  width: 40px;
+  height: 5px;
+  margin: 0 auto 12px;
+  border-radius: 3px;
+  background-color: var(--color-line);
+}

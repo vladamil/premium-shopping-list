@@ -1,0 +1,216 @@
+/* "Edit item" on the left, ✕ on the right */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.closeButton {
+  width: var(--tap-size);
+  height: var(--tap-size);
+  margin-right: -10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+}
+
+.icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.nameInput {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px;
+  background-color: var(--color-surface);
+  border: 1.5px solid var(--color-line);
+  border-radius: 16px;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+/* Quantity and price side by side */
+.twoColumns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+  padding: 0 3px;
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-pill);
+}
+
+.stepButton {
+  width: var(--tap-size);
+  height: var(--tap-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background-color: var(--color-bg);
+}
+
+.stepButton:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.stepValue {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.priceField {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 52px;
+  padding: 0 14px;
+  border: 1.5px solid var(--color-line);
+  border-radius: 16px;
+}
+
+/* The focus ring goes around the whole price box */
+.priceField:focus-within {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.priceInput:focus-visible {
+  outline: none;
+}
+
+.currency {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.priceInput {
+  flex: 1;
+  min-width: 0;
+  height: 46px;
+  border: 0;
+  background: none;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.priceInput::placeholder {
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+/* Fields with a problem get an orange border */
+.nameInput[aria-invalid='true'] {
+  border-color: var(--color-warning-text);
+}
+
+.priceField:has([aria-invalid='true']) {
+  border-color: var(--color-warning-text);
+}
+
+.error {
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-warning-text);
+}
+
+/* Grey box: "Line total ……… RSD 567.00" */
+.lineTotal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background-color: var(--color-bg);
+  font-size: 14px;
+}
+
+.lineTotalLabel {
+  color: var(--color-text-muted);
+}
+
+.lineTotalValue {
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.deleteButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 52px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning-text);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.deleteButton:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.saveButton {
+  flex: 1;
+  height: 52px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-primary);
+  color: var(--color-text-on-accent);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.note {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}

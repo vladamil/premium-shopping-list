@@ -98,7 +98,7 @@
   color: var(--color-text-muted);
 }
 
-/* Everything on the route: the items to buy, the "In cart" row, the ticked items */
+/* One group of stops (the items to buy, or the items in the cart) with its route line */
 .route {
   position: relative;
   padding: 0 16px 0 8px;
@@ -123,9 +123,21 @@
   list-style: none;
 }
 
-/* One item = one big button */
+/* One row = the tick button (takes all the space) + the small edit button */
+.itemRow {
+  display: flex;
+  align-items: center;
+}
+
+/* The tick button: the whole row except the edit button.
+   user-select + touch-callout: a long press must not select the text
+   or pop up the phone's "copy / share" bubble. */
 .item {
+  user-select: none;
+  -webkit-touch-callout: none;
   position: relative;
+  flex: 1;
+  min-width: 0;
   width: 100%;
   min-height: 48px;
   display: flex;
@@ -213,49 +225,6 @@
   color: var(--color-text-muted);
 }
 
-/* ---------- "In cart" group ---------- */
-
-/* The row that opens / closes the ticked items. Same layout as an item row. */
-.cartToggle {
-  position: relative;
-  width: 100%;
-  min-height: 48px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: inherit;
-  text-align: left;
-}
-
-.cartLabel {
-  flex: 1;
-  font-size: 15px;
-  font-weight: 700;
-}
-
-.cartTotal {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--color-text-muted);
-}
-
-.chevron {
-  flex: none;
-  fill: none;
-  stroke: var(--color-text-muted);
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-/* Open: the arrow points up */
-.cartToggle[aria-expanded='true'] .chevron {
-  transform: rotate(180deg);
-}
-
 /* ---------- Add-item bar ---------- */
 
 /* Fixed to the bottom, and as wide as the app column (see global.css #root) */
@@ -269,4 +238,55 @@
   padding: 10px 16px 16px;
   background-color: var(--color-bar);
   border-top: 1px solid var(--color-border);
+}
+
+/* ---------- Header: Finish button ---------- */
+
+/* Pushes Finish to the right side of the header */
+.headerSpacer {
+  flex: 1;
+}
+
+/* Outlined pill with a flag icon */
+.finishButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 16px;
+  margin-right: 8px;
+  border: 1.5px solid var(--color-text);
+  border-radius: var(--radius-pill);
+  background: none;
+  color: inherit;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* ✎ at the end of each row (44px tap area) */
+.editButton {
+  flex: none;
+  width: var(--tap-size);
+  height: var(--tap-size);
+  margin-right: -10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text-muted);
+}
+
+/* Where the total would be, for items without a price: a small orange tag.
+   Just information — tap ✎ to add the price. */
+.noPriceTag {
+  flex: none;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning-text);
+  font-size: 12.5px;
+  font-weight: 700;
+  white-space: nowrap;
 }

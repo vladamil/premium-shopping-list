@@ -42,6 +42,17 @@ export const moneyInputSchema = z
 export const budgetInputSchema = moneyInputSchema.pipe(budgetSchema);
 
 /**
+ * The opposite of moneyInputSchema: cents → the text to put in a price field.
+ * 15900 → "159.00" · null (no price) → "" (an empty field)
+ */
+export function moneyToInputText(amount: Money | null): string {
+  if (amount === null) {
+    return '';
+  }
+  return (amount / 100).toFixed(2);
+}
+
+/**
  * Formats minor units for display, always with 2 decimals:
  * 12050 + 'RSD' → "RSD 120.50" (en-US) or "120,50 RSD" (sr-RS).
  * `locale` is optional: without it, the browser's language is used.

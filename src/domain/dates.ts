@@ -35,3 +35,16 @@ export function formatListDate(
     year: 'numeric',
   }).format(date);
 }
+
+/**
+ * The day of a shopping trip, with the weekday: "Sat, Oct 3".
+ * Used when finishing a trip (and later in History).
+ * `locale` is optional: without it, the browser's language is used.
+ */
+export function formatTripDate(isoDate: string, locale?: string): string {
+  return new Intl.DateTimeFormat(locale, {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+  }).format(new Date(isoDate));
+}
