@@ -98,7 +98,7 @@
   color: var(--color-text-muted);
 }
 
-/* Everything on the route: the items to buy, the "In cart" row, the ticked items */
+/* One group of stops (the items to buy, or the items in the cart) with its route line */
 .route {
   position: relative;
   padding: 0 16px 0 8px;
@@ -223,49 +223,6 @@
 
 .item[aria-pressed='true'] .itemTotal {
   color: var(--color-text-muted);
-}
-
-/* ---------- "In cart" group ---------- */
-
-/* The row that opens / closes the ticked items. Same layout as an item row. */
-.cartToggle {
-  position: relative;
-  width: 100%;
-  min-height: 48px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: inherit;
-  text-align: left;
-}
-
-.cartLabel {
-  flex: 1;
-  font-size: 15px;
-  font-weight: 700;
-}
-
-.cartTotal {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--color-text-muted);
-}
-
-.chevron {
-  flex: none;
-  fill: none;
-  stroke: var(--color-text-muted);
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-/* Open: the arrow points up */
-.cartToggle[aria-expanded='true'] .chevron {
-  transform: rotate(180deg);
 }
 
 /* ---------- Add-item bar ---------- */

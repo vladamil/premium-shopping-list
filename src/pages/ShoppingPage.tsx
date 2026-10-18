@@ -38,10 +38,6 @@ export function ShoppingPage() {
   // hook to run on every render, in the same order.
   const [now] = useState(() => new Date());
 
-  // Is the "In cart" group open? UI state: only this screen needs it, and it is
-  // never saved (leave the page and it starts closed again).
-  const [isCartOpen, setIsCartOpen] = useState(false);
-
   // Is the "Finish this trip?" sheet open? Also UI state.
   const [isFinishOpen, setIsFinishOpen] = useState(false);
 
@@ -317,58 +313,29 @@ export function ShoppingPage() {
       )}
 
       {/* The grey line down the left joins the stops, like a route */}
-      <div className={styles.route}>
-        <ul className={styles.items}>
-          {toBuy.map((item) => renderItem(item))}
-        </ul>
+      {toBuy.length > 0 && (
+        <div className={styles.route}>
+          <ul className={styles.items}>
+            {toBuy.map((item) => renderItem(item))}
+          </ul>
+        </div>
+      )}
 
-        {/* The ticked items, folded into one row that opens and closes */}
-        {inCart.length > 0 && (
-          <>
-            <button
-              type="button"
-              className={styles.cartToggle}
-              aria-expanded={isCartOpen}
-              onClick={() => setIsCartOpen(!isCartOpen)}
-            >
-              <span className={styles.stop}>
-                <span className={styles.stopDone}>
-                  <svg
-                    className={styles.check}
-                    width="13"
-                    height="13"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path d="M20 6L9 17l-5-5" />
-                  </svg>
-                </span>
-              </span>
-              <span className={styles.cartLabel}>
-                In cart · {inCart.length}
-              </span>
-              <span className={styles.cartTotal}>
-                {formatMoney(inCartTotal(list.items), currency)}
-              </span>
-              <svg
-                className={styles.chevron}
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path d="M6 9l6 6 6-6" />
-              </svg>
-            </button>
-
-            {isCartOpen && (
-              <ul className={styles.items}>
-                {inCart.map((item) => renderItem(item))}
-              </ul>
-            )}
-          </>
-        )}
-      </div>
+      {/* IN CART: the ticked items, always visible below (greyed and crossed out).
+          Tap one to untick it. The heading is just a label, like "Next stops". */}
+      {inCart.length > 0 && (
+        <>
+          <div className={styles.itemsHeader}>
+            <span>In cart · {inCart.length}</span>
+            <span>{formatMoney(inCartTotal(list.items), currency)}</span>
+          </div>
+          <div className={styles.route}>
+            <ul className={styles.items}>
+              {inCart.map((item) => renderItem(item))}
+            </ul>
+          </div>
+        </>
+      )}
 
       {/* Stuck to the bottom: the same add-item row as on New list */}
       <div className={styles.addBar}>
