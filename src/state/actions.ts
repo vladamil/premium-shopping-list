@@ -42,6 +42,7 @@ export type AppAction =
       type: 'toggleItem';
       payload: { listId: string; itemId: string; now: string };
     }
+  | { type: 'uncheckAll'; payload: { listId: string; now: string } }
   | { type: 'finishList'; payload: { listId: string; now: string } }
   | { type: 'restoreList'; payload: { listId: string; now: string } }
   | { type: 'shopAgain'; payload: { list: ShoppingList } }
@@ -125,6 +126,14 @@ export function toggleItem(listId: string, itemId: string): AppAction {
   return {
     type: 'toggleItem',
     payload: { listId, itemId, now: new Date().toISOString() },
+  };
+}
+
+/** Puts every item back on the route (nothing ticked). */
+export function uncheckAll(listId: string): AppAction {
+  return {
+    type: 'uncheckAll',
+    payload: { listId, now: new Date().toISOString() },
   };
 }
 

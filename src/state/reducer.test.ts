@@ -338,6 +338,84 @@ describe('toggleItem', () => {
   });
 });
 
+describe('uncheckAll', () => {
+  it('unticks every item in the list', () => {
+    const milk = makeItem({ name: 'Milk', isBought: true });
+    const bread = makeItem({ name: 'Bread', isBought: false });
+    const eggs = makeItem({ name: 'Eggs', isBought: true });
+    const list = makeList({ items: [milk, bread, eggs] });
+    const state = makeState([list]);
+
+    const result = appReducer(state, {
+      type: 'uncheckAll',
+      payload: { listId: list.id, now: NOW },
+    });
+
+    // Pick out just the isBought of each item: [false, false, false]
+    const ticks = result.lists[0]?.items.map((item) => item.isBought);
+    expect(ticks).toEqual([false, false, false]);
+  });
+
+  it('keeps the items in the same order, with the same names and prices', () => {
+    const milk = makeItem({ name: 'Milk', isBought: true, unitPrice: 125 });
+    const bread = makeItem({ name: 'Bread', isBought: false, unitPrice: 90 });
+    const eggs = makeItem({ name: 'Eggs', isBought: true, unitPrice: 30 });
+    const list = makeList({ items: [milk, bread, eggs] });
+    const state = makeState([list]);
+
+    const result = appReducer(state, {
+      type: 'uncheckAll',
+      payload: { listId: list.id, now: NOW },
+    });
+
+    // Pick out just the isBought of each item: [false, false, false]
+    const ticks = result.lists[0]?.items.map((item) => item.isBought);
+    expect(ticks).toEqual([false, false, false]);
+    expect(result.lists[0]?.items[0]?.name).toBe('Milk');
+    expect(result.lists[0]?.items[1]?.name).toBe('Bread');
+    expect(result.lists[0]?.items[2]?.name).toBe('Eggs');
+
+    expect(result.lists[0]?.items[0]?.unitPrice).toBe(125);
+    expect(result.lists[0]?.items[1]?.unitPrice).toBe(90);
+    expect(result.lists[0]?.items[2]?.unitPrice).toBe(30);
+  });
+
+  it('sets the list updatedAt to the time of the change', () => {
+    const milk = makeItem({ name: 'Milk', isBought: true });
+    const bread = makeItem({ name: 'Bread', isBought: false });
+    const eggs = makeItem({ name: 'Eggs', isBought: true });
+    const list = makeList({ items: [milk, bread, eggs] });
+    const state = makeState([list]);
+
+    const result = appReducer(state, {
+      type: 'uncheckAll',
+      payload: { listId: list.id, now: NOW },
+    });
+
+    expect(result.lists[0]?.updatedAt).toEqual(NOW);
+  });
+
+  it('leaves the other lists unchanged', () => {
+    const milk = makeItem({ name: 'Milk', isBought: true });
+    const bread = makeItem({ name: 'Bread', isBought: false });
+    const eggs = makeItem({ name: 'Eggs', isBought: true });
+    const beer = makeItem({ name: 'Beer', isBought: false });
+    const list1 = makeList({ items: [milk, bread] });
+    const list2 = makeList({ items: [eggs, beer] });
+    const state = makeState([list1, list2]);
+
+    const result = appReducer(state, {
+      type: 'uncheckAll',
+      payload: { listId: list1.id, now: NOW },
+    });
+
+    // Pick out just the isBought of each item: [false, false]
+    const ticks = result.lists[0]?.items.map((item) => item.isBought);
+    expect(ticks).toEqual([false, false]);
+    expect(result.lists[1]).toStrictEqual(list2);
+  });
+});
+
 // ----- SHOPPING TRIP TESTS -----
 // -------------------------------
 
