@@ -2,7 +2,7 @@
   padding-bottom: 170px; /* room for the fixed add-item bar */
 }
 
-/* ← on the left (Finish and ⋯ come later, on the right) */
+/* ← on the left, Finish and ⋯ on the right */
 .header {
   display: flex;
   align-items: center;
@@ -254,13 +254,25 @@
   gap: 6px;
   height: 40px;
   padding: 0 16px;
-  margin-right: 8px;
   border: 1.5px solid var(--color-text);
   border-radius: var(--radius-pill);
   background: none;
   color: inherit;
   font-size: 14px;
   font-weight: 700;
+}
+
+/* ⋯ after Finish (44px tap area) */
+.moreButton {
+  width: var(--tap-size);
+  height: var(--tap-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
 }
 
 /* ✎ at the end of each row (44px tap area) */

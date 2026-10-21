@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router';
 import { AddItemForm } from '../components/AddItemForm';
 import { EditItemSheet } from '../components/EditItemSheet';
 import { FinishTripSheet } from '../components/FinishTripSheet';
+import { ListOptionsSheet } from '../components/ListOptionsSheet';
 import { TripSummary } from '../components/TripSummary';
 import { inCartTotal, itemTotal, unpricedCount } from '../domain/calculations';
 import { formatListDate } from '../domain/dates';
@@ -10,9 +11,11 @@ import { formatMoney } from '../domain/money';
 import type { Item } from '../domain/schemas';
 import {
   addItem,
+  deleteList,
   finishList,
   removeItem,
   toggleItem,
+  uncheckAll,
   updateItem,
   type NewItem,
 } from '../state/actions';
@@ -40,6 +43,9 @@ export function ShoppingPage() {
 
   // Is the "Finish this trip?" sheet open? Also UI state.
   const [isFinishOpen, setIsFinishOpen] = useState(false);
+
+  // Is the ⋯ (list options) sheet open?
+  const [isOptionsOpen, setIsOptionsOpen] = useState(false);
 
   // Which item is being edited right now (null = none, so the sheet is closed).
   // We keep only the id; the item itself is looked up in the list below.
@@ -145,6 +151,21 @@ export function ShoppingPage() {
     dispatch(finishList(listId));
     navigate('/history', { replace: true });
   }
+
+  // LIST OPTIONS ---------------------------------------------------------------
+  // "Uncheck all items": every item back on the route, then close the sheet.
+  function handleUncheckAll() {
+    dispatch(uncheckAll(listId));
+    setIsOptionsOpen(false);
+  }
+
+  // "Delete list" (after "Are you sure?"): delete it, then go to Lists.
+  // replace: true = Back can't take you to the list that no longer exists.
+  function handleDeleteList() {
+    dispatch(deleteList(listId));
+    navigate('/', { replace: true });
+  }
+  // ---------------------------------------------------------------------------
 
   // EDIT ITEM ------------------------------------------------------------------
   // The item being edited (undefined when none, or if it was just deleted).
@@ -288,6 +309,24 @@ export function ShoppingPage() {
           </svg>
           Finish
         </button>
+        <button
+          type="button"
+          className={styles.moreButton}
+          aria-label="List options"
+          onClick={() => setIsOptionsOpen(true)}
+        >
+          <svg
+            className={styles.icon}
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <circle cx="5" cy="12" r="1" />
+            <circle cx="12" cy="12" r="1" />
+            <circle cx="19" cy="12" r="1" />
+          </svg>
+        </button>
       </header>
 
       <div className={styles.heading}>
@@ -349,6 +388,16 @@ export function ShoppingPage() {
         onFinish={handleFinish}
         list={list}
         currency={currency}
+        now={now}
+      />
+
+      {/* LIST OPTIONS SHEET (⋯) */}
+      <ListOptionsSheet
+        isOpen={isOptionsOpen}
+        onClose={() => setIsOptionsOpen(false)}
+        onUncheckAll={handleUncheckAll}
+        onDelete={handleDeleteList}
+        list={list}
         now={now}
       />
 
