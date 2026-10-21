@@ -8,7 +8,7 @@ import { TripSummary } from '../components/TripSummary';
 import { inCartTotal, itemTotal, unpricedCount } from '../domain/calculations';
 import { formatListDate } from '../domain/dates';
 import { formatMoney } from '../domain/money';
-import type { Item } from '../domain/schemas';
+import type { Item, Money } from '../domain/schemas';
 import {
   addItem,
   deleteList,
@@ -157,6 +157,12 @@ export function ShoppingPage() {
   // "Rename list": the sheet has already checked the new name.
   function handleRenameList(title: string) {
     dispatch(updateList(listId, { title }));
+    setIsOptionsOpen(false);
+  }
+
+  // "Budget": a new amount in cents, or null = no budget (already checked).
+  function handleChangeBudget(budget: Money | null) {
+    dispatch(updateList(listId, { budget }));
     setIsOptionsOpen(false);
   }
 
@@ -403,9 +409,11 @@ export function ShoppingPage() {
         isOpen={isOptionsOpen}
         onClose={() => setIsOptionsOpen(false)}
         onRename={handleRenameList}
+        onChangeBudget={handleChangeBudget}
         onUncheckAll={handleUncheckAll}
         onDelete={handleDeleteList}
         list={list}
+        currency={currency}
         now={now}
       />
 

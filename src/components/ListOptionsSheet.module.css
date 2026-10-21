@@ -73,6 +73,13 @@
   flex: 1;
 }
 
+/* The amount on the right of the Budget row */
+.optionValue {
+  flex: none;
+  font-size: 15px;
+  font-weight: 700;
+}
+
 /* The › at the end of rows that open a next step */
 .chevron {
   flex: none;
@@ -90,10 +97,17 @@
   font-weight: 600;
 }
 
-.optionHint {
+.optionHint,
+.optionHintWarning {
   display: block;
   font-size: 13px;
   color: var(--color-text-muted);
+}
+
+/* "137% planned so far" when the list is over budget */
+.optionHintWarning {
+  font-weight: 600;
+  color: var(--color-warning-text);
 }
 
 /* ---------- "Delete this list?" step ---------- */
@@ -179,4 +193,54 @@
   color: var(--color-text-on-accent);
   font-size: 16px;
   font-weight: 700;
+}
+
+/* ---------- "Budget" step ---------- */
+
+/* Box with "RSD" in front of the input (same as on New list) */
+.moneyField {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 52px;
+  padding: 0 16px;
+  background-color: var(--color-surface);
+  border: 1.5px solid var(--color-line);
+  border-radius: 16px;
+}
+
+/* The focus ring goes around the whole box instead of only the input inside it */
+.moneyField:focus-within {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.moneyField:has([aria-invalid='true']) {
+  border-color: var(--color-warning-text);
+}
+
+.moneyInput:focus-visible {
+  outline: none;
+}
+
+.currency {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.moneyInput {
+  flex: 1;
+  min-width: 0;
+  height: 46px;
+  border: 0;
+  background: none;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.hint {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--color-text-muted);
 }

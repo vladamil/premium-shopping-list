@@ -1,9 +1,17 @@
 import { useState, type SubmitEvent } from 'react';
+import { budgetStatus, plannedTotal } from '../domain/calculations';
 import { formatListDate } from '../domain/dates';
+import {
+  budgetInputSchema,
+  formatMoney,
+  moneyToInputText,
+} from '../domain/money';
 import {
   firstErrorMessage,
   LIMITS,
   listTitleSchema,
+  type Currency,
+  type Money,
   type ShoppingList,
 } from '../domain/schemas';
 import { BottomSheetLayout } from './BottomSheetLayout';
@@ -14,26 +22,31 @@ type ListOptionsSheetProps = {
   onClose: () => void;
   /** Called with the new, already checked list name. The page does the saving. */
   onRename: (title: string) => void;
+  /** Called with the new, already checked budget (null = no budget). */
+  onChangeBudget: (budget: Money | null) => void;
   /** Called by "Uncheck all items". The page does the saving. */
   onUncheckAll: () => void;
   /** Called by "Delete list" on the "Are you sure?" step. */
   onDelete: () => void;
   list: ShoppingList;
+  currency: Currency;
   /** The current time, read once by the page (for "Created today"). */
   now: Date;
 };
 
 /** What the sheet shows right now: the menu, or one of its steps. */
-type OptionsView = 'menu' | 'rename' | 'delete';
+type OptionsView = 'menu' | 'rename' | 'budget' | 'delete';
 
 // The ⋯ sheet: things you do to the WHOLE list (not to one item).
 export function ListOptionsSheet({
   isOpen,
   onClose,
   onRename,
+  onChangeBudget,
   onUncheckAll,
   onDelete,
   list,
+  currency,
   now,
 }: ListOptionsSheetProps) {
   // UI state that only this sheet cares about.
@@ -52,6 +65,11 @@ export function ListOptionsSheet({
     onRename(title);
   }
 
+  function handleChangeBudget(budget: Money | null) {
+    setView('menu');
+    onChangeBudget(budget);
+  }
+
   let itemsText = `${list.items.length} items`;
   if (list.items.length === 1) {
     itemsText = '1 item';
@@ -62,6 +80,40 @@ export function ListOptionsSheet({
   if (inCartCount === 1) {
     uncheckText = 'Put 1 item back on the route';
   }
+
+  // Budget row: "82% planned so far" + the amount, or "Not set".
+  let budgetHint = 'Not set';
+  if (list.budget !== null) {
+    const percent = Math.round((plannedTotal(list.items) / list.budget) * 100);
+    budgetHint = `${percent}% planned so far`;
+  }
+  // Orange when the planned total is over the budget (same rule as the list badge).
+  let budgetHintClass = styles.optionHint;
+  if (budgetStatus(list.items, list.budget) === 'over') {
+    budgetHintClass = styles.optionHintWarning;
+  }
+
+  // RENDER "BUDGET" STEP ------------------------------------------------------
+  if (view === 'budget') {
+    return (
+      <BottomSheetLayout
+        isOpen={isOpen}
+        onClose={handleClose}
+        titleId="options-title"
+      >
+        <h2 id="options-title" className={styles.title}>
+          Budget
+        </h2>
+        <BudgetForm
+          currentBudget={list.budget}
+          currency={currency}
+          onChangeBudget={handleChangeBudget}
+          onCancel={() => setView('menu')}
+        />
+      </BottomSheetLayout>
+    );
+  }
+  // ---------------------------------------------------------------------------
 
   // RENDER "RENAME LIST" STEP -------------------------------------------------
   if (view === 'rename') {
@@ -157,6 +209,44 @@ export function ListOptionsSheet({
               <span className={styles.optionLabel}>Rename list</span>
             </span>
             {/* › = "this opens a next step" */}
+            <svg
+              className={styles.chevron}
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </button>
+        </li>
+        <li className={styles.option}>
+          <button
+            type="button"
+            className={styles.optionButton}
+            onClick={() => setView('budget')}
+          >
+            <span className={styles.optionIcon}>
+              <svg
+                className={styles.icon}
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <rect x="3" y="6" width="18" height="14" rx="2" />
+                <path d="M3 10h18M16 15h2" />
+              </svg>
+            </span>
+            <span className={styles.optionText}>
+              <span className={styles.optionLabel}>Budget</span>
+              <span className={budgetHintClass}>{budgetHint}</span>
+            </span>
+            {list.budget !== null && (
+              <span className={styles.optionValue}>
+                {formatMoney(list.budget, currency)}
+              </span>
+            )}
             <svg
               className={styles.chevron}
               width="18"
@@ -294,6 +384,88 @@ function RenameListForm({
       <div className={styles.actions}>
         <button type="submit" className={styles.primaryButton}>
           Save name
+        </button>
+        <button
+          type="button"
+          className={styles.secondaryButton}
+          onClick={onCancel}
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  );
+}
+
+type BudgetFormProps = {
+  currentBudget: Money | null;
+  currency: Currency;
+  onChangeBudget: (budget: Money | null) => void;
+  onCancel: () => void;
+};
+
+// BUDGET FORM -----------------------------------------------------------------
+// Only on screen during the "Budget" step, so it always starts from the
+// list's current budget. An empty field means "no budget".
+function BudgetForm({
+  currentBudget,
+  currency,
+  onChangeBudget,
+  onCancel,
+}: BudgetFormProps) {
+  // 500000 → "5000.00" · null → "" (empty field)
+  const [budgetText, setBudgetText] = useState(moneyToInputText(currentBudget));
+  const [budgetError, setBudgetError] = useState<string | null>(null);
+
+  function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    // The same check as on the New list screen: "" → null (no budget),
+    // "5000" → 500000 cents, "0" or "abc" → an error.
+    const budgetResult = budgetInputSchema.safeParse(budgetText);
+    if (!budgetResult.success) {
+      setBudgetError(firstErrorMessage(budgetResult.error));
+      return;
+    }
+    onChangeBudget(budgetResult.data);
+  }
+
+  function handleBudgetChange(text: string) {
+    setBudgetText(text);
+    setBudgetError(null);
+  }
+
+  return (
+    <form className={styles.form} onSubmit={handleSubmit}>
+      <label htmlFor="options-budget" className={styles.label}>
+        Spending limit
+      </label>
+      <div className={styles.moneyField}>
+        <span className={styles.currency}>{currency}</span>
+        <input
+          id="options-budget"
+          type="text"
+          inputMode="decimal"
+          className={styles.moneyInput}
+          autoFocus
+          value={budgetText}
+          onChange={(event) => handleBudgetChange(event.target.value)}
+          aria-invalid={budgetError !== null}
+          aria-describedby="options-budget-error options-budget-hint"
+        />
+      </div>
+      {budgetError !== null && (
+        <p id="options-budget-error" className={styles.error} role="alert">
+          {budgetError}
+        </p>
+      )}
+      <p id="options-budget-hint" className={styles.hint}>
+        Leave it empty for no budget.
+      </p>
+
+      <div className={styles.actions}>
+        <button type="submit" className={styles.primaryButton}>
+          Save budget
         </button>
         <button
           type="button"
