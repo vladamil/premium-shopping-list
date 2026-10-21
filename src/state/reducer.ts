@@ -109,6 +109,22 @@ export function appReducer(state: AppData, action: AppAction): AppData {
       };
     }
 
+    case 'uncheckAll': {
+      const { listId, now } = action.payload;
+      return {
+        ...state,
+        lists: state.lists.map((list) =>
+          list.id === listId
+            ? {
+                ...list,
+                items: list.items.map((item) => ({ ...item, isBought: false })),
+                updatedAt: now,
+              }
+            : list,
+        ),
+      };
+    }
+
     // ----- Trip -----
 
     case 'finishList': {
