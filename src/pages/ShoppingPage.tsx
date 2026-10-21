@@ -17,6 +17,7 @@ import {
   toggleItem,
   uncheckAll,
   updateItem,
+  updateList,
   type NewItem,
 } from '../state/actions';
 import { useAppContext } from '../state/AppStateContext';
@@ -153,6 +154,12 @@ export function ShoppingPage() {
   }
 
   // LIST OPTIONS ---------------------------------------------------------------
+  // "Rename list": the sheet has already checked the new name.
+  function handleRenameList(title: string) {
+    dispatch(updateList(listId, { title }));
+    setIsOptionsOpen(false);
+  }
+
   // "Uncheck all items": every item back on the route, then close the sheet.
   function handleUncheckAll() {
     dispatch(uncheckAll(listId));
@@ -395,6 +402,7 @@ export function ShoppingPage() {
       <ListOptionsSheet
         isOpen={isOptionsOpen}
         onClose={() => setIsOptionsOpen(false)}
+        onRename={handleRenameList}
         onUncheckAll={handleUncheckAll}
         onDelete={handleDeleteList}
         list={list}

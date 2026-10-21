@@ -1,12 +1,19 @@
-import { useState } from 'react';
+import { useState, type SubmitEvent } from 'react';
 import { formatListDate } from '../domain/dates';
-import type { ShoppingList } from '../domain/schemas';
+import {
+  firstErrorMessage,
+  LIMITS,
+  listTitleSchema,
+  type ShoppingList,
+} from '../domain/schemas';
 import { BottomSheetLayout } from './BottomSheetLayout';
 import styles from './ListOptionsSheet.module.css';
 
 type ListOptionsSheetProps = {
   isOpen: boolean;
   onClose: () => void;
+  /** Called with the new, already checked list name. The page does the saving. */
+  onRename: (title: string) => void;
   /** Called by "Uncheck all items". The page does the saving. */
   onUncheckAll: () => void;
   /** Called by "Delete list" on the "Are you sure?" step. */
@@ -16,13 +23,14 @@ type ListOptionsSheetProps = {
   now: Date;
 };
 
-/** What the sheet shows right now: the menu, or the "Delete this list?" step. */
-type OptionsView = 'menu' | 'delete';
+/** What the sheet shows right now: the menu, or one of its steps. */
+type OptionsView = 'menu' | 'rename' | 'delete';
 
 // The ⋯ sheet: things you do to the WHOLE list (not to one item).
 export function ListOptionsSheet({
   isOpen,
   onClose,
+  onRename,
   onUncheckAll,
   onDelete,
   list,
@@ -38,6 +46,12 @@ export function ListOptionsSheet({
     onClose();
   }
 
+  // Same idea: back to the menu first, so the next opening starts there.
+  function handleRename(title: string) {
+    setView('menu');
+    onRename(title);
+  }
+
   let itemsText = `${list.items.length} items`;
   if (list.items.length === 1) {
     itemsText = '1 item';
@@ -48,6 +62,27 @@ export function ListOptionsSheet({
   if (inCartCount === 1) {
     uncheckText = 'Put 1 item back on the route';
   }
+
+  // RENDER "RENAME LIST" STEP -------------------------------------------------
+  if (view === 'rename') {
+    return (
+      <BottomSheetLayout
+        isOpen={isOpen}
+        onClose={handleClose}
+        titleId="options-title"
+      >
+        <h2 id="options-title" className={styles.title}>
+          Rename list
+        </h2>
+        <RenameListForm
+          currentTitle={list.title}
+          onRename={handleRename}
+          onCancel={() => setView('menu')}
+        />
+      </BottomSheetLayout>
+    );
+  }
+  // ---------------------------------------------------------------------------
 
   // RENDER "DELETE THIS LIST?" STEP -------------------------------------------
   if (view === 'delete') {
@@ -100,6 +135,39 @@ export function ListOptionsSheet({
       </p>
 
       <ul className={styles.options}>
+        <li className={styles.option}>
+          <button
+            type="button"
+            className={styles.optionButton}
+            onClick={() => setView('rename')}
+          >
+            <span className={styles.optionIcon}>
+              <svg
+                className={styles.icon}
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" />
+              </svg>
+            </span>
+            <span className={styles.optionText}>
+              <span className={styles.optionLabel}>Rename list</span>
+            </span>
+            {/* › = "this opens a next step" */}
+            <svg
+              className={styles.chevron}
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </button>
+        </li>
         {/* Only when there is something to uncheck */}
         {inCartCount > 0 && (
           <li className={styles.option}>
@@ -162,5 +230,79 @@ export function ListOptionsSheet({
         Close
       </button>
     </BottomSheetLayout>
+  );
+}
+
+type RenameListFormProps = {
+  currentTitle: string;
+  onRename: (title: string) => void;
+  onCancel: () => void;
+};
+
+// RENAME LIST FORM ------------------------------------------------------------
+// Only on screen during the "Rename list" step, so every time it appears it
+// starts again from the list's current name.
+function RenameListForm({
+  currentTitle,
+  onRename,
+  onCancel,
+}: RenameListFormProps) {
+  const [titleText, setTitleText] = useState(currentTitle);
+  const [titleError, setTitleError] = useState<string | null>(null);
+
+  function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    // The same check as on the New list screen (trims spaces, 1–40 characters).
+    const titleResult = listTitleSchema.safeParse(titleText);
+    if (!titleResult.success) {
+      setTitleError(firstErrorMessage(titleResult.error));
+      return;
+    }
+    onRename(titleResult.data);
+  }
+
+  function handleTitleChange(text: string) {
+    setTitleText(text);
+    setTitleError(null);
+  }
+
+  return (
+    <form className={styles.form} onSubmit={handleSubmit}>
+      <label htmlFor="rename-list-title" className={styles.label}>
+        List name
+      </label>
+      {/* autoFocus: the button you tapped is gone now, so put the keyboard
+          (and screen reader) straight into the field. */}
+      <input
+        id="rename-list-title"
+        type="text"
+        className={styles.input}
+        maxLength={LIMITS.titleMaxLength}
+        autoFocus
+        value={titleText}
+        onChange={(event) => handleTitleChange(event.target.value)}
+        aria-invalid={titleError !== null}
+        aria-describedby="rename-list-title-error"
+      />
+      {titleError !== null && (
+        <p id="rename-list-title-error" className={styles.error} role="alert">
+          {titleError}
+        </p>
+      )}
+
+      <div className={styles.actions}>
+        <button type="submit" className={styles.primaryButton}>
+          Save name
+        </button>
+        <button
+          type="button"
+          className={styles.secondaryButton}
+          onClick={onCancel}
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
   );
 }
