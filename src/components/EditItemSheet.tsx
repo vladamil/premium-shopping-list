@@ -65,11 +65,11 @@ export function EditItemSheet({
         </button>
       </div>
 
-      {/* key={item.id}: a DIFFERENT item = a brand-new form, which starts
-          from that item's values (useState only uses its start value once). */}
+      {/* The form only exists while an item is being edited. Closing the sheet
+          removes it (and its state), so the next item gets a fresh form that
+          starts from that item's values. */}
       {item !== undefined && (
         <EditItemForm
-          key={item.id}
           item={item}
           currency={currency}
           canDelete={canDelete}
