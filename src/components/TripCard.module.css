@@ -1,0 +1,35 @@
+/* Title and date on the left, money spent on the right */
+.card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+/* min-width: 0 lets a long title wrap instead of pushing the amount out */
+.text {
+  min-width: 0;
+}
+
+.title {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  display: block;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.spent {
+  flex: none;
+  font-size: 15px;
+  font-weight: 700;
+}

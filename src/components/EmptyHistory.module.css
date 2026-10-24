@@ -1,0 +1,81 @@
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 46px 32px 0;
+}
+
+/* The white card around the drawing */
+.illustration {
+  width: 200px;
+  height: 156px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sheet);
+}
+
+.map {
+  fill: var(--color-bg);
+  stroke: var(--color-text);
+  stroke-width: 3;
+  stroke-linejoin: round;
+}
+
+.folds {
+  fill: none;
+  stroke: var(--color-line);
+  stroke-width: 2;
+}
+
+.route {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 2 7;
+}
+
+.start {
+  fill: var(--color-text);
+}
+
+.cross {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.title {
+  margin-top: 26px;
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.text {
+  max-width: 300px;
+  margin-top: 8px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+/* Outlined pill (the main button colour is for "create" actions) */
+.listsLink {
+  display: inline-flex;
+  align-items: center;
+  height: 48px;
+  margin-top: 22px;
+  padding: 0 22px;
+  border: 1.5px solid var(--color-text);
+  border-radius: var(--radius-pill);
+  color: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+}
