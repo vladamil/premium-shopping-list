@@ -15,11 +15,37 @@
   color: var(--color-text-muted);
 }
 
+/* Space between one month and the next */
+.month {
+  padding-bottom: 24px;
+}
+
+/* Month name on the left, trip count and money on the right */
+.monthHeading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 0 20px 10px;
+}
+
+.monthTitle {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.monthSummary {
+  flex: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
 .trips {
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin: 0;
-  padding: 0 16px 24px;
+  padding: 0 16px;
   list-style: none;
 }
