@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { EmptyHistory } from '../components/EmptyHistory';
 import { TripCard } from '../components/TripCard';
 import { groupTripsByMonth } from '../domain/history';
@@ -17,6 +18,21 @@ export function HistoryPage() {
   // [{ label: 'October 2026', trips: [...], spent: 203900 }, ...]
   // groupTripsByMonth also sorts them, newest first.
   const months = groupTripsByMonth(trips);
+
+  // Which trip card is open (only one at a time; null = all closed).
+  // All cards start closed. <string | null> tells TypeScript that a trip id
+  // may go in here later — from the starting value null alone it can't know.
+  const [openTripId, setOpenTripId] = useState<string | null>(null);
+
+  // Tap an open card → close it. Tap a closed card → open it (and with that,
+  // the card that was open closes, because only one id fits in openTripId).
+  function handleToggleTrip(tripId: string) {
+    if (openTripId === tripId) {
+      setOpenTripId(null);
+    } else {
+      setOpenTripId(tripId);
+    }
+  }
 
   return (
     <main>
@@ -47,7 +63,12 @@ export function HistoryPage() {
             <ul className={styles.trips}>
               {month.trips.map((trip) => (
                 <li key={trip.id}>
-                  <TripCard trip={trip} currency={currency} />
+                  <TripCard
+                    trip={trip}
+                    currency={currency}
+                    isOpen={trip.id === openTripId}
+                    onToggle={() => handleToggleTrip(trip.id)}
+                  />
                 </li>
               ))}
             </ul>
