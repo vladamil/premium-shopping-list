@@ -62,7 +62,9 @@ export function HistoryPage() {
 
             <ul className={styles.trips}>
               {month.trips.map((trip) => (
-                <li key={trip.id}>
+                <li key={trip.id} className={styles.trip}>
+                  {/* A dot on the timeline (decoration, so screen readers skip it) */}
+                  <span className={styles.dot} aria-hidden="true" />
                   <TripCard
                     trip={trip}
                     currency={currency}

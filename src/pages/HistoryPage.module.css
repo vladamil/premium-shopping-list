@@ -41,11 +41,48 @@
   color: var(--color-text-muted);
 }
 
+/* Extra padding on the left makes room for the timeline */
 .trips {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin: 0;
-  padding: 0 16px;
+  padding: 0 16px 0 40px;
   list-style: none;
+}
+
+/* The timeline: a grey line down the left side of each month */
+.trips::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  bottom: 0;
+  left: 23px;
+  width: 2px;
+  background-color: var(--color-line);
+}
+
+/* So each dot can be placed next to its own card */
+.trip {
+  position: relative;
+}
+
+/* One dot per trip, on the line, level with the card's title.
+   The border in the page colour leaves a small gap around the dot. */
+.dot {
+  position: absolute;
+  top: 26px;
+  left: -24px;
+  width: 14px;
+  height: 14px;
+  border: 3px solid var(--color-bg);
+  border-radius: 50%;
+  background-color: var(--color-text);
+}
+
+/* The newest trip = the first trip of the first month → orange dot.
+   :first-of-type = the first <section> (the heading above it is a <div>). */
+.month:first-of-type .trip:first-child .dot {
+  background-color: var(--color-accent);
 }
