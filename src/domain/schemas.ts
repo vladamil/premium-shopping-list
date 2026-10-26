@@ -141,6 +141,8 @@ export const appDataSchema = z.object({
 export type Money = z.infer<typeof moneySchema>;
 export type Item = z.infer<typeof itemSchema>;
 export type ShoppingList = z.infer<typeof shoppingListSchema>;
+/** Only the completed kind of list: it always has a completedAt date. */
+export type CompletedList = z.infer<typeof completedListSchema>;
 export type ListStatus = ShoppingList['status'];
 export type Settings = z.infer<typeof settingsSchema>;
 export type Currency = Settings['currency'];
