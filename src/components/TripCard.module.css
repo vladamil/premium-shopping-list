@@ -121,9 +121,42 @@
 .restore {
   flex: none;
   padding: 0 16px;
-  border: 1.5px solid var(--color-text);
+  border: 2px solid var(--color-text);
   border-radius: var(--radius-pill);
   background: none;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Round bin button, with the orange "warning" text colour */
+.delete {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-size);
+  padding: 0;
+  border: 2px solid var(--color-border);
+  border-radius: 50%;
+  background: none;
+  color: var(--color-warning-text);
+}
+
+/* "Delete this trip?" (takes the place of the buttons) */
+.confirmText {
+  margin: 0;
+  padding: 4px 16px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-warning-text);
+}
+
+.confirmDelete {
+  flex: 1;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-warning-text);
+  color: var(--color-text-on-accent);
   font-size: 14px;
   font-weight: 700;
 }

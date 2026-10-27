@@ -5,7 +5,7 @@ import { TripCard } from '../components/TripCard';
 import { groupTripsByMonth } from '../domain/history';
 import { formatMoney } from '../domain/money';
 import type { CompletedList } from '../domain/schemas';
-import { restoreList, shopAgain } from '../state/actions';
+import { deleteList, restoreList, shopAgain } from '../state/actions';
 import { useAppContext } from '../state/AppStateContext';
 import styles from './HistoryPage.module.css';
 
@@ -54,6 +54,13 @@ export function HistoryPage() {
     navigate(`/lists/${tripId}`);
   }
 
+  // Delete trip (after "Delete this trip?" in the card): gone for good.
+  // We stay on History; no card is open any more.
+  function handleDeleteTrip(tripId: string) {
+    dispatch(deleteList(tripId));
+    setOpenTripId(null);
+  }
+
   return (
     <main>
       <div className={styles.heading}>
@@ -92,6 +99,7 @@ export function HistoryPage() {
                     onToggle={() => handleToggleTrip(trip.id)}
                     onShopAgain={() => handleShopAgain(trip)}
                     onRestore={() => handleRestore(trip.id)}
+                    onDelete={() => handleDeleteTrip(trip.id)}
                   />
                 </li>
               ))}
