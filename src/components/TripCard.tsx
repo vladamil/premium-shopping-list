@@ -12,6 +12,7 @@ type TripCardProps = {
   onToggle: () => void;
   /** The page does the saving; the card only has the button. */
   onShopAgain: () => void;
+  onRestore: () => void;
 };
 
 // One finished trip on the History page. Tap it to open or close it.
@@ -21,6 +22,7 @@ export function TripCard({
   isOpen,
   onToggle,
   onShopAgain,
+  onRestore,
 }: TripCardProps) {
   const tripProgress = progress(trip.items);
   const spent = inCartTotal(trip.items);
@@ -104,6 +106,13 @@ export function TripCard({
                 <path d="M21 13v1a4 4 0 0 1-4 4H3" />
               </svg>
               Shop again
+            </button>
+            <button
+              type="button"
+              className={styles.restore}
+              onClick={onRestore}
+            >
+              Restore
             </button>
           </div>
         </div>

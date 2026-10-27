@@ -5,7 +5,7 @@ import { TripCard } from '../components/TripCard';
 import { groupTripsByMonth } from '../domain/history';
 import { formatMoney } from '../domain/money';
 import type { CompletedList } from '../domain/schemas';
-import { shopAgain } from '../state/actions';
+import { restoreList, shopAgain } from '../state/actions';
 import { useAppContext } from '../state/AppStateContext';
 import styles from './HistoryPage.module.css';
 
@@ -47,6 +47,13 @@ export function HistoryPage() {
     navigate(`/lists/${action.payload.list.id}`);
   }
 
+  // Restore: the SAME list goes back to active (ticks kept), so it leaves
+  // History and we open it. Same id, so no new action type is needed.
+  function handleRestore(tripId: string) {
+    dispatch(restoreList(tripId));
+    navigate(`/lists/${tripId}`);
+  }
+
   return (
     <main>
       <div className={styles.heading}>
@@ -84,6 +91,7 @@ export function HistoryPage() {
                     isOpen={trip.id === openTripId}
                     onToggle={() => handleToggleTrip(trip.id)}
                     onShopAgain={() => handleShopAgain(trip)}
+                    onRestore={() => handleRestore(trip.id)}
                   />
                 </li>
               ))}
