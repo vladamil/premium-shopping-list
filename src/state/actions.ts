@@ -12,6 +12,15 @@ export type CreateListAction = {
   payload: { list: ShoppingList };
 };
 
+/**
+ * The "shop again" action, named on its own for the same reason: History can
+ * read the new list's id from it and open that list.
+ */
+export type ShopAgainAction = {
+  type: 'shopAgain';
+  payload: { list: ShoppingList };
+};
+
 /** Every change the app can make: a name (`type`) and its details (`payload`). */
 export type AppAction =
   | CreateListAction
@@ -45,7 +54,7 @@ export type AppAction =
   | { type: 'uncheckAll'; payload: { listId: string; now: string } }
   | { type: 'finishList'; payload: { listId: string; now: string } }
   | { type: 'restoreList'; payload: { listId: string; now: string } }
-  | { type: 'shopAgain'; payload: { list: ShoppingList } }
+  | ShopAgainAction
   | { type: 'updateSettings'; payload: { changes: Partial<Settings> } };
 
 // ---------------------------------------------------------------------------
@@ -152,7 +161,7 @@ export function restoreList(listId: string): AppAction {
 }
 
 /** A NEW list copied from an old one: new ids, nothing ticked, same title, items, prices and budget. */
-export function shopAgain(oldList: ShoppingList): AppAction {
+export function shopAgain(oldList: ShoppingList): ShopAgainAction {
   const now = new Date().toISOString();
   return {
     type: 'shopAgain',

@@ -10,10 +10,18 @@ type TripCardProps = {
   /** The page decides which card is open, so only one is open at a time. */
   isOpen: boolean;
   onToggle: () => void;
+  /** The page does the saving; the card only has the button. */
+  onShopAgain: () => void;
 };
 
 // One finished trip on the History page. Tap it to open or close it.
-export function TripCard({ trip, currency, isOpen, onToggle }: TripCardProps) {
+export function TripCard({
+  trip,
+  currency,
+  isOpen,
+  onToggle,
+  onShopAgain,
+}: TripCardProps) {
   const tripProgress = progress(trip.items);
   const spent = inCartTotal(trip.items);
 
@@ -38,41 +46,67 @@ export function TripCard({ trip, currency, isOpen, onToggle }: TripCardProps) {
       </button>
 
       {/* Open → ALL items, in the list's own order, so you can see what
-          "Shop again" would copy. Skipped ones get a "Skipped" tag. */}
+          "Shop again" would copy. Skipped ones get a "Skipped" tag.
+          Then the buttons. */}
       {isOpen && (
-        <ul className={styles.items}>
-          {trip.items.map((item) => {
-            const total = itemTotal(item); // null when there's no price
+        <div>
+          <ul className={styles.items}>
+            {trip.items.map((item) => {
+              const total = itemTotal(item); // null when there's no price
 
-            return (
-              // data-skipped is a hook for the CSS (muted text)
-              <li
-                key={item.id}
-                className={styles.item}
-                data-skipped={!item.isBought}
-              >
-                <span className={styles.itemName}>
-                  {item.name}
-                  {item.quantity > 1 && (
-                    <span className={styles.quantity}> ×{item.quantity}</span>
-                  )}
-                  {!item.isBought && (
-                    <span className={styles.skippedTag}>Skipped</span>
-                  )}
-                </span>
-
-                {total !== null && (
-                  <span className={styles.itemTotal}>
-                    {formatMoney(total, currency)}
+              return (
+                // data-skipped is a hook for the CSS (muted text)
+                <li
+                  key={item.id}
+                  className={styles.item}
+                  data-skipped={!item.isBought}
+                >
+                  <span className={styles.itemName}>
+                    {item.name}
+                    {item.quantity > 1 && (
+                      <span className={styles.quantity}> ×{item.quantity}</span>
+                    )}
+                    {!item.isBought && (
+                      <span className={styles.skippedTag}>Skipped</span>
+                    )}
                   </span>
-                )}
-                {total === null && (
-                  <span className={styles.noPrice}>No price</span>
-                )}
-              </li>
-            );
-          })}
-        </ul>
+
+                  {total !== null && (
+                    <span className={styles.itemTotal}>
+                      {formatMoney(total, currency)}
+                    </span>
+                  )}
+                  {total === null && (
+                    <span className={styles.noPrice}>No price</span>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+
+          <div className={styles.actions}>
+            <button
+              type="button"
+              className={styles.shopAgain}
+              onClick={onShopAgain}
+            >
+              {/* Two arrows going round (decoration) */}
+              <svg
+                className={styles.icon}
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path d="M17 2l4 4-4 4" />
+                <path d="M3 11v-1a4 4 0 0 1 4-4h14" />
+                <path d="M7 22l-4-4 4-4" />
+                <path d="M21 13v1a4 4 0 0 1-4 4H3" />
+              </svg>
+              Shop again
+            </button>
+          </div>
+        </div>
       )}
     </article>
   );

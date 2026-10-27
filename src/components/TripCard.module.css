@@ -95,6 +95,37 @@
   font-weight: 400;
 }
 
+/* The buttons under the items */
+.actions {
+  display: flex;
+  gap: 8px;
+  padding: 4px 16px 16px;
+}
+
+/* Dark "ink" button that takes the free space */
+.shopAgain {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-text);
+  color: var(--color-text-on-accent);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.icon {
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 /* Small orange "Skipped" tag after the name */
 .skippedTag {
   margin-left: 6px;

@@ -1,14 +1,18 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { EmptyHistory } from '../components/EmptyHistory';
 import { TripCard } from '../components/TripCard';
 import { groupTripsByMonth } from '../domain/history';
 import { formatMoney } from '../domain/money';
+import type { CompletedList } from '../domain/schemas';
+import { shopAgain } from '../state/actions';
 import { useAppContext } from '../state/AppStateContext';
 import styles from './HistoryPage.module.css';
 
 // History: every trip you finished, in month groups, newest first.
 export function HistoryPage() {
-  const { state } = useAppContext();
+  const { state, dispatch } = useAppContext();
+  const navigate = useNavigate();
   const currency = state.settings.currency;
 
   // Only finished lists. After this filter TypeScript knows every trip is
@@ -32,6 +36,15 @@ export function HistoryPage() {
     } else {
       setOpenTripId(tripId);
     }
+  }
+
+  // Shop again: shopAgain builds a NEW list copied from the trip (new ids,
+  // nothing ticked), dispatch saves it, then we open it. The trip itself stays
+  // in History. No { replace: true } here: Back should bring you to History.
+  function handleShopAgain(trip: CompletedList) {
+    const action = shopAgain(trip);
+    dispatch(action);
+    navigate(`/lists/${action.payload.list.id}`);
   }
 
   return (
@@ -70,6 +83,7 @@ export function HistoryPage() {
                     currency={currency}
                     isOpen={trip.id === openTripId}
                     onToggle={() => handleToggleTrip(trip.id)}
+                    onShopAgain={() => handleShopAgain(trip)}
                   />
                 </li>
               ))}
