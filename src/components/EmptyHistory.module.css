@@ -72,7 +72,7 @@
   height: 48px;
   margin-top: 22px;
   padding: 0 22px;
-  border: 1.5px solid var(--color-text);
+  border: 2px solid var(--color-text);
   border-radius: var(--radius-pill);
   color: inherit;
   font-size: 15px;
