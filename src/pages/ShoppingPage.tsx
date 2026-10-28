@@ -67,12 +67,12 @@ export function ShoppingPage() {
   // RENDER NOT FOUND LIST ------------------------------------
   if (list === undefined) {
     return (
-      <main className={styles.notFound}>
-        <h1 className={styles.notFoundTitle}>List not found</h1>
-        <p className={styles.notFoundText}>
+      <main className={styles.message}>
+        <h1 className={styles.messageTitle}>List not found</h1>
+        <p className={styles.messageText}>
           It may have been deleted, or the link is out of date.
         </p>
-        <Link to="/" className={styles.notFoundLink}>
+        <Link to="/" className={styles.messageLink}>
           Go to your lists
         </Link>
       </main>
@@ -80,7 +80,25 @@ export function ShoppingPage() {
   }
   // --------------------------------------------------------------
 
-  // From here on, TypeScript knows `list` is a real list (not undefined).
+  // RENDER FINISHED LIST ------------------------------------
+  // A finished trip lives in History; it can't be shopped (ticked, finished
+  // again) here. You get here only from an old link or the browser history.
+  if (list.status === 'completed') {
+    return (
+      <main className={styles.message}>
+        <h1 className={styles.messageTitle}>This trip is finished</h1>
+        <p className={styles.messageText}>
+          “{list.title}” is in your History now.
+        </p>
+        <Link to="/history" className={styles.messageLink}>
+          Go to History
+        </Link>
+      </main>
+    );
+  }
+  // --------------------------------------------------------------
+
+  // From here on, TypeScript knows `list` is a real, active list.
 
   let itemsText = `${list.items.length} items`;
   if (list.items.length === 1) {

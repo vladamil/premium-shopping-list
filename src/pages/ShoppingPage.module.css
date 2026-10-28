@@ -45,9 +45,9 @@
   color: var(--color-text-muted);
 }
 
-/* ---------- List not found ---------- */
+/* ---------- Message screens: "List not found", "This trip is finished" ---------- */
 
-.notFound {
+.message {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -56,17 +56,17 @@
   text-align: center;
 }
 
-.notFoundTitle {
+.messageTitle {
   font-size: 25px;
   font-weight: 800;
 }
 
-.notFoundText {
+.messageText {
   font-size: 15px;
   color: var(--color-text-muted);
 }
 
-.notFoundLink {
+.messageLink {
   display: inline-flex;
   align-items: center;
   height: 52px;
