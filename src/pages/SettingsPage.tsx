@@ -9,6 +9,7 @@ export function SettingsPage() {
   const { state, dispatch } = useAppContext();
   const theme = state.settings.theme;
   const currency = state.settings.currency;
+  const keepScreenAwake = state.settings.keepScreenAwake;
 
   // Saving the theme is enough: useApplyTheme (in App.tsx) sees the new
   // setting and swaps the colours.
@@ -20,6 +21,12 @@ export function SettingsPage() {
   // converted. Every page already passes this setting to formatMoney.
   function handleCurrencyChange(newCurrency: Currency) {
     dispatch(updateSettings({ currency: newCurrency }));
+  }
+
+  // On → off, off → on (! = "the opposite of"). For now this only saves the
+  // setting; the Shopping page will use it to keep the screen on (chunk 8).
+  function handleKeepScreenAwakeToggle() {
+    dispatch(updateSettings({ keepScreenAwake: !keepScreenAwake }));
   }
 
   return (
@@ -144,6 +151,34 @@ export function SettingsPage() {
               onClick={() => handleCurrencyChange('USD')}
             >
               USD
+            </button>
+          </div>
+
+          <div className={styles.switchRow}>
+            <div>
+              <p id="awake-label" className={styles.rowTitle}>
+                Keep screen on
+              </p>
+              <p id="awake-text" className={styles.rowText}>
+                While a list is open, so your phone will not lock mid-aisle
+              </p>
+            </div>
+
+            {/* role="switch" + aria-checked: screen readers say "Keep screen
+                on, switch, on". The two spans are only the drawing (track and
+                knob); the CSS moves the knob when aria-checked is true. */}
+            <button
+              type="button"
+              role="switch"
+              className={styles.switch}
+              aria-checked={keepScreenAwake}
+              aria-labelledby="awake-label"
+              aria-describedby="awake-text"
+              onClick={handleKeepScreenAwakeToggle}
+            >
+              <span className={styles.track}>
+                <span className={styles.knob} />
+              </span>
             </button>
           </div>
         </div>
