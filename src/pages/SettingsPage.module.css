@@ -56,6 +56,13 @@
   font-weight: 600;
 }
 
+/* Grey explanation under a row title */
+.rowText {
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--color-text-muted);
+}
+
 /* ---------- 3 choices in one grey track (Theme) ---------- */
 
 .choices {

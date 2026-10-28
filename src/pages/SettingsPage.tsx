@@ -1,5 +1,5 @@
 import { ContourLines } from '../components/ContourLines';
-import type { Theme } from '../domain/schemas';
+import type { Currency, Theme } from '../domain/schemas';
 import { updateSettings } from '../state/actions';
 import { useAppContext } from '../state/AppStateContext';
 import styles from './SettingsPage.module.css';
@@ -8,11 +8,18 @@ import styles from './SettingsPage.module.css';
 export function SettingsPage() {
   const { state, dispatch } = useAppContext();
   const theme = state.settings.theme;
+  const currency = state.settings.currency;
 
   // Saving the theme is enough: useApplyTheme (in App.tsx) sees the new
   // setting and swaps the colours.
   function handleThemeChange(newTheme: Theme) {
     dispatch(updateSettings({ theme: newTheme }));
+  }
+
+  // Only the label changes (RSD 1,290.00 → €1,290.00); amounts are never
+  // converted. Every page already passes this setting to formatMoney.
+  function handleCurrencyChange(newCurrency: Currency) {
+    dispatch(updateSettings({ currency: newCurrency }));
   }
 
   return (
@@ -95,6 +102,48 @@ export function SettingsPage() {
                 <path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z" />
               </svg>
               Dark
+            </button>
+          </div>
+        </div>
+        {/* ------------------------------------------------------------ */}
+
+        {/* RENDER SHOPPING ------------------------------------------ */}
+        <h2 className={styles.sectionTitle}>Shopping</h2>
+        <div className={styles.card}>
+          <p id="currency-label" className={styles.rowTitle}>
+            Currency
+          </p>
+          <p className={styles.rowText}>Shown next to every price</p>
+
+          {/* Same 3-button track as Theme */}
+          <div
+            role="group"
+            aria-labelledby="currency-label"
+            className={styles.choices}
+          >
+            <button
+              type="button"
+              className={styles.choice}
+              aria-pressed={currency === 'RSD'}
+              onClick={() => handleCurrencyChange('RSD')}
+            >
+              RSD
+            </button>
+            <button
+              type="button"
+              className={styles.choice}
+              aria-pressed={currency === 'EUR'}
+              onClick={() => handleCurrencyChange('EUR')}
+            >
+              EUR
+            </button>
+            <button
+              type="button"
+              className={styles.choice}
+              aria-pressed={currency === 'USD'}
+              onClick={() => handleCurrencyChange('USD')}
+            >
+              USD
             </button>
           </div>
         </div>
