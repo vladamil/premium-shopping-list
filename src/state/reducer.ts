@@ -177,5 +177,12 @@ export function appReducer(state: AppData, action: AppAction): AppData {
         ...state,
         settings: { ...state.settings, ...action.payload.changes },
       };
+
+    // ----- Backup -----
+
+    case 'replaceAllData':
+      // The old state is simply thrown away: the backup's data IS the new state.
+      // (It was already checked by parseAppData before it got here.)
+      return action.payload.data;
   }
 }
