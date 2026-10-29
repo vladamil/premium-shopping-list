@@ -2,9 +2,10 @@ import { ContourLines } from '../components/ContourLines';
 import type { Currency, Theme } from '../domain/schemas';
 import { updateSettings } from '../state/actions';
 import { useAppContext } from '../state/AppStateContext';
+import { downloadBackup } from '../storage/backupFile';
 import styles from './SettingsPage.module.css';
 
-// Settings: theme, currency and "keep screen on". Every change saves at once.
+// Settings: theme, currency, "keep screen on" and backup. Every change saves at once.
 export function SettingsPage() {
   const { state, dispatch } = useAppContext();
   const theme = state.settings.theme;
@@ -27,6 +28,11 @@ export function SettingsPage() {
   // setting; the Shopping page will use it to keep the screen on (chunk 8).
   function handleKeepScreenAwakeToggle() {
     dispatch(updateSettings({ keepScreenAwake: !keepScreenAwake }));
+  }
+
+  // The whole state (all lists + settings) goes into the file.
+  function handleSaveBackup() {
+    downloadBackup(state);
   }
 
   return (
@@ -181,6 +187,24 @@ export function SettingsPage() {
               </span>
             </button>
           </div>
+        </div>
+        {/* ------------------------------------------------------------ */}
+
+        {/* RENDER YOUR DATA ----------------------------------------- */}
+        <h2 className={styles.sectionTitle}>Your data</h2>
+        <div className={styles.card}>
+          <p className={styles.rowTitle}>Backup</p>
+          <p className={styles.rowText}>
+            Save all your lists to a file, to keep them safe or move them to
+            another phone
+          </p>
+          <button
+            type="button"
+            className={styles.backupButton}
+            onClick={handleSaveBackup}
+          >
+            Save backup
+          </button>
         </div>
         {/* ------------------------------------------------------------ */}
 

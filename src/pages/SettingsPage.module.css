@@ -148,6 +148,21 @@
   background-color: var(--color-text-on-accent);
 }
 
+/* ---------- Your data ---------- */
+
+/* Outlined pill, like "Restore" on History */
+.backupButton {
+  width: 100%;
+  margin-top: 12px;
+  padding: 0 16px;
+  border: 2px solid var(--color-text);
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--color-text);
+  font-size: 15px;
+  font-weight: 700;
+}
+
 .icon {
   flex: none;
   fill: none;
