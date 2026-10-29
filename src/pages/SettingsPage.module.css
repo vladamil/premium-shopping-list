@@ -1,0 +1,176 @@
+/* overflow: hidden cuts off the part of the contour lines outside the page */
+.page {
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 24px;
+}
+
+/* position: relative = drawn on top of the contour lines */
+.heading {
+  position: relative;
+  padding: 30px 20px 14px;
+}
+
+.title {
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.subtitle {
+  margin-top: 6px;
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
+
+.sections {
+  position: relative;
+  padding: 0 16px;
+}
+
+/* Small grey section names: "Appearance", "Shopping"…
+   (h2 gets the display font from global.css; these use the body font) */
+.sectionTitle {
+  margin: 18px 4px 8px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.sectionTitle:first-child {
+  margin-top: 0;
+}
+
+/* White rounded box around one section's settings */
+.card {
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface);
+}
+
+.rowTitle {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Grey explanation under a row title */
+.rowText {
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--color-text-muted);
+}
+
+/* ---------- 3 choices in one grey track (Theme) ---------- */
+
+.choices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  margin-top: 10px;
+  padding: 4px;
+  border-radius: 14px;
+  background-color: var(--color-bg);
+}
+
+/* Height: 44px from global.css (every button is at least that tall) */
+.choice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 0;
+  border-radius: 11px;
+  background: none;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* The chosen one: a white pill with a small shadow */
+.choice[aria-pressed='true'] {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+/* ---------- On/off switch (Keep screen on) ---------- */
+
+/* Text on the left, switch on the right, a thin line above */
+.switchRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-border);
+}
+
+/* The button itself is invisible: only the track inside is drawn */
+.switch {
+  flex: none;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+/* Off: grey track, knob on the left */
+.track {
+  display: flex;
+  justify-content: flex-start;
+  width: 52px;
+  height: 32px;
+  padding: 3px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-stop-hollow);
+}
+
+.knob {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background-color: var(--color-surface);
+}
+
+/* On: orange track, knob on the right */
+.switch[aria-checked='true'] .track {
+  justify-content: flex-end;
+  background-color: var(--color-primary);
+}
+
+.switch[aria-checked='true'] .knob {
+  background-color: var(--color-text-on-accent);
+}
+
+.icon {
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---------- Footer ---------- */
+
+.storageNote {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 4px 0;
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+}
+
+.version {
+  margin-top: 14px;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+}
