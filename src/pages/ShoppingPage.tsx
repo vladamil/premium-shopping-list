@@ -9,6 +9,7 @@ import { inCartTotal, itemTotal, unpricedCount } from '../domain/calculations';
 import { formatListDate } from '../domain/dates';
 import { formatMoney } from '../domain/money';
 import type { Item, Money } from '../domain/schemas';
+import { useWakeLock } from '../hooks/useWakeLock';
 import {
   addItem,
   deleteList,
@@ -63,6 +64,13 @@ export function ShoppingPage() {
   // Find the list with this id. find() gives back the first match,
   // or undefined if there is none (deleted list, old link, typo in the URL).
   const list = state.lists.find((oneList) => oneList.id === id);
+
+  // Keep the screen on while shopping: only when the setting is on AND this is
+  // an active list (not "List not found", not a finished trip).
+  // useWakeLock is a hook, so it too must run before the early returns below.
+  const isActiveList = list !== undefined && list.status === 'active';
+  const shouldKeepScreenOn = state.settings.keepScreenAwake && isActiveList;
+  useWakeLock(shouldKeepScreenOn);
 
   // RENDER NOT FOUND LIST ------------------------------------
   if (list === undefined) {
