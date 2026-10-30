@@ -99,6 +99,13 @@
   font: inherit;
 }
 
+/* "Tap to tick item · hold to edit item": small grey line under "Next stops" */
+.hint {
+  padding: 0 20px 8px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
 .allDone {
   padding: 8px 20px;
   font-size: 15px;

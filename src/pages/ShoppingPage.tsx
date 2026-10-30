@@ -386,6 +386,9 @@ export function ShoppingPage() {
         {withoutPrice > 0 && <span>+{withoutPrice} without price</span>}
       </div>
 
+      {/* Always shown: long-press is hard to discover on your own */}
+      <p className={styles.hint}>Tap to tick item · hold to edit item</p>
+
       {toBuy.length === 0 && (
         <p className={styles.allDone}>Everything is in your cart.</p>
       )}
