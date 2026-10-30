@@ -560,3 +560,53 @@ describe('updateSettings', () => {
     expect(result.settings.keepScreenAwake).toBe(true);
   });
 });
+
+// -----BACKUP TESTS-----
+// ----------------------
+
+describe('replaceAllData', () => {
+  it("replaces all lists with the backup's lists", () => {
+    const state = makeState([makeList({ title: 'Old list' })]);
+    const backup = makeState([
+      makeList({ title: 'From backup 1' }),
+      makeList({ title: 'From backup 2' }),
+    ]);
+
+    const result = appReducer(state, {
+      type: 'replaceAllData',
+      payload: { data: backup },
+    });
+
+    const titles = result.lists.map((list) => list.title);
+    expect(titles).toEqual(['From backup 1', 'From backup 2']);
+  });
+
+  it("replaces the settings too (e.g. the backup's currency is EUR)", () => {
+    const state = makeState([]); // default currency: RSD
+    const backup: AppData = {
+      ...makeState([]),
+      settings: { currency: 'EUR', theme: 'dark', keepScreenAwake: false },
+    };
+
+    const result = appReducer(state, {
+      type: 'replaceAllData',
+      payload: { data: backup },
+    });
+
+    expect(result.settings.currency).toBe('EUR');
+    expect(result.settings.theme).toBe('dark');
+    expect(result.settings.keepScreenAwake).toBe(false);
+  });
+
+  it('with a backup that has no lists, all lists are gone', () => {
+    const state = makeState([makeList(), makeList()]);
+    const backup = makeState([]);
+
+    const result = appReducer(state, {
+      type: 'replaceAllData',
+      payload: { data: backup },
+    });
+
+    expect(result.lists).toHaveLength(0);
+  });
+});

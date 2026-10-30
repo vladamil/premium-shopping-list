@@ -1,15 +1,26 @@
+import { useState, type ChangeEvent } from 'react';
 import { ContourLines } from '../components/ContourLines';
-import type { Currency, Theme } from '../domain/schemas';
-import { updateSettings } from '../state/actions';
+import type { AppData, Currency, Theme } from '../domain/schemas';
+import { replaceAllData, updateSettings } from '../state/actions';
 import { useAppContext } from '../state/AppStateContext';
+import { downloadBackup } from '../storage/backupFile';
+import { parseAppData } from '../storage/parseAppData';
 import styles from './SettingsPage.module.css';
 
-// Settings: theme, currency and "keep screen on". Every change saves at once.
+// Settings: theme, currency, "keep screen on" and backup. Every change saves at once.
 export function SettingsPage() {
   const { state, dispatch } = useAppContext();
   const theme = state.settings.theme;
   const currency = state.settings.currency;
   const keepScreenAwake = state.settings.keepScreenAwake;
+
+  // A checked backup file, waiting for you to tap "Replace" or "Cancel".
+  // null = no file waiting, so the normal Save / Load buttons show.
+  const [backupData, setBackupData] = useState<AppData | null>(null);
+  // How many lists in that file were damaged (they will be left out).
+  const [skippedLists, setSkippedLists] = useState(0);
+  // "This file isn't a backup" or "Backup loaded: …" (null = no message).
+  const [backupMessage, setBackupMessage] = useState<string | null>(null);
 
   // Saving the theme is enough: useApplyTheme (in App.tsx) sees the new
   // setting and swaps the colours.
@@ -23,10 +34,62 @@ export function SettingsPage() {
     dispatch(updateSettings({ currency: newCurrency }));
   }
 
-  // On → off, off → on (! = "the opposite of"). For now this only saves the
-  // setting; the Shopping page will use it to keep the screen on (chunk 8).
+  // On → off, off → on (! = "the opposite of"). The Shopping page reads this
+  // setting (useWakeLock).
   function handleKeepScreenAwakeToggle() {
     dispatch(updateSettings({ keepScreenAwake: !keepScreenAwake }));
+  }
+
+  // The whole state (all lists + settings) goes into the file.
+  function handleSaveBackup() {
+    downloadBackup(state);
+  }
+
+  // Runs when you pick a file in the phone's file picker.
+  // async: reading the file takes a moment, so we `await` it.
+  async function handleBackupFileChosen(event: ChangeEvent<HTMLInputElement>) {
+    const input = event.currentTarget;
+
+    // The picker was closed without choosing a file → do nothing.
+    if (input.files === null) {
+      return;
+    }
+    const file = input.files.item(0); // the chosen file, or null
+    if (file === null) {
+      return;
+    }
+
+    const text = await file.text();
+    // Empty the picker, so choosing the same file again still works.
+    input.value = '';
+
+    // The same check the app does with localStorage on every start.
+    const result = parseAppData(text);
+
+    // Problems AND no usable lists = not our file (a photo, some other JSON…).
+    if (result.hadProblems && result.data.lists.length === 0) {
+      setBackupData(null);
+      setBackupMessage('This file isn’t a Cart-o-grapher backup.');
+      return;
+    }
+
+    // Usable → don't load it yet: show the "Replace…?" step first.
+    setBackupMessage(null);
+    setSkippedLists(result.skippedLists);
+    setBackupData(result.data);
+  }
+
+  function handleReplaceWithBackup() {
+    if (backupData === null) {
+      return;
+    }
+    dispatch(replaceAllData(backupData));
+    setBackupMessage(`Backup loaded: ${countLists(backupData.lists.length)}.`);
+    setBackupData(null);
+  }
+
+  function handleCancelBackup() {
+    setBackupData(null);
   }
 
   return (
@@ -184,7 +247,9 @@ export function SettingsPage() {
         </div>
         {/* ------------------------------------------------------------ */}
 
-        {/* RENDER FOOTER -------------------------------------------- */}
+        {/* RENDER YOUR DATA ----------------------------------------- */}
+        <h2 className={styles.sectionTitle}>Your data</h2>
+        {/* Says WHY the backup rows below matter */}
         <p className={styles.storageNote}>
           {/* A padlock (decoration) */}
           <svg
@@ -199,9 +264,124 @@ export function SettingsPage() {
           </svg>
           Your lists are stored only on this device.
         </p>
+        <div className={styles.dataCard}>
+          {/* No file waiting → the two rows (Export / Import) */}
+          {backupData === null && (
+            <div>
+              <button
+                type="button"
+                className={styles.dataRow}
+                onClick={handleSaveBackup}
+              >
+                {/* An arrow down into a tray (decoration) */}
+                <span className={styles.rowIcon}>
+                  <svg
+                    className={styles.icon}
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path d="M12 3v12M7 10l5 5 5-5M5 21h14" />
+                  </svg>
+                </span>
+                <span>
+                  <span className={styles.rowTitle}>Export backup</span>
+                  <span className={styles.rowText}>
+                    Save all lists to a file
+                  </span>
+                </span>
+              </button>
+
+              <div className={styles.divider} />
+
+              {/* A file input can't be styled, so it's hidden inside a
+                  <label>: tapping the label opens the file picker. */}
+              <label className={styles.dataRow}>
+                {/* An arrow up out of a tray (decoration) */}
+                <span className={styles.rowIcon}>
+                  <svg
+                    className={styles.icon}
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path d="M12 21V9M7 14l5-5 5 5M5 3h14" />
+                  </svg>
+                </span>
+                <span>
+                  <span className={styles.rowTitle}>Import backup</span>
+                  <span className={styles.rowText}>
+                    Restore lists from a backup file
+                  </span>
+                </span>
+                <input
+                  type="file"
+                  accept=".json,application/json"
+                  className="visually-hidden"
+                  onChange={handleBackupFileChosen}
+                />
+              </label>
+            </div>
+          )}
+
+          {/* A checked file is waiting → ask before replacing everything */}
+          {backupData !== null && (
+            <div className={styles.dataConfirm}>
+              <p className={styles.confirmText}>
+                Replace your {countLists(state.lists.length)} and settings with
+                the {countLists(backupData.lists.length)} from this backup? This
+                can’t be undone.
+              </p>
+              {skippedLists > 0 && (
+                <p className={styles.rowText}>
+                  Damaged, will be left out: {countLists(skippedLists)}.
+                </p>
+              )}
+              <div className={styles.confirmButtons}>
+                <button
+                  type="button"
+                  className={styles.replaceButton}
+                  onClick={handleReplaceWithBackup}
+                >
+                  Replace
+                </button>
+                {/* autoFocus: the Import row just disappeared, so keyboard
+                    focus moves here (the safe choice) */}
+                <button
+                  type="button"
+                  className={styles.cancelButton}
+                  onClick={handleCancelBackup}
+                  autoFocus
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* role="status": screen readers read the message out loud */}
+          {backupMessage !== null && (
+            <p role="status" className={styles.backupMessage}>
+              {backupMessage}
+            </p>
+          )}
+        </div>
+        {/* ------------------------------------------------------------ */}
+
+        {/* RENDER FOOTER -------------------------------------------- */}
         <p className={styles.version}>Cart-o-grapher · version 2.0</p>
         {/* ------------------------------------------------------------ */}
       </div>
     </main>
   );
+}
+
+/** "1 list" or "7 lists" */
+function countLists(count: number): string {
+  if (count === 1) {
+    return '1 list';
+  }
+  return `${count} lists`;
 }

@@ -1,4 +1,10 @@
-import type { Item, Money, Settings, ShoppingList } from '../domain/schemas';
+import type {
+  AppData,
+  Item,
+  Money,
+  Settings,
+  ShoppingList,
+} from '../domain/schemas';
 
 /** What the user types for a new item. The id and isBought are added for them. */
 export type NewItem = Pick<Item, 'name' | 'quantity' | 'unitPrice'>;
@@ -55,7 +61,8 @@ export type AppAction =
   | { type: 'finishList'; payload: { listId: string; now: string } }
   | { type: 'restoreList'; payload: { listId: string; now: string } }
   | ShopAgainAction
-  | { type: 'updateSettings'; payload: { changes: Partial<Settings> } };
+  | { type: 'updateSettings'; payload: { changes: Partial<Settings> } }
+  | { type: 'replaceAllData'; payload: { data: AppData } };
 
 // ---------------------------------------------------------------------------
 // Helpers that build the actions (Action creators). They create ids and read the clock,
@@ -185,4 +192,9 @@ export function shopAgain(oldList: ShoppingList): ShopAgainAction {
 
 export function updateSettings(changes: Partial<Settings>): AppAction {
   return { type: 'updateSettings', payload: { changes } };
+}
+
+/** Loading a backup: everything (lists + settings) is replaced by the backup's data. */
+export function replaceAllData(data: AppData): AppAction {
+  return { type: 'replaceAllData', payload: { data } };
 }
