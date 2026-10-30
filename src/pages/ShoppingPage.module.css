@@ -92,6 +92,20 @@
   color: var(--color-text-muted);
 }
 
+/* "Next stops" and "In cart" are real <h2> headings (so screen readers can
+   jump to them), but they should look like the small text next to them.
+   font: inherit = take the font, size and weight from .itemsHeader. */
+.itemsHeader h2 {
+  font: inherit;
+}
+
+/* "Tap to tick item · hold to edit item": small grey line under "Next stops" */
+.hint {
+  padding: 0 20px 8px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
 .allDone {
   padding: 8px 20px;
   font-size: 15px;
