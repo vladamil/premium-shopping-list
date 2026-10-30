@@ -382,7 +382,7 @@ export function ShoppingPage() {
       />
 
       <div className={styles.itemsHeader}>
-        <span>Next stops · {toBuy.length}</span>
+        <h2>Next stops · {toBuy.length}</h2>
         {withoutPrice > 0 && <span>+{withoutPrice} without price</span>}
       </div>
 
@@ -400,11 +400,11 @@ export function ShoppingPage() {
       )}
 
       {/* IN CART: the ticked items, always visible below (greyed and crossed out).
-          Tap one to untick it. The heading is just a label, like "Next stops". */}
+          Tap one to untick it. Its heading works like "Next stops". */}
       {inCart.length > 0 && (
         <>
           <div className={styles.itemsHeader}>
-            <span>In cart · {inCart.length}</span>
+            <h2>In cart · {inCart.length}</h2>
             <span>{formatMoney(inCartTotal(list.items), currency)}</span>
           </div>
           <div className={styles.route}>
