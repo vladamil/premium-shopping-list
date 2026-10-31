@@ -1,14 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
-  <!-- Smooth, premium rounded square background matching your dark surface theme -->
-  <rect width="512" height="512" rx="140" fill="#121417"/>
-  
-  <!-- Central Geometric Brand Icon Asset -->
-  <g transform="matrix(14 0 0 14 88 88)" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-    <!-- Outer bag architecture -->
-    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-    <!-- Horizontal rim line -->
-    <path d="M3 6h18" />
-    <!-- Curved handle tension arc -->
-    <path d="M16 10a4 4 0 0 1-8 0" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28">
+  <!-- The logo from the design: a dark circle with an orange map pin -->
+  <circle cx="14" cy="14" r="14" fill="#12261F" />
+  <!-- The pin is drawn in a 24×24 box, shrunk to 16×16 and moved to the middle.
+       Its line is a bit thicker than in the design, so it stays visible at tab size. -->
+  <g
+    transform="translate(6 6) scale(0.6667)"
+    fill="none"
+    stroke="#FF8A4C"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11z" />
+    <circle cx="12" cy="10" r="2" />
   </g>
 </svg>
