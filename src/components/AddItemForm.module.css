@@ -1,0 +1,144 @@
+/* The add-item row (used on New list and on Shopping) */
+
+/* Row 1: item name + round [+] button */
+.addRow {
+  display: flex;
+  gap: 10px;
+}
+
+.itemInput {
+  flex: 1;
+  min-width: 0;
+  height: 50px;
+  padding: 0 18px;
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  font-size: 16px;
+}
+
+.itemInput::placeholder,
+.priceInput::placeholder {
+  color: var(--color-text-muted);
+}
+
+.addButton {
+  flex: none;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: var(--color-text-on-accent);
+}
+
+/* Row 2: quantity stepper + price */
+.detailsRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 2px;
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-line);
+  border-radius: var(--radius-pill);
+}
+
+.stepButton {
+  width: var(--tap-size);
+  height: var(--tap-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+}
+
+/* At 1 you can't go lower (and at 999 not higher) */
+.stepButton:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.stepValue {
+  min-width: 26px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* Same idea as the budget box, but pill-shaped */
+.priceField {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 48px;
+  padding: 0 14px;
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-line);
+  border-radius: var(--radius-pill);
+}
+
+.priceField:focus-within {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.priceInput:focus-visible {
+  outline: none;
+}
+
+.priceCurrency {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.priceInput {
+  flex: 1;
+  min-width: 0;
+  /* Fills the 48px box (minus its 2px borders), so the whole height is tappable */
+  height: 44px;
+  border: 0;
+  background: none;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* A field with a problem gets an orange border (aria-invalid is set by the form) */
+.itemInput[aria-invalid='true'] {
+  border-color: var(--color-warning-text);
+}
+
+/* :has() = "the price box that HAS an invalid input inside it" */
+.priceField:has([aria-invalid='true']) {
+  border-color: var(--color-warning-text);
+}
+
+.error {
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-warning-text);
+}
+
+.icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

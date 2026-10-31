@@ -1,0 +1,182 @@
+.card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+/* The whole top row is one button: title and date on the left, money spent
+   on the right. The padding lives here, so the full card area is tappable. */
+.toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: var(--radius-card);
+  background: none;
+  text-align: left;
+}
+
+/* min-width: 0 lets a long title wrap instead of pushing the amount out */
+.text {
+  min-width: 0;
+}
+
+.title {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+/* The open card's title is bigger, in the display font (as in the design) */
+.toggle[aria-expanded='true'] .title {
+  font-family: var(--font-display);
+  font-size: 18px;
+}
+
+.meta {
+  display: block;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.spent {
+  flex: none;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* The open card's items, under the top row */
+.items {
+  margin: 0;
+  padding: 0 16px 8px;
+  list-style: none;
+  font-size: 14px;
+}
+
+/* Name on the left, total on the right, a thin line above each item */
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 8px 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.itemName {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.quantity {
+  color: var(--color-text-muted);
+}
+
+.itemTotal {
+  flex: none;
+  font-weight: 600;
+}
+
+.noPrice {
+  flex: none;
+  color: var(--color-text-muted);
+}
+
+/* Skipped items: the whole row is muted, the total not bold */
+.item[data-skipped='true'] {
+  color: var(--color-text-muted);
+}
+
+.item[data-skipped='true'] .itemTotal {
+  font-weight: 400;
+}
+
+/* The buttons under the items */
+.actions {
+  display: flex;
+  gap: 8px;
+  padding: 4px 16px 16px;
+}
+
+/* Dark "ink" button that takes the free space */
+.shopAgain {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-text);
+  color: var(--color-text-on-accent);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Outlined button: only as wide as its text */
+.restore {
+  flex: none;
+  padding: 0 16px;
+  border: 2px solid var(--color-text);
+  border-radius: var(--radius-pill);
+  background: none;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Round bin button, with the orange "warning" text colour */
+.delete {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-size);
+  padding: 0;
+  border: 2px solid var(--color-border);
+  border-radius: 50%;
+  background: none;
+  color: var(--color-warning-text);
+}
+
+/* "Delete this trip?" (takes the place of the buttons) */
+.confirmText {
+  margin: 0;
+  padding: 4px 16px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-warning-text);
+}
+
+.confirmDelete {
+  flex: 1;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-warning-text);
+  color: var(--color-text-on-accent);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.icon {
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Small orange "Skipped" tag after the name */
+.skippedTag {
+  margin-left: 6px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning-strong);
+  font-size: 11px;
+  font-weight: 700;
+}

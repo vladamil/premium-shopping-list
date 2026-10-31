@@ -1,0 +1,64 @@
+/* Dots spread evenly from left to right, with the line drawn behind them */
+.progress {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 12px;
+}
+
+/* The grey line and the orange line both run from the centre of the
+   first dot (5px in) to the centre of the last dot (5px from the end). */
+.track,
+.fill {
+  position: absolute;
+  left: 5px;
+  top: 50%;
+  height: 2px;
+  margin-top: -1px;
+}
+
+.track {
+  right: 5px;
+  background-color: var(--color-border);
+}
+
+.fill {
+  background-color: var(--color-accent);
+}
+
+/* position: relative puts the dots on top of the lines */
+.dot,
+.dotDone {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--color-stop-hollow);
+  background-color: var(--color-surface);
+}
+
+.dotDone {
+  border-color: var(--color-accent);
+  background-color: var(--color-accent);
+}
+
+/* ---------- On the dark trip summary card ---------- */
+
+.progress[data-on-dark='true'] .track {
+  background-color: var(--color-inverse-track);
+}
+
+.progress[data-on-dark='true'] .fill {
+  background-color: var(--color-inverse-route);
+}
+
+.progress[data-on-dark='true'] .dot {
+  border-color: var(--color-inverse-stop);
+  background-color: var(--color-inverse);
+}
+
+.progress[data-on-dark='true'] .dotDone {
+  border-color: var(--color-inverse-route);
+  background-color: var(--color-inverse-route);
+}

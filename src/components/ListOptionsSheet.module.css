@@ -1,0 +1,246 @@
+.title {
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  margin: 2px 0 10px;
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---------- Menu ---------- */
+
+.options {
+  margin: 0 0 10px; /* space above the Close button */
+  padding: 0;
+  list-style: none;
+}
+
+/* A thin line above every option */
+.option {
+  border-top: 1px solid var(--color-border);
+}
+
+/* The whole row is one button: icon · label (+ hint) */
+.optionButton,
+.optionButtonWarning {
+  width: 100%;
+  min-height: 62px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+}
+
+.optionButtonWarning {
+  color: var(--color-warning-text);
+}
+
+/* The rounded square behind each icon */
+.optionIcon,
+.optionIconWarning {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background-color: var(--color-bg);
+}
+
+.optionIconWarning {
+  background-color: var(--color-warning-bg);
+}
+
+.optionText {
+  flex: 1;
+}
+
+/* The amount on the right of the Budget row */
+.optionValue {
+  flex: none;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* The › at the end of rows that open a next step */
+.chevron {
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  color: var(--color-text-muted);
+}
+
+.optionLabel {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.optionHint,
+.optionHintWarning {
+  display: block;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+/* "137% planned so far" when the list is over budget */
+.optionHintWarning {
+  font-weight: 600;
+  color: var(--color-warning-text);
+}
+
+/* ---------- "Delete this list?" step ---------- */
+
+.text {
+  margin-top: 8px;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.deleteButton {
+  height: 52px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-warning-text);
+  color: var(--color-text-on-accent);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* Outlined pill: Close (menu) and Cancel (delete step) */
+.secondaryButton {
+  width: 100%;
+  height: 52px;
+  border: 2px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  background: none;
+  color: inherit;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* ---------- "Rename list" step ---------- */
+
+.form {
+  margin-top: 14px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.input {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px;
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-line);
+  border-radius: 16px;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.input[aria-invalid='true'] {
+  border-color: var(--color-warning-text);
+}
+
+.error {
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-warning-text);
+}
+
+.primaryButton {
+  height: 52px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-primary);
+  color: var(--color-text-on-accent);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* ---------- "Budget" step ---------- */
+
+/* Box with "RSD" in front of the input (same as on New list) */
+.moneyField {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 52px;
+  padding: 0 16px;
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-line);
+  border-radius: 16px;
+}
+
+/* The focus ring goes around the whole box instead of only the input inside it */
+.moneyField:focus-within {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.moneyField:has([aria-invalid='true']) {
+  border-color: var(--color-warning-text);
+}
+
+.moneyInput:focus-visible {
+  outline: none;
+}
+
+.currency {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.moneyInput {
+  flex: 1;
+  min-width: 0;
+  height: 46px;
+  border: 0;
+  background: none;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.hint {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}

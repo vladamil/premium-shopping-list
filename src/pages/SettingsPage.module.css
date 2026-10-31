@@ -1,0 +1,280 @@
+/* overflow: hidden cuts off the part of the contour lines outside the page */
+.page {
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 24px;
+}
+
+/* position: relative = drawn on top of the contour lines */
+.heading {
+  position: relative;
+  padding: 30px 20px 14px;
+}
+
+.title {
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.subtitle {
+  margin-top: 6px;
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
+
+.sections {
+  position: relative;
+  padding: 0 16px;
+}
+
+/* Small grey section names: "Appearance", "Shopping"…
+   (h2 gets the display font from global.css; these use the body font) */
+.sectionTitle {
+  margin: 18px 4px 8px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.sectionTitle:first-child {
+  margin-top: 0;
+}
+
+/* White rounded box around one section's settings */
+.card {
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface);
+}
+
+.rowTitle {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Grey explanation under a row title */
+.rowText {
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--color-text-muted);
+}
+
+/* ---------- 3 choices in one grey track (Theme) ---------- */
+
+.choices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  margin-top: 10px;
+  padding: 4px;
+  border-radius: 14px;
+  background-color: var(--color-bg);
+}
+
+/* Height: 44px from global.css (every button is at least that tall) */
+.choice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 0;
+  border-radius: 11px;
+  background: none;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* The chosen one: a white pill with a small shadow */
+.choice[aria-pressed='true'] {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+/* ---------- On/off switch (Keep screen on) ---------- */
+
+/* Text on the left, switch on the right, a thin line above */
+.switchRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-border);
+}
+
+/* The button itself is invisible: only the track inside is drawn */
+.switch {
+  flex: none;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+/* Off: grey track, knob on the left */
+.track {
+  display: flex;
+  justify-content: flex-start;
+  width: 52px;
+  height: 32px;
+  padding: 3px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-stop-hollow);
+}
+
+.knob {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background-color: var(--color-surface);
+}
+
+/* On: orange track, knob on the right */
+.switch[aria-checked='true'] .track {
+  justify-content: flex-end;
+  background-color: var(--color-primary);
+}
+
+.switch[aria-checked='true'] .knob {
+  background-color: var(--color-text-on-accent);
+}
+
+/* ---------- Your data ---------- */
+
+/* Same white card, but the rows bring their own padding */
+.dataCard {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface);
+}
+
+/* One row: icon tile + title/explanation. Used on the Export <button> AND on
+   the Import <label>, so it sets everything itself (a label gets nothing
+   from the button rules in global.css). */
+.dataRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 64px;
+  padding: 0 16px;
+  border: 0;
+  background: none;
+  color: var(--color-text);
+  text-align: left;
+  cursor: pointer;
+}
+
+/* The hidden file input gets the keyboard focus, so draw the focus ring
+   on its label instead (same ring as global.css) */
+.dataRow:has(input:focus-visible) {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Inside a row the title and text are <span>s, so make them lines */
+.dataRow .rowTitle,
+.dataRow .rowText {
+  display: block;
+}
+
+/* The grey rounded square behind each icon */
+.rowIcon {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background-color: var(--color-bg);
+}
+
+/* Thin line between the two rows */
+.divider {
+  margin: 0 16px;
+  border-top: 1px solid var(--color-border);
+}
+
+/* The "Replace…?" step and the message get the padding the rows have */
+.dataConfirm {
+  padding: 14px 16px;
+}
+
+/* "Replace your 3 lists…?" in orange, like "Delete this trip?" */
+.confirmText {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-warning-text);
+}
+
+.confirmButtons {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.replaceButton {
+  width: 100%;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-warning-text);
+  color: var(--color-text-on-accent);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* Outlined pill, like "Restore" on History */
+.cancelButton {
+  width: 100%;
+  padding: 0 16px;
+  border: 2px solid var(--color-text);
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--color-text);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.backupMessage {
+  padding: 0 16px 14px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.icon {
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* "Your lists are stored only on this device." — under the Your data heading */
+.storageNote {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 4px 10px;
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+}
+
+/* ---------- Footer ---------- */
+
+.version {
+  margin-top: 14px;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+}

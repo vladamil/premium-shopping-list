@@ -1,0 +1,318 @@
+.page {
+  padding-bottom: 170px; /* room for the fixed add-item bar */
+}
+
+/* ← on the left, Finish and ⋯ on the right */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 8px 0;
+}
+
+.back {
+  width: var(--tap-size);
+  height: var(--tap-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+}
+
+.icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.heading {
+  padding: 6px 20px 14px;
+}
+
+.title {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  margin-top: 4px;
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+/* ---------- Message screens: "List not found", "This trip is finished" ---------- */
+
+.message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 64px 28px;
+  text-align: center;
+}
+
+.messageTitle {
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.messageText {
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
+
+.messageLink {
+  display: inline-flex;
+  align-items: center;
+  height: 52px;
+  margin-top: 14px;
+  padding: 0 24px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-primary);
+  color: var(--color-text-on-accent);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+/* ---------- Items ---------- */
+
+/* "Next stops · 7" on the left, "+1 without price" on the right */
+.itemsHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px 4px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+/* "Next stops" and "In cart" are real <h2> headings (so screen readers can
+   jump to them), but they should look like the small text next to them.
+   font: inherit = take the font, size and weight from .itemsHeader. */
+.itemsHeader h2 {
+  font: inherit;
+}
+
+/* "Tap to tick item · hold to edit item": small grey line under "Next stops" */
+.hint {
+  padding: 0 20px 8px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.allDone {
+  padding: 8px 20px;
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
+
+/* One group of stops (the items to buy, or the items in the cart) with its route line */
+.route {
+  position: relative;
+  padding: 0 16px 0 8px;
+}
+
+/* The grey "route" line behind the stops (::before = an extra box made by CSS).
+   It runs from the centre of the first stop to the centre of the last one
+   (rows are 48px tall, so a centre is 24px from the top / bottom). */
+.route::before {
+  content: '';
+  position: absolute;
+  left: 29px;
+  top: 24px;
+  bottom: 24px;
+  width: 2px;
+  background-color: var(--color-line);
+}
+
+.items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* One row = the tick button (takes all the space) + the small edit button */
+.itemRow {
+  display: flex;
+  align-items: center;
+}
+
+/* The tick button: the whole row except the edit button.
+   user-select + touch-callout: a long press must not select the text
+   or pop up the phone's "copy / share" bubble. */
+.item {
+  user-select: none;
+  -webkit-touch-callout: none;
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+}
+
+/* The stop on the route: a 44px tap area with the circle in the middle */
+.stop {
+  flex: none;
+  width: var(--tap-size);
+  height: var(--tap-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Still to buy: an empty ring (filled with the page colour, so it hides the line) */
+.stopEmpty {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2.5px solid var(--color-text);
+  background-color: var(--color-bg);
+}
+
+/* In the cart: a filled orange circle with a ✓ */
+.stopDone {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+  color: var(--color-text-on-accent);
+}
+
+.check {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.itemText {
+  flex: 1;
+  min-width: 0;
+}
+
+.itemName {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.itemDetail {
+  display: block;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.itemTotal {
+  flex: none;
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Ticked items look "done": greyed and crossed out */
+.item[aria-pressed='true'] .itemName {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+
+.item[aria-pressed='true'] .itemTotal {
+  color: var(--color-text-muted);
+}
+
+/* ---------- Add-item bar ---------- */
+
+/* Fixed to the bottom, and as wide as the app column (see global.css #root) */
+.addBar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-width: var(--app-max-width);
+  margin: 0 auto;
+  padding: 10px 16px 16px;
+  background-color: var(--color-bar);
+  border-top: 1px solid var(--color-border);
+}
+
+/* ---------- Header: Finish button ---------- */
+
+/* Pushes Finish to the right side of the header */
+.headerSpacer {
+  flex: 1;
+}
+
+/* Outlined pill with a flag icon */
+.finishButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 16px;
+  border: 2px solid var(--color-text);
+  border-radius: var(--radius-pill);
+  background: none;
+  color: inherit;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* ⋯ after Finish (44px tap area) */
+.moreButton {
+  width: var(--tap-size);
+  height: var(--tap-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+}
+
+/* ✎ at the end of each row (44px tap area) */
+.editButton {
+  flex: none;
+  width: var(--tap-size);
+  height: var(--tap-size);
+  margin-right: -10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text-muted);
+}
+
+/* Where the total would be, for items without a price: a small orange tag.
+   Just information — tap ✎ to add the price. */
+.noPriceTag {
+  flex: none;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning-text);
+  font-size: 12.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}

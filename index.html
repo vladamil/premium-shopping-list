@@ -1,18 +1,38 @@
 <!doctype html>
 <html lang="en">
-   <head>
-      <meta charset="UTF-8" />
-      <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-      <link rel="manifest" href="/manifest.json" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Cart-o-grapher | Don't Forget The Milk</title>
-      <meta
-         name="description"
-         content="A highly defensive shopping dashboard built to survive unstable store prices, frantic aisle pacing, and text messages that say 'wait, grab two instead'."
-      />
-   </head>
-   <body>
-      <div id="root"></div>
-      <script type="module" src="/src/main.jsx"></script>
-   </body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cart-o-grapher</title>
+    <!-- Installing on a phone: the app's name and icons (Android, desktop).
+         use-credentials = send the login cookie with this request too, so it
+         also works on Vercel previews, which are behind a login. -->
+    <link
+      rel="manifest"
+      href="/manifest.webmanifest"
+      crossorigin="use-credentials"
+    />
+    <!-- iPhone ignores the manifest's icons and uses this one -->
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <!-- Colour of the phone's status bar: matches the app background -->
+    <meta
+      name="theme-color"
+      content="#EDF1EA"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#0E1714"
+      media="(prefers-color-scheme: dark)"
+    />
+    <meta
+      name="description"
+      content="A mobile-first shopping list that plans your trip like a route: tick items off, track your budget, and keep a history of every shop."
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>

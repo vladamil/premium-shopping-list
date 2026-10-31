@@ -1,63 +1,90 @@
+/* One list = one big link */
 .card {
-   background-color: var(--bg-surface);
-   padding: 1rem 1.25rem;
-   border-radius: var(--radius-md);
-   display: flex;
-   justify-content: space-between;
-   align-items: center;
-   border: 1px solid var(--border-light);
-   cursor: pointer;
+  display: block;
+  padding: 16px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  color: inherit;
+  text-decoration: none;
 }
 
-.cardContent {
-   display: flex;
-   flex-direction: column;
-   gap: 0.2rem; /* Balanced vertical row spacing */
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
 }
 
-.cardTitle {
-   font-size: 1.15rem;
-   font-weight: 500;
-   color: var(--text-on-dark);
-   letter-spacing: -0.02em;
+.title {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
-.cardMetaRow {
-   display: flex;
-   align-items: center;
-   gap: 0.5rem;
-   font-size: 0.85rem;
-   color: var(--text-muted-on-dark);
-   font-weight: 500;
+.chevron {
+  flex: none;
+  fill: none;
+  stroke: var(--color-text-muted);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.metaDivider {
-   color: var(--bg-main);
+.meta {
+  display: block;
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--color-text-muted);
 }
 
-.priceRow {
-   font-size: 0.9rem;
-   font-weight: 500;
-   color: var(--accent-success);
+.progress {
+  display: block;
+  margin: 14px 2px;
 }
 
-/* Right-side action arrow */
-
-.chevronAction {
-   color: var(--text-muted-on-dark);
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   padding-left: 0.5rem;
+/* Planned total on the left, budget badge on the right */
+.bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
 }
 
-.chevronAction svg {
-   width: 20px;
-   height: 20px;
-   stroke: currentColor;
-   transition: transform var(--transition-fast);
+.planned {
+  font-size: 16px;
+  font-weight: 700;
 }
 
-.card:hover .chevronAction svg {
-   transform: translateX(3px); /* Subtle indicator on interaction */
+.plannedLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+/* The badge: same shape, three colour versions */
+.badgeNone,
+.badgeOk,
+.badgeWarning {
+  flex: none;
+  padding: 5px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.badgeNone {
+  background-color: var(--color-chip);
+  color: var(--color-text-muted);
+}
+
+.badgeOk {
+  background-color: var(--color-ok-bg);
+  color: var(--color-ok-text);
+}
+
+.badgeWarning {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning-text);
 }
