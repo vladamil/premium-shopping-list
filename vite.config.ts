@@ -17,8 +17,8 @@ export default defineConfig({
       registerType: 'prompt',
       workbox: {
         // Which built files to save for offline: code, styles, the page,
-        // the logo, the icons and the manifest.
-        globPatterns: ['**/*.{js,css,html,svg,png,webmanifest}'],
+        // the logo, the icons, the manifest and the fonts (woff2).
+        globPatterns: ['**/*.{js,css,html,svg,png,webmanifest,woff2}'],
       },
     }),
   ],
