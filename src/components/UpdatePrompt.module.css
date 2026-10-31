@@ -1,0 +1,42 @@
+/* A dark card floating at the TOP of the screen, so it never covers the
+   different bottom bars (tab bar, add-item bar, Create list).
+   left + right + max-width + margin auto = stays inside the app column. */
+.bar {
+  position: fixed;
+  top: 12px;
+  left: 16px;
+  right: 16px;
+  max-width: calc(var(--app-max-width) - 32px);
+  margin: 0 auto;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 4px 0 16px;
+  border-radius: 14px;
+  background-color: var(--color-inverse);
+  color: var(--color-text-on-inverse);
+  box-shadow: var(--shadow-floating);
+  font-size: 14px;
+}
+
+/* Pushes the two buttons to the right */
+.text {
+  flex: 1;
+}
+
+.later,
+.reload {
+  padding: 0 12px;
+  border: 0;
+  background: none;
+  font-weight: 700;
+}
+
+.later {
+  color: var(--color-inverse-muted);
+}
+
+.reload {
+  color: var(--color-inverse-route);
+}

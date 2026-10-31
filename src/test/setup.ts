@@ -2,7 +2,7 @@
 
 import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
-import { afterEach } from 'vitest';
+import { afterEach, vi } from 'vitest';
 
 // Adds checks like expect(button).toHaveAttribute('aria-pressed', 'true')
 // and expect(text).toBeInTheDocument() — that's the jest-dom import above.
@@ -37,3 +37,14 @@ HTMLDialogElement.prototype.showModal = function () {
 HTMLDialogElement.prototype.close = function () {
   this.open = false;
 };
+
+// useRegisterSW — UpdatePrompt asks "is a new version waiting?".
+// The real one is made by vite-plugin-pwa only when the app is built, so
+// tests can't load it. The stand-in always answers "no new version".
+vi.mock('virtual:pwa-register/react', () => ({
+  useRegisterSW: () => ({
+    needRefresh: [false, () => {}],
+    offlineReady: [false, () => {}],
+    updateServiceWorker: async () => {},
+  }),
+}));

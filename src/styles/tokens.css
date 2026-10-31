@@ -42,10 +42,10 @@
   --color-inverse-route: #ff8a4c;
   --color-inverse-stop: #6f8a7e;
 
-  /* Fonts are loaded in index.html (Google Fonts). The fallbacks are used
-     while they download, or if they can't load (e.g. offline). */
-  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
-  --font-body: 'Figtree', system-ui, sans-serif;
+  /* Fonts are bundled with the app (imported in main.tsx). The fallbacks
+     are used for a moment while they load. */
+  --font-display: 'Bricolage Grotesque Variable', system-ui, sans-serif;
+  --font-body: 'Figtree Variable', system-ui, sans-serif;
 
   /* Corner radii */
   --radius-card: 20px;
