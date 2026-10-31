@@ -5,8 +5,14 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cart-o-grapher</title>
-    <!-- Installing on a phone: the app's name and icons (Android, desktop) -->
-    <link rel="manifest" href="/manifest.webmanifest" />
+    <!-- Installing on a phone: the app's name and icons (Android, desktop).
+         use-credentials = send the login cookie with this request too, so it
+         also works on Vercel previews, which are behind a login. -->
+    <link
+      rel="manifest"
+      href="/manifest.webmanifest"
+      crossorigin="use-credentials"
+    />
     <!-- iPhone ignores the manifest's icons and uses this one -->
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <!-- Colour of the phone's status bar: matches the app background -->
